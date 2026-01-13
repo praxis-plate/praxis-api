@@ -16,6 +16,12 @@ jobs:
       SERVERPOD_PASSWORD_redis: ${{ secrets.SERVERPOD_PASSWORD_REDIS }}
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.1"
+          channel: "stable"
+          cache: true
       - name: Set up Dart
         uses: dart-lang/setup-dart@v1
         with:
