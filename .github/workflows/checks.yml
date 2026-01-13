@@ -1,0 +1,39 @@
+name: Code Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: "3.2.0"
+      SERVERPOD_RUN_MODE: "test"
+      SERVERPOD_PASSWORD_database: ${{ secrets.SERVERPOD_PASSWORD_DATABASE }}
+      SERVERPOD_PASSWORD_redis: ${{ secrets.SERVERPOD_PASSWORD_REDIS }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: "3.10.0"
+      - name: Add pub cache to PATH
+        run: echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+      - name: Start containers
+        run: docker compose up --build -d
+      - name: Install dependencies
+        run: dart pub get
+      - name: Install Serverpod CLI
+        run: dart pub global activate serverpod_cli $VERSION
+      - name: Run Serverpod generator
+        run: serverpod generate
+      - name: Analyze
+        run: dart analyze --fatal-infos
+      - name: Run tests
+        run: dart test
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v
