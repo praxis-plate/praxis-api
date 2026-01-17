@@ -23,3 +23,4 @@ config/firebase_service_account_key.json
 
 # VSCode related
 .vscode/
+.DS_Store
