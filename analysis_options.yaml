@@ -19,6 +19,7 @@ linter:
   rules:
     unawaited_futures: true
     avoid_print: true
+    always_use_package_imports: true
 
 analyzer:
   exclude:

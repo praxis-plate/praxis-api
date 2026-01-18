@@ -1,4 +1,4 @@
 type: server
 
-client_package_path: ../praxis_client
+client_package_path: ../praxis_flutter/packages/praxis_client
 server_test_tools_path: test/integration/test_tools

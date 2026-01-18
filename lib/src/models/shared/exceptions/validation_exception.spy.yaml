@@ -1,0 +1,4 @@
+exception: ValidationException
+fields:
+  message: String
+  field: String?

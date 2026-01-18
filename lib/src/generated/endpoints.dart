@@ -11,9 +11,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../auth/email_idp_endpoint.dart' as _i2;
-import '../auth/jwt_refresh_endpoint.dart' as _i3;
-import '../greetings/greeting_endpoint.dart' as _i4;
+import '../endpoints/email_idp_endpoint.dart' as _i2;
+import '../endpoints/health_endpoint.dart' as _i3;
+import '../endpoints/jwt_refresh_endpoint.dart' as _i4;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i5;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
@@ -29,16 +29,16 @@ class Endpoints extends _i1.EndpointDispatch {
           'emailIdp',
           null,
         ),
-      'jwtRefresh': _i3.JwtRefreshEndpoint()
+      'health': _i3.HealthEndpoint()
+        ..initialize(
+          server,
+          'health',
+          null,
+        ),
+      'jwtRefresh': _i4.JwtRefreshEndpoint()
         ..initialize(
           server,
           'jwtRefresh',
-          null,
-        ),
-      'greeting': _i4.GreetingEndpoint()
-        ..initialize(
-          server,
-          'greeting',
           null,
         ),
     };
@@ -211,6 +211,22 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['health'] = _i1.EndpointConnector(
+      name: 'health',
+      endpoint: endpoints['health']!,
+      methodConnectors: {
+        'ping': _i1.MethodConnector(
+          name: 'ping',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['health'] as _i3.HealthEndpoint).ping(session),
+        ),
+      },
+    );
     connectors['jwtRefresh'] = _i1.EndpointConnector(
       name: 'jwtRefresh',
       endpoint: endpoints['jwtRefresh']!,
@@ -228,35 +244,11 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['jwtRefresh'] as _i3.JwtRefreshEndpoint)
+              ) async => (endpoints['jwtRefresh'] as _i4.JwtRefreshEndpoint)
                   .refreshAccessToken(
                     session,
                     refreshToken: params['refreshToken'],
                   ),
-        ),
-      },
-    );
-    connectors['greeting'] = _i1.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
-      methodConnectors: {
-        'hello': _i1.MethodConnector(
-          name: 'hello',
-          params: {
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['greeting'] as _i4.GreetingEndpoint).hello(
-                session,
-                params['name'],
-              ),
         ),
       },
     );
