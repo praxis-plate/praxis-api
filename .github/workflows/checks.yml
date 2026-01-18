@@ -14,6 +14,7 @@ jobs:
       SERVERPOD_PASSWORD_database: ${{ secrets.SERVERPOD_PASSWORD_DATABASE }}
       SERVERPOD_PASSWORD_redis: ${{ secrets.SERVERPOD_PASSWORD_REDIS }}
       SERVERPOD_PASSWORD_emailSecretHashPepper: ${{ secrets.SERVERPOD_PASSWORD_EMAIL_SECRET_HASH_PEPPER }}
+      SERVERPOD_PASSWORD_jwtRefreshTokenHashPepper: ${{ secrets.SERVERPOD_PASSWORD_JWT_REFRESH_TOKEN_HASH_PEPPER }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Dart
