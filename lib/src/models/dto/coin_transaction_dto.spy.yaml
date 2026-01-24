@@ -1,0 +1,14 @@
+class: CoinTransactionDto
+fields:
+  id: int
+  authUserId: String
+  transactionKey: String
+  type: String
+  status: String
+  amount: int
+  currency: String
+  relatedEntityId: String?
+  reversalOfTransactionId: int?
+  reason: String?
+  metadata: String?
+  createdAt: DateTime

@@ -16,10 +16,20 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i3;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i4;
-import 'shared/exceptions/not_found_exception.dart' as _i5;
-import 'shared/exceptions/validation_exception.dart' as _i6;
+import 'dto/coin_transaction_dto.dart' as _i5;
+import 'requests/create_coin_transaction_request.dart' as _i6;
+import 'shared/exceptions/not_found_exception.dart' as _i7;
+import 'shared/exceptions/validation_exception.dart' as _i8;
+import 'tables/coin_transaction_table.dart' as _i9;
+import 'tables/user_wallet_table.dart' as _i10;
+import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+    as _i11;
+export 'dto/coin_transaction_dto.dart';
+export 'requests/create_coin_transaction_request.dart';
 export 'shared/exceptions/not_found_exception.dart';
 export 'shared/exceptions/validation_exception.dart';
+export 'tables/coin_transaction_table.dart';
+export 'tables/user_wallet_table.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -29,6 +39,227 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'coin_transaction',
+      dartName: 'CoinTransaction',
+      schema: 'public',
+      module: 'praxis',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'coin_transaction_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'transactionKey',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'status',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'amount',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currency',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'relatedEntityId',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reversalOfTransactionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reason',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'metadata',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'coin_transaction_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'coin_transaction_transaction_key_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'transactionKey',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'coin_transaction_auth_user_id_created_at_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'createdAt',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'user_wallet',
+      dartName: 'UserWallet',
+      schema: 'public',
+      module: 'praxis',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'user_wallet_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'authUserId',
+          columnType: _i2.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _i2.ColumnDefinition(
+          name: 'balance',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'available',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'held',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currency',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'version',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'user_wallet_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'user_wallet_auth_user_id_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'authUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
     ..._i4.Protocol.targetTableDefinitions,
     ..._i2.Protocol.targetTableDefinitions,
@@ -61,17 +292,50 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
 
-    if (t == _i5.NotFoundException) {
-      return _i5.NotFoundException.fromJson(data) as T;
+    if (t == _i5.CoinTransactionDto) {
+      return _i5.CoinTransactionDto.fromJson(data) as T;
     }
-    if (t == _i6.ValidationException) {
-      return _i6.ValidationException.fromJson(data) as T;
+    if (t == _i6.CreateCoinTransactionRequest) {
+      return _i6.CreateCoinTransactionRequest.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.NotFoundException?>()) {
-      return (data != null ? _i5.NotFoundException.fromJson(data) : null) as T;
+    if (t == _i7.NotFoundException) {
+      return _i7.NotFoundException.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i6.ValidationException?>()) {
-      return (data != null ? _i6.ValidationException.fromJson(data) : null)
+    if (t == _i8.ValidationException) {
+      return _i8.ValidationException.fromJson(data) as T;
+    }
+    if (t == _i9.CoinTransaction) {
+      return _i9.CoinTransaction.fromJson(data) as T;
+    }
+    if (t == _i10.UserWallet) {
+      return _i10.UserWallet.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i5.CoinTransactionDto?>()) {
+      return (data != null ? _i5.CoinTransactionDto.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.CreateCoinTransactionRequest?>()) {
+      return (data != null
+              ? _i6.CreateCoinTransactionRequest.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _i1.getType<_i7.NotFoundException?>()) {
+      return (data != null ? _i7.NotFoundException.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.ValidationException?>()) {
+      return (data != null ? _i8.ValidationException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i9.CoinTransaction?>()) {
+      return (data != null ? _i9.CoinTransaction.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i10.UserWallet?>()) {
+      return (data != null ? _i10.UserWallet.fromJson(data) : null) as T;
+    }
+    if (t == List<_i11.CoinTransactionDto>) {
+      return (data as List)
+              .map((e) => deserialize<_i11.CoinTransactionDto>(e))
+              .toList()
           as T;
     }
     try {
@@ -88,8 +352,12 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i5.NotFoundException => 'NotFoundException',
-      _i6.ValidationException => 'ValidationException',
+      _i5.CoinTransactionDto => 'CoinTransactionDto',
+      _i6.CreateCoinTransactionRequest => 'CreateCoinTransactionRequest',
+      _i7.NotFoundException => 'NotFoundException',
+      _i8.ValidationException => 'ValidationException',
+      _i9.CoinTransaction => 'CoinTransaction',
+      _i10.UserWallet => 'UserWallet',
       _ => null,
     };
   }
@@ -104,10 +372,18 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i5.NotFoundException():
+      case _i5.CoinTransactionDto():
+        return 'CoinTransactionDto';
+      case _i6.CreateCoinTransactionRequest():
+        return 'CreateCoinTransactionRequest';
+      case _i7.NotFoundException():
         return 'NotFoundException';
-      case _i6.ValidationException():
+      case _i8.ValidationException():
         return 'ValidationException';
+      case _i9.CoinTransaction():
+        return 'CoinTransaction';
+      case _i10.UserWallet():
+        return 'UserWallet';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -130,11 +406,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'CoinTransactionDto') {
+      return deserialize<_i5.CoinTransactionDto>(data['data']);
+    }
+    if (dataClassName == 'CreateCoinTransactionRequest') {
+      return deserialize<_i6.CreateCoinTransactionRequest>(data['data']);
+    }
     if (dataClassName == 'NotFoundException') {
-      return deserialize<_i5.NotFoundException>(data['data']);
+      return deserialize<_i7.NotFoundException>(data['data']);
     }
     if (dataClassName == 'ValidationException') {
-      return deserialize<_i6.ValidationException>(data['data']);
+      return deserialize<_i8.ValidationException>(data['data']);
+    }
+    if (dataClassName == 'CoinTransaction') {
+      return deserialize<_i9.CoinTransaction>(data['data']);
+    }
+    if (dataClassName == 'UserWallet') {
+      return deserialize<_i10.UserWallet>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -170,6 +458,12 @@ class Protocol extends _i1.SerializationManagerServer {
       if (table != null) {
         return table;
       }
+    }
+    switch (t) {
+      case _i9.CoinTransaction:
+        return _i9.CoinTransaction.t;
+      case _i10.UserWallet:
+        return _i10.UserWallet.t;
     }
     return null;
   }

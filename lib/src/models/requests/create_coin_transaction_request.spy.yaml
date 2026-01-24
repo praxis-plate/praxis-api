@@ -1,0 +1,10 @@
+class: CreateCoinTransactionRequest
+fields:
+  transactionKey: String
+  amount: int
+  currency: String?
+  type: String
+  relatedEntityId: String?
+  reversalOfTransactionId: int?
+  reason: String?
+  metadata: String?
