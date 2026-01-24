@@ -1,13 +1,14 @@
 import 'dart:io';
 
+import 'package:praxis_server/src/services/wallet/wallet.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
 import 'package:praxis_server/src/generated/endpoints.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/services/email_idp_notification_service.dart';
-import 'package:praxis_server/src/services/user_seed_service.dart';
+import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
+import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
 import 'package:praxis_server/src/web/routes/app_config_route.dart';
 import 'package:praxis_server/src/web/routes/root.dart';
 
@@ -16,11 +17,23 @@ void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
   const emailIdpNotifications = EmailIdpNotificationService();
+  final walletService = WalletService();
+
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:
         emailIdpNotifications.sendRegistrationCode,
     sendPasswordResetVerificationCode:
         emailIdpNotifications.sendPasswordResetCode,
+    onAfterAccountCreated:
+        (
+          session, {
+          required authUserId,
+          required email,
+          required emailAccountId,
+          required transaction,
+        }) {
+          walletService.initializeBalance(session);
+        },
   );
 
   // Initialize authentication services for the server.
