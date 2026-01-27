@@ -1,9 +1,8 @@
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
+import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 
-extension CreateCoinTransactionRequestValidation
-    on CreateCoinTransactionRequest {
+extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
   void validateForBuy() {
     _validateBase();
     if (normalizedType != CoinTransactionType.buy) {
@@ -42,7 +41,7 @@ extension CreateCoinTransactionRequestValidation
   int get normalizedAmount => amount.abs();
 
   String get normalizedCurrency =>
-      (currency ?? CoinTransactionStatus.defaultCurrency).trim().toUpperCase();
+      (currency ?? WalletConstants.defaultCurrency).trim().toUpperCase();
 
   String get normalizedTransactionKey => transactionKey.trim();
 

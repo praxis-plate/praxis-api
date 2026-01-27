@@ -8,8 +8,6 @@ enum CoinTransactionStatus {
 
   final String value;
 
-  static const String defaultCurrency = 'COIN';
-
   static CoinTransactionStatus? fromString(String value) {
     for (final status in CoinTransactionStatus.values) {
       if (status.value == value) {
