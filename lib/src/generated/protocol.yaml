@@ -10,6 +10,8 @@ health:
   - ping:
 jwtRefresh:
   - refreshAccessToken:
+userStatistics:
+  - get:
 wallet:
   - getBalance:
   - topUp:

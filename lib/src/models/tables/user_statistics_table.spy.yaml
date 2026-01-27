@@ -1,0 +1,13 @@
+class: UserStatistics
+serverOnly: true
+table: user_statistics
+fields:
+  authUserId: UuidValue
+  currentStreak: int
+  maxStreak: int
+  experiencePoints: int
+  lastActiveDate: DateTime
+indexes:
+  user_statistics_auth_user_id_unique:
+    fields: authUserId
+    unique: true

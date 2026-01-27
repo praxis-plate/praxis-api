@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
+import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
 import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
+import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 import 'package:praxis_server/src/web/routes/app_config_route.dart';
 import 'package:praxis_server/src/web/routes/root.dart';
@@ -22,6 +24,9 @@ void run(List<String> args) async {
     coinTransactionsDataSource: CoinTransactionsDataSource(),
     walletDataSource: WalletDataSource(),
   );
+  final userStatisticsService = UserStatisticsService(
+    dataSource: UserStatisticsDataSource(),
+  );
 
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:
@@ -37,6 +42,11 @@ void run(List<String> args) async {
           required transaction,
         }) async {
           await walletService.initializeBalance(session);
+          await userStatisticsService.ensureStatistics(
+            session,
+            authUserId: authUserId,
+            transaction: transaction,
+          );
         },
   );
 

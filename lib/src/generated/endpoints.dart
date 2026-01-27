@@ -14,13 +14,14 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/email_idp_endpoint.dart' as _i2;
 import '../endpoints/health_endpoint.dart' as _i3;
 import '../endpoints/jwt_refresh_endpoint.dart' as _i4;
-import '../endpoints/wallet_endpoint.dart' as _i5;
+import '../endpoints/user_statistics_endpoint.dart' as _i5;
+import '../endpoints/wallet_endpoint.dart' as _i6;
 import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
-    as _i6;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i7;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _i8;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -44,7 +45,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'jwtRefresh',
           null,
         ),
-      'wallet': _i5.WalletEndpoint()
+      'userStatistics': _i5.UserStatisticsEndpoint()
+        ..initialize(
+          server,
+          'userStatistics',
+          null,
+        ),
+      'wallet': _i6.WalletEndpoint()
         ..initialize(
           server,
           'wallet',
@@ -261,6 +268,23 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['userStatistics'] = _i1.EndpointConnector(
+      name: 'userStatistics',
+      endpoint: endpoints['userStatistics']!,
+      methodConnectors: {
+        'get': _i1.MethodConnector(
+          name: 'get',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['userStatistics'] as _i5.UserStatisticsEndpoint)
+                      .get(session),
+        ),
+      },
+    );
     connectors['wallet'] = _i1.EndpointConnector(
       name: 'wallet',
       endpoint: endpoints['wallet']!,
@@ -272,7 +296,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i5.WalletEndpoint).getBalance(
+              ) async => (endpoints['wallet'] as _i6.WalletEndpoint).getBalance(
                 session,
               ),
         ),
@@ -281,7 +305,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i6.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i7.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -289,7 +313,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i5.WalletEndpoint).topUp(
+              ) async => (endpoints['wallet'] as _i6.WalletEndpoint).topUp(
                 session,
                 params['request'],
               ),
@@ -299,7 +323,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i6.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i7.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -307,7 +331,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i5.WalletEndpoint).buy(
+              ) async => (endpoints['wallet'] as _i6.WalletEndpoint).buy(
                 session,
                 params['request'],
               ),
@@ -330,7 +354,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i5.WalletEndpoint).getHistory(
+              ) async => (endpoints['wallet'] as _i6.WalletEndpoint).getHistory(
                 session,
                 limit: params['limit'],
                 offset: params['offset'],
@@ -338,9 +362,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i7.Endpoints()
+    modules['serverpod_auth_idp'] = _i8.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i8.Endpoints()
+    modules['serverpod_auth_core'] = _i9.Endpoints()
       ..initializeEndpoints(server);
   }
 }
