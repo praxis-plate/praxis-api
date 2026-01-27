@@ -1,3 +1,6 @@
+ai:
+  - generateHint:
+  - generateExplanation:
 emailIdp:
   - login:
   - startRegistration:

@@ -14,16 +14,21 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i4;
-import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
+import 'package:praxis_server/src/generated/responses/ai_response.dart' as _i4;
+import 'package:praxis_server/src/generated/requests/generate_hint_request.dart'
     as _i5;
-import 'package:praxis_server/src/generated/tables/user_wallet_table.dart'
+import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart'
     as _i6;
-import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i7;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i8;
+import 'package:praxis_server/src/generated/tables/user_wallet_table.dart'
+    as _i9;
+import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+    as _i10;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i11;
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -131,6 +136,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _AiEndpoint ai;
+
   late final _EmailIdpEndpoint emailIdp;
 
   late final _HealthEndpoint health;
@@ -149,6 +156,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    ai = _AiEndpoint(
+      endpoints,
+      serializationManager,
+    );
     emailIdp = _EmailIdpEndpoint(
       endpoints,
       serializationManager,
@@ -172,6 +183,79 @@ class _InternalTestEndpoints extends TestEndpoints
   }
 }
 
+class _AiEndpoint {
+  _AiEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.AiResponse> generateHint(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i5.GenerateHintRequest request,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ai',
+            method: 'generateHint',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ai',
+          methodName: 'generateHint',
+          parameters: _i1.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i4.AiResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.AiResponse> generateExplanation(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.GenerateExplanationRequest request,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ai',
+            method: 'generateExplanation',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ai',
+          methodName: 'generateExplanation',
+          parameters: _i1.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i4.AiResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _EmailIdpEndpoint {
   _EmailIdpEndpoint(
     this._endpointDispatch,
@@ -182,7 +266,7 @@ class _EmailIdpEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i4.AuthSuccess> login(
+  _i3.Future<_i7.AuthSuccess> login(
     _i1.TestSessionBuilder sessionBuilder, {
     required String email,
     required String password,
@@ -209,7 +293,7 @@ class _EmailIdpEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i4.AuthSuccess>);
+                as _i3.Future<_i7.AuthSuccess>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -283,7 +367,7 @@ class _EmailIdpEndpoint {
     });
   }
 
-  _i3.Future<_i4.AuthSuccess> finishRegistration(
+  _i3.Future<_i7.AuthSuccess> finishRegistration(
     _i1.TestSessionBuilder sessionBuilder, {
     required String registrationToken,
     required String password,
@@ -310,7 +394,7 @@ class _EmailIdpEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i4.AuthSuccess>);
+                as _i3.Future<_i7.AuthSuccess>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -469,7 +553,7 @@ class _JwtRefreshEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i4.AuthSuccess> refreshAccessToken(
+  _i3.Future<_i7.AuthSuccess> refreshAccessToken(
     _i1.TestSessionBuilder sessionBuilder, {
     required String refreshToken,
   }) async {
@@ -492,7 +576,7 @@ class _JwtRefreshEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i4.AuthSuccess>);
+                as _i3.Future<_i7.AuthSuccess>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -511,7 +595,7 @@ class _UserStatisticsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i5.UserStatisticsDto?> get(
+  _i3.Future<_i8.UserStatisticsDto> get(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -533,7 +617,7 @@ class _UserStatisticsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i5.UserStatisticsDto?>);
+                as _i3.Future<_i8.UserStatisticsDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -552,7 +636,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i6.UserWallet> getBalance(
+  _i3.Future<_i9.UserWallet> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -574,7 +658,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i6.UserWallet>);
+                as _i3.Future<_i9.UserWallet>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -582,9 +666,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i7.CoinTransactionDto> topUp(
+  _i3.Future<_i10.CoinTransactionDto> topUp(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.CreateCoinTransactionRequest request,
+    _i11.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -605,7 +689,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i7.CoinTransactionDto>);
+                as _i3.Future<_i10.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -613,9 +697,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i7.CoinTransactionDto> buy(
+  _i3.Future<_i10.CoinTransactionDto> buy(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.CreateCoinTransactionRequest request,
+    _i11.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -636,7 +720,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i7.CoinTransactionDto>);
+                as _i3.Future<_i10.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -644,7 +728,7 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<List<_i7.CoinTransactionDto>> getHistory(
+  _i3.Future<List<_i10.CoinTransactionDto>> getHistory(
     _i1.TestSessionBuilder sessionBuilder, {
     int? limit,
     int? offset,
@@ -671,7 +755,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i7.CoinTransactionDto>>);
+                as _i3.Future<List<_i10.CoinTransactionDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

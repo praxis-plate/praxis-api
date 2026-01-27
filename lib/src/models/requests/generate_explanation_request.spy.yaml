@@ -1,0 +1,8 @@
+class: GenerateExplanationRequest
+fields:
+  question: String
+  userAnswer: String
+  correctAnswer: String
+  language: String?
+  topic: String
+  compilationError: String?
