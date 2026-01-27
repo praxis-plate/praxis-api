@@ -1,6 +1,3 @@
-coinTransaction:
-  - buy:
-  - getHistory:
 emailIdp:
   - login:
   - startRegistration:
@@ -13,3 +10,8 @@ health:
   - ping:
 jwtRefresh:
   - refreshAccessToken:
+wallet:
+  - getBalance:
+  - topUp:
+  - buy:
+  - getHistory:

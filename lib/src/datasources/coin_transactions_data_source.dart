@@ -1,6 +1,5 @@
-import 'package:serverpod/serverpod.dart';
-
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:serverpod/serverpod.dart';
 
 class CoinTransactionsDataSource {
   const CoinTransactionsDataSource();
@@ -43,13 +42,17 @@ class CoinTransactionsDataSource {
 
   Future<List<CoinTransaction>> listByAuthUserId(
     Session session,
-    UuidValue authUserId,
-  ) {
+    UuidValue authUserId, {
+    int? limit,
+    int? offset,
+  }) {
     return CoinTransaction.db.find(
       session,
       where: (t) => t.authUserId.equals(authUserId),
       orderBy: (t) => t.createdAt,
       orderDescending: true,
+      limit: limit,
+      offset: offset,
     );
   }
 
