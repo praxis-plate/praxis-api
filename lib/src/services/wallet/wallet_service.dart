@@ -1,13 +1,12 @@
-import 'package:serverpod/serverpod.dart';
-
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_constants.dart';
+import 'package:praxis_server/src/services/wallet/entities/entities.dart';
+import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
+import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
 import 'package:praxis_server/src/validation/create_coin_transaction_request_validation.dart';
-
-import 'package:praxis_server/src/services/wallet/entities/entities.dart';
+import 'package:serverpod/serverpod.dart';
 
 class WalletService {
   final _coinTransactionsDataSource = CoinTransactionsDataSource();
@@ -22,7 +21,7 @@ class WalletService {
     await _ensureWallet(
       session,
       authUserId: authUserId,
-      currency: defaultCoinCurrency,
+      currency: CoinTransactionStatus.defaultCurrency,
     );
   }
 
@@ -37,7 +36,7 @@ class WalletService {
     return _applyLedgerEntry(
       session,
       authUserId: authUserId,
-      type: CoinTransactionTypes.topUp,
+      type: CoinTransactionType.topUp.value,
       amount: request.normalizedAmount,
       currency: request.normalizedCurrency,
       transactionKey: request.normalizedTransactionKey,
@@ -59,7 +58,7 @@ class WalletService {
     return _applyLedgerEntry(
       session,
       authUserId: authUserId,
-      type: CoinTransactionTypes.buy,
+      type: CoinTransactionType.buy.value,
       amount: request.normalizedAmount,
       currency: request.normalizedCurrency,
       transactionKey: request.normalizedTransactionKey,
@@ -149,8 +148,8 @@ class WalletService {
         reversalOfTransactionId: reversalOfTransactionId,
       );
 
-      final normalizedType = normalizeCoinTransactionType(type);
-      if (!CoinTransactionTypes.values.contains(normalizedType)) {
+      final normalizedType = CoinTransactionType.fromString(type);
+      if (normalizedType == null) {
         throw ValidationException(
           message: 'Unsupported transaction type',
           field: 'type',
@@ -199,8 +198,8 @@ class WalletService {
         session,
         authUserId: authUserId,
         transactionKey: transactionKey,
-        type: normalizedType,
-        status: CoinTransactionStatuses.posted,
+        type: normalizedType.value,
+        status: CoinTransactionStatus.posted.value,
         amount: walletUpdate.amountForLedger,
         currency: currency,
         relatedEntityId: relatedEntityId,
@@ -258,7 +257,7 @@ class WalletService {
     Session session, {
     required Transaction transaction,
     required UserWallet wallet,
-    required String type,
+    required CoinTransactionType type,
     required int amount,
     required String currency,
     required CoinTransaction? reversalTarget,
@@ -271,14 +270,14 @@ class WalletService {
     }
 
     var ledgerAmount = amount;
-    if (type != CoinTransactionTypes.adjustment && amount <= 0) {
+    if (type != CoinTransactionType.adjustment && amount <= 0) {
       throw ValidationException(
         message: 'Amount is required and must be positive',
         field: 'amount',
       );
     }
 
-    if (type == CoinTransactionTypes.reversal) {
+    if (type == CoinTransactionType.reversal) {
       if (reversalTarget == null) {
         throw ValidationException(
           message: 'Reversal target is required',
@@ -297,7 +296,7 @@ class WalletService {
           field: 'currency',
         );
       }
-      if (reversalTarget.status != CoinTransactionStatuses.posted) {
+      if (reversalTarget.status != CoinTransactionStatus.posted.value) {
         throw ValidationException(
           message: 'Reversal target must be posted',
           field: 'reversalOfTransactionId',
@@ -331,7 +330,7 @@ class WalletService {
       held: held,
     );
 
-    if (type == CoinTransactionTypes.adjustment) {
+    if (type == CoinTransactionType.adjustment) {
       ledgerAmount = delta.balanceDelta;
     }
 
@@ -347,46 +346,46 @@ class WalletService {
     Session session, {
     required Transaction transaction,
     required UserWallet wallet,
-    required String type,
+    required CoinTransactionType type,
     required int amount,
     required CoinTransaction? reversalTarget,
   }) async {
     switch (type) {
-      case CoinTransactionTypes.topUp:
+      case CoinTransactionType.topUp:
         return const WalletDelta(
           balanceDelta: 0,
           availableDelta: 0,
           heldDelta: 0,
         ).add(balance: amount, available: amount);
-      case CoinTransactionTypes.buy:
+      case CoinTransactionType.buy:
         _ensureAvailable(wallet.available, amount);
         return const WalletDelta(
           balanceDelta: 0,
           availableDelta: 0,
           heldDelta: 0,
         ).add(balance: -amount, available: -amount);
-      case CoinTransactionTypes.hold:
+      case CoinTransactionType.hold:
         _ensureAvailable(wallet.available, amount);
         return const WalletDelta(
           balanceDelta: 0,
           availableDelta: 0,
           heldDelta: 0,
         ).add(available: -amount, held: amount);
-      case CoinTransactionTypes.capture:
+      case CoinTransactionType.capture:
         _ensureHeld(wallet.held, amount);
         return const WalletDelta(
           balanceDelta: 0,
           availableDelta: 0,
           heldDelta: 0,
         ).add(balance: -amount, held: -amount);
-      case CoinTransactionTypes.release:
+      case CoinTransactionType.release:
         _ensureHeld(wallet.held, amount);
         return const WalletDelta(
           balanceDelta: 0,
           availableDelta: 0,
           heldDelta: 0,
         ).add(available: amount, held: -amount);
-      case CoinTransactionTypes.refund:
+      case CoinTransactionType.refund:
         await _validateRefund(
           session,
           transaction: transaction,
@@ -399,25 +398,20 @@ class WalletService {
           availableDelta: 0,
           heldDelta: 0,
         ).add(balance: amount, available: amount);
-      case CoinTransactionTypes.reversal:
+      case CoinTransactionType.reversal:
         final targetDelta = _deltaFromTarget(reversalTarget);
         return WalletDelta(
           balanceDelta: -targetDelta.balanceDelta,
           availableDelta: -targetDelta.availableDelta,
           heldDelta: -targetDelta.heldDelta,
         );
-      case CoinTransactionTypes.adjustment:
+      case CoinTransactionType.adjustment:
         return WalletDelta(
           balanceDelta: amount,
           availableDelta: amount,
           heldDelta: 0,
         );
     }
-
-    throw ValidationException(
-      message: 'Unsupported transaction type',
-      field: 'type',
-    );
   }
 
   WalletDelta _deltaFromTarget(CoinTransaction? target) {
@@ -428,60 +422,63 @@ class WalletService {
       );
     }
 
-    switch (target.type) {
-      case CoinTransactionTypes.topUp:
+    final targetType = CoinTransactionType.fromString(target.type);
+    if (targetType == null) {
+      throw ValidationException(
+        message: 'Unsupported reversal target type',
+        field: 'reversalOfTransactionId',
+      );
+    }
+
+    switch (targetType) {
+      case CoinTransactionType.topUp:
         return WalletDelta(
           balanceDelta: target.amount,
           availableDelta: target.amount,
           heldDelta: 0,
         );
-      case CoinTransactionTypes.buy:
+      case CoinTransactionType.buy:
         return WalletDelta(
           balanceDelta: -target.amount,
           availableDelta: -target.amount,
           heldDelta: 0,
         );
-      case CoinTransactionTypes.hold:
+      case CoinTransactionType.hold:
         return WalletDelta(
           balanceDelta: 0,
           availableDelta: -target.amount,
           heldDelta: target.amount,
         );
-      case CoinTransactionTypes.capture:
+      case CoinTransactionType.capture:
         return WalletDelta(
           balanceDelta: -target.amount,
           availableDelta: 0,
           heldDelta: -target.amount,
         );
-      case CoinTransactionTypes.release:
+      case CoinTransactionType.release:
         return WalletDelta(
           balanceDelta: 0,
           availableDelta: target.amount,
           heldDelta: -target.amount,
         );
-      case CoinTransactionTypes.refund:
+      case CoinTransactionType.refund:
         return WalletDelta(
           balanceDelta: target.amount,
           availableDelta: target.amount,
           heldDelta: 0,
         );
-      case CoinTransactionTypes.adjustment:
+      case CoinTransactionType.adjustment:
         return WalletDelta(
           balanceDelta: target.amount,
           availableDelta: target.amount,
           heldDelta: 0,
         );
-      case CoinTransactionTypes.reversal:
+      case CoinTransactionType.reversal:
         throw ValidationException(
           message: 'Reversal of reversal is not allowed',
           field: 'reversalOfTransactionId',
         );
     }
-
-    throw ValidationException(
-      message: 'Unsupported reversal target type',
-      field: 'reversalOfTransactionId',
-    );
   }
 
   Future<void> _validateRefund(
@@ -512,8 +509,9 @@ class WalletService {
       );
     }
 
-    if (reversalTarget.type != CoinTransactionTypes.buy &&
-        reversalTarget.type != CoinTransactionTypes.capture) {
+    final targetType = CoinTransactionType.fromString(reversalTarget.type);
+    if (targetType != CoinTransactionType.buy &&
+        targetType != CoinTransactionType.capture) {
       throw ValidationException(
         message: 'Refund allowed only for buy or capture',
         field: 'reversalOfTransactionId',
@@ -524,7 +522,7 @@ class WalletService {
         .listByReversalIdAndType(
           session,
           reversalOfTransactionId: reversalTarget.id!,
-          type: CoinTransactionTypes.refund,
+          type: CoinTransactionType.refund.value,
           transaction: transaction,
         );
     final refundedTotal = previousRefunds.fold<int>(

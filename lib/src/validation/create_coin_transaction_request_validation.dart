@@ -1,13 +1,14 @@
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_constants.dart';
+import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
+import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 
 extension CreateCoinTransactionRequestValidation
     on CreateCoinTransactionRequest {
   void validateForBuy() {
     _validateBase();
-    if (normalizedType != CoinTransactionTypes.buy) {
+    if (normalizedType != CoinTransactionType.buy) {
       throw ValidationException(
-        message: 'Type must be "${CoinTransactionTypes.buy}"',
+        message: 'Type must be "${CoinTransactionType.buy.value}"',
         field: 'type',
       );
     }
@@ -15,9 +16,9 @@ extension CreateCoinTransactionRequestValidation
 
   void validateForTopUp() {
     _validateBase();
-    if (normalizedType != CoinTransactionTypes.topUp) {
+    if (normalizedType != CoinTransactionType.topUp) {
       throw ValidationException(
-        message: 'Type must be "${CoinTransactionTypes.topUp}"',
+        message: 'Type must be "${CoinTransactionType.topUp.value}"',
         field: 'type',
       );
     }
@@ -41,9 +42,10 @@ extension CreateCoinTransactionRequestValidation
   int get normalizedAmount => amount.abs();
 
   String get normalizedCurrency =>
-      (currency ?? defaultCoinCurrency).trim().toUpperCase();
+      (currency ?? CoinTransactionStatus.defaultCurrency).trim().toUpperCase();
 
   String get normalizedTransactionKey => transactionKey.trim();
 
-  String get normalizedType => normalizeCoinTransactionType(type);
+  CoinTransactionType? get normalizedType =>
+      CoinTransactionType.fromString(type);
 }
