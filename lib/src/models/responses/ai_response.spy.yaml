@@ -1,0 +1,5 @@
+class: AiResponse
+fields:
+  content: String
+  success: bool
+  error: String?

@@ -1,0 +1,6 @@
+class: GenerateHintRequest
+fields:
+  question: String
+  codeContext: String
+  language: String
+  topic: String
