@@ -10,6 +10,8 @@ import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/app_services.dart';
+import 'package:praxis_server/src/app_services_binding.dart';
 import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_service.dart';
 import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
@@ -33,6 +35,10 @@ void run(List<String> args) async {
   final userStatisticsService = UserStatisticsService(
     dataSource: UserStatisticsDataSource(),
   );
+  final geminiApiKey = pod.getPassword('geminiApiKey');
+  if (geminiApiKey != null) {
+    pod.server.services = AppServices.build(geminiApiKey: geminiApiKey);
+  }
 
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:

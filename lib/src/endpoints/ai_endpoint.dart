@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart';
 import 'package:praxis_server/src/generated/requests/generate_hint_request.dart';
 import 'package:praxis_server/src/generated/responses/ai_response.dart';
-import 'package:praxis_server/src/services/ai/ai_service.dart';
+import 'package:praxis_server/src/app_services_binding.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AiEndpoint extends Endpoint {
@@ -13,8 +12,7 @@ class AiEndpoint extends Endpoint {
     Session session,
     GenerateHintRequest request,
   ) async {
-    final geminiApiKey = session.passwords['geminiApiKey'];
-    if (geminiApiKey == null) {
+    if (!_hasAiService(session)) {
       return AiResponse(
         content: '',
         success: false,
@@ -22,21 +20,14 @@ class AiEndpoint extends Endpoint {
       );
     }
 
-    // Create AI service with the actual API key
-    final aiService = AiService(
-      dio: Dio(),
-      apiKey: geminiApiKey,
-    );
-
-    return await aiService.generateHint(session, request);
+    return session.server.services.aiService.generateHint(session, request);
   }
 
   Future<AiResponse> generateExplanation(
     Session session,
     GenerateExplanationRequest request,
   ) async {
-    final geminiApiKey = session.passwords['geminiApiKey'];
-    if (geminiApiKey == null) {
+    if (!_hasAiService(session)) {
       return AiResponse(
         content: '',
         success: false,
@@ -44,12 +35,18 @@ class AiEndpoint extends Endpoint {
       );
     }
 
-    // Create AI service with the actual API key
-    final aiService = AiService(
-      dio: Dio(),
-      apiKey: geminiApiKey,
+    return session.server.services.aiService.generateExplanation(
+      session,
+      request,
     );
+  }
 
-    return await aiService.generateExplanation(session, request);
+  bool _hasAiService(Session session) {
+    try {
+      session.server.services;
+      return true;
+    } on StateError {
+      return false;
+    }
   }
 }
