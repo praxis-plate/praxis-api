@@ -12,14 +12,6 @@ class AiEndpoint extends Endpoint {
     Session session,
     GenerateHintRequest request,
   ) async {
-    if (!_hasAiService(session)) {
-      return AiResponse(
-        content: '',
-        success: false,
-        error: 'Gemini API key not found in server configuration',
-      );
-    }
-
     return session.server.services.aiService.generateHint(session, request);
   }
 
@@ -27,26 +19,9 @@ class AiEndpoint extends Endpoint {
     Session session,
     GenerateExplanationRequest request,
   ) async {
-    if (!_hasAiService(session)) {
-      return AiResponse(
-        content: '',
-        success: false,
-        error: 'Gemini API key not found in server configuration',
-      );
-    }
-
     return session.server.services.aiService.generateExplanation(
       session,
       request,
     );
-  }
-
-  bool _hasAiService(Session session) {
-    try {
-      session.server.services;
-      return true;
-    } on StateError {
-      return false;
-    }
   }
 }

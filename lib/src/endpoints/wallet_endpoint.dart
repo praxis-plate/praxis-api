@@ -1,17 +1,10 @@
-import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
-import 'package:praxis_server/src/datasources/wallet_data_source.dart';
+import 'package:praxis_server/src/app_services_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Wallet endpoint for managing user coin balances and transactions
 class WalletEndpoint extends Endpoint {
-  final walletService = WalletService(
-    coinTransactionsDataSource: CoinTransactionsDataSource(),
-    walletDataSource: WalletDataSource(),
-  );
-
   /// Gets the current wallet balance for authenticated user
   ///
   /// Returns wallet information including:
@@ -23,7 +16,7 @@ class WalletEndpoint extends Endpoint {
   /// Throws [NotAuthorizedException] if user is not authenticated
   Future<UserWallet> getBalance(Session session) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return walletService.getBalance(
+    return session.server.services.walletService.getBalance(
       session,
       authUserId: authUserId,
     );
@@ -53,7 +46,7 @@ class WalletEndpoint extends Endpoint {
     CreateCoinTransactionRequest request,
   ) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return walletService.topUp(
+    return session.server.services.walletService.topUp(
       session,
       request,
       authUserId: authUserId,
@@ -80,7 +73,7 @@ class WalletEndpoint extends Endpoint {
     CreateCoinTransactionRequest request,
   ) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return walletService.buy(
+    return session.server.services.walletService.buy(
       session,
       request,
       authUserId: authUserId,
@@ -108,7 +101,7 @@ class WalletEndpoint extends Endpoint {
     int? offset,
   }) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return walletService.getHistory(
+    return session.server.services.walletService.getHistory(
       session,
       authUserId: authUserId,
       limit: limit,

@@ -1,27 +1,116 @@
 import 'package:dio/dio.dart';
+import 'package:praxis_server/src/datasources/achievement_data_source.dart';
+import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
+import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/lesson_data_source.dart';
+import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
+import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/task_data_source.dart';
+import 'package:praxis_server/src/datasources/task_option_data_source.dart';
+import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
+import 'package:praxis_server/src/datasources/user_achievement_data_source.dart';
+import 'package:praxis_server/src/datasources/user_course_data_source.dart';
+import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
+import 'package:praxis_server/src/datasources/wallet_data_source.dart';
+import 'package:praxis_server/src/services/achievement/achievement_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
+import 'package:praxis_server/src/services/course/course_service.dart';
+import 'package:praxis_server/src/services/lesson/lesson_service.dart';
+import 'package:praxis_server/src/services/module/module_service.dart';
+import 'package:praxis_server/src/services/task/task_service.dart';
+import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
+import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 
 class AppServices {
+  final AchievementService achievementService;
   final AiService aiService;
+  final CourseService courseService;
+  final LessonService lessonService;
+  final ModuleService moduleService;
+  final TaskService taskService;
+  final UserStatisticsService userStatisticsService;
+  final WalletService walletService;
 
   AppServices({
+    required this.achievementService,
     required this.aiService,
+    required this.courseService,
+    required this.lessonService,
+    required this.moduleService,
+    required this.taskService,
+    required this.userStatisticsService,
+    required this.walletService,
   });
 
   factory AppServices.build({required String geminiApiKey}) {
-    final dio = Dio(
-      BaseOptions(
-        connectTimeout: const Duration(seconds: 5),
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 15),
+    const achievementDataSource = AchievementDataSource();
+    const coinTransactionsDataSource = CoinTransactionsDataSource();
+    const courseDataSource = CourseDataSource();
+    const lessonDataSource = LessonDataSource();
+    const lessonProgressDataSource = LessonProgressDataSource();
+    const moduleDataSource = ModuleDataSource();
+    const taskDataSource = TaskDataSource();
+    const taskOptionDataSource = TaskOptionDataSource();
+    const taskTestCaseDataSource = TaskTestCaseDataSource();
+    const userAchievementDataSource = UserAchievementDataSource();
+    const userCourseDataSource = UserCourseDataSource();
+    const userStatisticsDataSource = UserStatisticsDataSource();
+    const walletDataSource = WalletDataSource();
+
+    final taskService = TaskService(
+      taskDataSource: taskDataSource,
+      taskOptionDataSource: taskOptionDataSource,
+      taskTestCaseDataSource: taskTestCaseDataSource,
+    );
+    final userStatisticsService = UserStatisticsService(
+      dataSource: userStatisticsDataSource,
+    );
+    final walletService = WalletService(
+      coinTransactionsDataSource: coinTransactionsDataSource,
+      walletDataSource: walletDataSource,
+    );
+    final achievementService = AchievementService(
+      achievementDataSource: achievementDataSource,
+      userAchievementDataSource: userAchievementDataSource,
+    );
+    final lessonService = LessonService(
+      lessonDataSource: lessonDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonProgressDataSource: lessonProgressDataSource,
+      userStatisticsService: userStatisticsService,
+      walletService: walletService,
+      achievementService: achievementService,
+    );
+    final courseService = CourseService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+      userCourseDataSource: userCourseDataSource,
+      taskService: taskService,
+    );
+    final moduleService = ModuleService(moduleDataSource: moduleDataSource);
+
+    final aiService = AiService(
+      dio: Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 5),
+          sendTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
       ),
+      apiKey: geminiApiKey,
     );
 
     return AppServices(
-      aiService: AiService(
-        dio: dio,
-        apiKey: geminiApiKey,
-      ),
+      achievementService: achievementService,
+      aiService: aiService,
+      courseService: courseService,
+      lessonService: lessonService,
+      moduleService: moduleService,
+      taskService: taskService,
+      userStatisticsService: userStatisticsService,
+      walletService: walletService,
     );
   }
 }

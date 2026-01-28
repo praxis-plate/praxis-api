@@ -1,8 +1,5 @@
 import 'dart:io';
 
-import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
-import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
-import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
@@ -15,8 +12,6 @@ import 'package:praxis_server/src/app_services_binding.dart';
 import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_service.dart';
 import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
-import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
-import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 import 'package:praxis_server/src/web/routes/app_config_route.dart';
 import 'package:praxis_server/src/web/routes/root.dart';
 import 'package:serverpod/serverpod.dart';
@@ -28,17 +23,11 @@ void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
   const emailIdpNotifications = EmailIdpNotificationService();
-  final walletService = WalletService(
-    coinTransactionsDataSource: CoinTransactionsDataSource(),
-    walletDataSource: WalletDataSource(),
-  );
-  final userStatisticsService = UserStatisticsService(
-    dataSource: UserStatisticsDataSource(),
-  );
   final geminiApiKey = pod.getPassword('geminiApiKey');
-  if (geminiApiKey != null) {
-    pod.server.services = AppServices.build(geminiApiKey: geminiApiKey);
+  if (geminiApiKey == null) {
+    throw StateError('Missing geminiApiKey in server configuration.');
   }
+  pod.server.services = AppServices.build(geminiApiKey: geminiApiKey);
 
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:
@@ -53,11 +42,11 @@ void run(List<String> args) async {
           required emailAccountId,
           required transaction,
         }) async {
-          await walletService.initializeBalance(
+          await pod.server.services.walletService.initializeBalance(
             session,
             authUserId: authUserId,
           );
-          await userStatisticsService.ensureStatistics(
+          await pod.server.services.userStatisticsService.ensureStatistics(
             session,
             authUserId: authUserId,
             transaction: transaction,
