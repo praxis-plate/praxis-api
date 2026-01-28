@@ -13,6 +13,20 @@ class ModuleDataSource extends BaseDataSource {
     );
   }
 
+  Future<List<Module>> listByCourseIds(
+    Session session,
+    List<int> courseIds,
+  ) {
+    if (courseIds.isEmpty) {
+      return Future.value([]);
+    }
+    return Module.db.find(
+      session,
+      where: (t) => t.courseId.inSet(courseIds.toSet()),
+      orderBy: (t) => t.orderIndex,
+    );
+  }
+
   Future<Module?> findById(Session session, int id) {
     return Module.db.findById(session, id);
   }

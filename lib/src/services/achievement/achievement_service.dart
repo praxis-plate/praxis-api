@@ -16,7 +16,9 @@ class AchievementService {
 
   Future<List<AchievementDto>> getAll(Session session) async {
     final achievements = await _achievementDataSource.listAll(session);
-    return achievements.map((achievement) => achievement.toAchievementDto()).toList();
+    return achievements
+        .map((achievement) => achievement.toAchievementDto())
+        .toList();
   }
 
   Future<List<AchievementDto>> getUserAchievements(
@@ -28,12 +30,25 @@ class AchievementService {
       authUserId,
     );
 
+    if (userAchievements.isEmpty) {
+      return [];
+    }
+
+    final achievementIds = userAchievements
+        .map((userAchievement) => userAchievement.achievementId)
+        .toSet()
+        .toList();
+    final achievements = await _achievementDataSource.listByIds(
+      session,
+      achievementIds,
+    );
+    final achievementsById = <int, Achievement>{
+      for (final achievement in achievements) achievement.id!: achievement,
+    };
+
     final result = <AchievementDto>[];
     for (final userAchievement in userAchievements) {
-      final achievement = await _achievementDataSource.findById(
-        session,
-        userAchievement.achievementId,
-      );
+      final achievement = achievementsById[userAchievement.achievementId];
       if (achievement == null) {
         continue;
       }

@@ -23,6 +23,19 @@ class CourseDataSource extends BaseDataSource {
     return Course.db.findById(session, id);
   }
 
+  Future<List<Course>> listByIds(
+    Session session,
+    List<int> courseIds,
+  ) {
+    if (courseIds.isEmpty) {
+      return Future.value([]);
+    }
+    return Course.db.find(
+      session,
+      where: (t) => t.id.inSet(courseIds.toSet()),
+    );
+  }
+
   Future<Course> insert(
     Session session, {
     required String title,

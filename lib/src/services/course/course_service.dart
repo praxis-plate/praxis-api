@@ -4,6 +4,7 @@ import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/services/course/entities/course_content_counts.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
@@ -41,9 +42,17 @@ class CourseService {
       offset: offset,
     );
 
+    if (courses.isEmpty) {
+      return [];
+    }
+
+    final courseIds = courses.map((course) => course.id!).toList();
+    final contentCounts = await _countContentForCourses(session, courseIds);
+
     final result = <CourseDto>[];
     for (final course in courses) {
-      final counts = await _countContentForCourse(session, course.id!);
+      final counts =
+          contentCounts[course.id!] ?? const CourseContentCounts.empty();
       result.add(
         course.toCourseDto(
           totalLessons: counts.totalLessons,
@@ -67,7 +76,9 @@ class CourseService {
       session,
       moduleIds,
     );
-    final lessons = lessonEntities.map((lesson) => lesson.toLessonDto()).toList();
+    final lessons = lessonEntities
+        .map((lesson) => lesson.toLessonDto())
+        .toList();
     final lessonIds = lessonEntities.map((lesson) => lesson.id!).toList();
     final tasks = await _taskService.getTasksByLessonIds(session, lessonIds);
     final totalLessons = lessonEntities.length;
@@ -93,16 +104,27 @@ class CourseService {
       authUserId,
     );
 
+    if (enrollments.isEmpty) {
+      return [];
+    }
+
+    final courseIds = enrollments
+        .map((enrollment) => enrollment.courseId)
+        .toList();
+    final courses = await _courseDataSource.listByIds(session, courseIds);
+    final coursesById = <int, Course>{
+      for (final course in courses) course.id!: course,
+    };
+    final contentCounts = await _countContentForCourses(session, courseIds);
+
     final result = <CourseDto>[];
     for (final enrollment in enrollments) {
-      final course = await _courseDataSource.findById(
-        session,
-        enrollment.courseId,
-      );
+      final course = coursesById[enrollment.courseId];
       if (course == null) {
         continue;
       }
-      final counts = await _countContentForCourse(session, course.id!);
+      final counts =
+          contentCounts[course.id!] ?? const CourseContentCounts.empty();
       result.add(
         course.toCourseDto(
           totalLessons: counts.totalLessons,
@@ -235,39 +257,74 @@ class CourseService {
     );
   }
 
-  Future<_CourseContentCounts> _countContentForCourse(
+  Future<Map<int, CourseContentCounts>> _countContentForCourses(
     Session session,
-    int courseId,
+    List<int> courseIds,
   ) async {
-    final modules = await _moduleDataSource.listByCourseId(session, courseId);
+    if (courseIds.isEmpty) {
+      return {};
+    }
+
+    final totalLessonsByCourse = <int, int>{};
+    final totalTasksByCourse = <int, int>{};
+
+    final modules = await _moduleDataSource.listByCourseIds(
+      session,
+      courseIds,
+    );
     if (modules.isEmpty) {
-      return const _CourseContentCounts(totalLessons: 0, totalTasks: 0);
+      return _buildContentCounts(totalLessonsByCourse, totalTasksByCourse);
     }
 
     final moduleIds = modules.map((module) => module.id!).toList();
+    final moduleToCourseId = <int, int>{
+      for (final module in modules) module.id!: module.courseId,
+    };
+
     final lessonEntities = await _lessonDataSource.listByModuleIds(
       session,
       moduleIds,
     );
     if (lessonEntities.isEmpty) {
-      return const _CourseContentCounts(totalLessons: 0, totalTasks: 0);
+      return _buildContentCounts(totalLessonsByCourse, totalTasksByCourse);
     }
 
-    final lessonIds = lessonEntities.map((lesson) => lesson.id!).toList();
+    final lessonIds = <int>[];
+    final lessonToCourseId = <int, int>{};
+    for (final lesson in lessonEntities) {
+      final courseId = moduleToCourseId[lesson.moduleId];
+      if (courseId == null) {
+        continue;
+      }
+      totalLessonsByCourse[courseId] =
+          (totalLessonsByCourse[courseId] ?? 0) + 1;
+      lessonIds.add(lesson.id!);
+      lessonToCourseId[lesson.id!] = courseId;
+    }
+
     final tasks = await _taskDataSource.listByLessonIds(session, lessonIds);
-    return _CourseContentCounts(
-      totalLessons: lessonEntities.length,
-      totalTasks: tasks.length,
-    );
+    for (final task in tasks) {
+      final courseId = lessonToCourseId[task.lessonId];
+      if (courseId == null) {
+        continue;
+      }
+      totalTasksByCourse[courseId] = (totalTasksByCourse[courseId] ?? 0) + 1;
+    }
+
+    return _buildContentCounts(totalLessonsByCourse, totalTasksByCourse);
   }
-}
 
-class _CourseContentCounts {
-  final int totalLessons;
-  final int totalTasks;
-
-  const _CourseContentCounts({
-    required this.totalLessons,
-    required this.totalTasks,
-  });
+  Map<int, CourseContentCounts> _buildContentCounts(
+    Map<int, int> totalLessonsByCourse,
+    Map<int, int> totalTasksByCourse,
+  ) {
+    final result = <int, CourseContentCounts>{};
+    for (final courseId in totalLessonsByCourse.keys) {
+      result[courseId] = CourseContentCounts(
+        totalLessons: totalLessonsByCourse[courseId] ?? 0,
+        totalTasks: totalTasksByCourse[courseId] ?? 0,
+      );
+    }
+    return result;
+  }
 }
