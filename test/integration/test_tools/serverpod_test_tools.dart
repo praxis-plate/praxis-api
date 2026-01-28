@@ -35,7 +35,7 @@ import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i15;
 import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i16;
 import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i17;
-import 'package:praxis_server/src/generated/tables/user_wallet_table.dart'
+import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
     as _i18;
 import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
     as _i19;
@@ -1234,7 +1234,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i18.UserWallet> getBalance(
+  _i3.Future<_i18.WalletBalanceDto> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1256,7 +1256,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.UserWallet>);
+                as _i3.Future<_i18.WalletBalanceDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

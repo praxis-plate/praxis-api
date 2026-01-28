@@ -14,7 +14,7 @@ class WalletEndpoint extends Endpoint {
   /// - currency: Always 'COIN'
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
-  Future<UserWallet> getBalance(Session session) {
+  Future<WalletBalanceDto> getBalance(Session session) {
     final authUserId = AuthUtils.getAuthUserId(session);
     return session.server.useCases.getWalletBalanceUseCase.execute(
       session,

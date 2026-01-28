@@ -7,6 +7,7 @@ import 'package:praxis_server/src/services/wallet/wallet_transaction_processor.d
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
+import 'package:praxis_server/src/shared/mappers/wallet_balance_mapper.dart';
 import 'package:praxis_server/src/shared/transaction_runner.dart';
 import 'package:praxis_server/src/validation/wallet_transaction_request_validation.dart';
 import 'package:serverpod/serverpod.dart';
@@ -48,7 +49,7 @@ class WalletService {
     );
   }
 
-  Future<UserWallet> getBalance(
+  Future<WalletBalanceDto> getBalance(
     Session session, {
     required UuidValue authUserId,
   }) async {
@@ -58,7 +59,7 @@ class WalletService {
       currency: WalletConstants.defaultCurrency,
     );
 
-    return wallet;
+    return wallet.toWalletBalanceDto();
   }
 
   Future<CoinTransactionDto> topUp(

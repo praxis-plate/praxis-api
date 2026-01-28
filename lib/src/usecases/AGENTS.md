@@ -23,7 +23,8 @@ Use cases define application-level workflows that coordinate multiple services t
 
 ## Result contract (current)
 
-- Use cases return DTOs (including `List<DTO>`) as the public contract.
+- Use cases return DTOs (including `List<DTO>`) or primitive types (e.g., `bool`, `int`, `String`) as the public contract.
+- `Future<void>` is allowed for commands that do not return data.
 - Do not leak low-level exceptions or storage details as the public API.
 
 ## Wiring (DI)

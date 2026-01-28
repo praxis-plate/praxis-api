@@ -60,7 +60,7 @@ Validates wallet invariants, balance sufficiency, and transaction idempotency.
 
 ```dart
 // Get current wallet balance
-Future<UserWallet> getBalance(Session session, {required UuidValue authUserId})
+Future<WalletBalanceDto> getBalance(Session session, {required UuidValue authUserId})
 
 // ⚠️ Add coins to wallet (INTERNAL USE ONLY - no payment verification)
 Future<CoinTransactionDto> topUp(

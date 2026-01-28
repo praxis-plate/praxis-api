@@ -8,7 +8,7 @@ class GetWalletBalanceUseCase {
   GetWalletBalanceUseCase({required WalletService walletService})
     : _walletService = walletService;
 
-  Future<UserWallet> execute(
+  Future<WalletBalanceDto> execute(
     Session session, {
     required UuidValue authUserId,
   }) {
