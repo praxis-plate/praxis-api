@@ -1,8 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 
-class CourseDataSource extends BaseDataSource {
+class CourseDataSource {
   const CourseDataSource();
 
   Future<List<Course>> list(

@@ -1,8 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 
-class TaskDataSource extends BaseDataSource {
+class TaskDataSource {
   const TaskDataSource();
 
   Future<List<Task>> listByLessonId(Session session, int lessonId) {

@@ -1,9 +1,8 @@
 import 'package:serverpod/serverpod.dart';
 
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 
-class WalletDataSource extends BaseDataSource {
+class WalletDataSource {
   const WalletDataSource();
 
   Future<UserWallet?> findByAuthUserId(

@@ -1,8 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 
-class UserStatisticsDataSource extends BaseDataSource {
+class UserStatisticsDataSource {
   const UserStatisticsDataSource();
 
   Future<UserStatistics?> findByAuthUserId(

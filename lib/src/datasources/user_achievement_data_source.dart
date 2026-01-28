@@ -1,8 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 
-class UserAchievementDataSource extends BaseDataSource {
+class UserAchievementDataSource {
   const UserAchievementDataSource();
 
   Future<List<UserAchievement>> listByAuthUserId(

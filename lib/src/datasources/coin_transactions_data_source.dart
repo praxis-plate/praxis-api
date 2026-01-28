@@ -1,8 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:praxis_server/src/datasources/base_data_source.dart';
 
-class CoinTransactionsDataSource extends BaseDataSource {
+class CoinTransactionsDataSource {
   const CoinTransactionsDataSource();
 
   Future<CoinTransaction> create(
