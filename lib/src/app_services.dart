@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:praxis_server/src/datasources/achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
@@ -20,6 +23,7 @@ import 'package:praxis_server/src/services/module/module_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
+import 'package:serverpod/serverpod.dart';
 
 class AppServices {
   final AchievementService achievementService;
@@ -42,7 +46,12 @@ class AppServices {
     required this.walletService,
   });
 
-  factory AppServices.build({required String geminiApiKey}) {
+  factory AppServices.build(Serverpod pod) {
+    final geminiApiKey = pod.getPassword('geminiApiKey')!;
+    final proxyHost = pod.getPassword('proxyHost')!;
+    final proxyPort = int.parse(pod.getPassword('proxyPort')!);
+    final proxyUser = pod.getPassword('proxyUser')!;
+    final proxyPass = pod.getPassword('proxyPass')!;
     const achievementDataSource = AchievementDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
@@ -91,14 +100,28 @@ class AppServices {
     );
     final moduleService = ModuleService(moduleDataSource: moduleDataSource);
 
-    final aiService = AiService(
-      dio: Dio(
-        BaseOptions(
-          connectTimeout: const Duration(seconds: 5),
-          sendTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 15),
-        ),
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 5),
+        sendTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 15),
       ),
+    );
+
+    dio.httpClientAdapter = IOHttpClientAdapter(
+      createHttpClient: () {
+        final client = HttpClient();
+        final credentials = '$proxyUser:$proxyPass@';
+        client.findProxy = (uri) {
+          return 'PROXY $credentials$proxyHost:$proxyPort';
+        };
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      },
+    );
+
+    final aiService = AiService(
+      dio: dio,
       apiKey: geminiApiKey,
     );
 

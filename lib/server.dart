@@ -23,11 +23,7 @@ void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
   const emailIdpNotifications = EmailIdpNotificationService();
-  final geminiApiKey = pod.getPassword('geminiApiKey');
-  if (geminiApiKey == null) {
-    throw StateError('Missing geminiApiKey in server configuration.');
-  }
-  pod.server.services = AppServices.build(geminiApiKey: geminiApiKey);
+  pod.server.services = AppServices.build(pod);
 
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:
