@@ -1,0 +1,14 @@
+class: LessonCompletionResultDto
+fields:
+  lessonId: int
+  totalXpEarned: int
+  bonusXp: int
+  totalXpWithBonus: int
+  timeSpentSeconds: int
+  totalTasks: int
+  correctTasks: int
+  accuracyPercentage: double
+  coinsAwarded: int
+  experiencePoints: int
+  currentStreak: int
+  unlockedAchievements: List<AchievementDto>

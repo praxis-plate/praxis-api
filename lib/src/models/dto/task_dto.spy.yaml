@@ -1,0 +1,20 @@
+class: TaskDto
+fields:
+  id: int
+  lessonId: int
+  taskType: String
+  questionText: String
+  correctAnswer: String
+  optionsJson: String?
+  codeTemplate: String?
+  testCasesJson: String?
+  programmingLanguage: String?
+  difficultyLevel: int
+  xpValue: int
+  orderIndex: int
+  fallbackHint: String?
+  fallbackExplanation: String?
+  topic: String
+  createdAt: DateTime
+  options: List<TaskOptionDto>
+  testCases: List<TaskTestCaseDto>

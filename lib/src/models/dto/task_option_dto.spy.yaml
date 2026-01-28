@@ -1,0 +1,7 @@
+class: TaskOptionDto
+fields:
+  id: int
+  taskId: int
+  optionText: String
+  isCorrect: bool
+  orderIndex: int

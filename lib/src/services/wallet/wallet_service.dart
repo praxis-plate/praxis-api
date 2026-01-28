@@ -112,4 +112,25 @@ class WalletService {
         .map((transaction) => transaction.toCoinTransactionDto())
         .toList();
   }
+
+  Future<CoinTransactionDto> grantReward(
+    Session session, {
+    required int amount,
+    required String reason,
+    String? relatedEntityId,
+  }) {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    final transactionKey = 'reward:$reason:$relatedEntityId:$authUserId';
+
+    return _transactionProcessor.processTransaction(
+      session,
+      authUserId: authUserId,
+      type: CoinTransactionType.adjustment,
+      amount: amount,
+      currency: WalletConstants.defaultCurrency,
+      transactionKey: transactionKey,
+      relatedEntityId: relatedEntityId,
+      reason: reason,
+    );
+  }
 }

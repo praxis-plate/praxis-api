@@ -1,0 +1,14 @@
+class: UserAchievement
+serverOnly: true
+table: user_achievement
+fields:
+  authUserId: UuidValue
+  achievementId: int
+  unlockedAt: DateTime
+indexes:
+  user_achievement_auth_user_id_idx:
+    fields: authUserId
+    unique: false
+  user_achievement_auth_user_id_achievement_id_unique:
+    fields: authUserId, achievementId
+    unique: true

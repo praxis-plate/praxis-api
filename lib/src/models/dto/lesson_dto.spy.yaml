@@ -1,0 +1,11 @@
+class: LessonDto
+fields:
+  id: int
+  moduleId: int
+  title: String
+  contentText: String
+  videoUrl: String?
+  imageUrls: String?
+  orderIndex: int
+  durationMinutes: int
+  createdAt: DateTime

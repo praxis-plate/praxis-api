@@ -1,0 +1,15 @@
+class: TaskOption
+serverOnly: true
+table: task_option
+fields:
+  taskId: int
+  optionText: String
+  isCorrect: bool
+  orderIndex: int
+indexes:
+  task_option_task_id_idx:
+    fields: taskId
+    unique: false
+  task_option_task_id_order_idx:
+    fields: taskId, orderIndex
+    unique: false

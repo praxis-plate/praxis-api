@@ -1,0 +1,16 @@
+class: LessonProgress
+serverOnly: true
+table: lesson_progress
+fields:
+  authUserId: UuidValue
+  lessonId: int
+  isCompleted: bool
+  completedAt: DateTime?
+  timeSpentSeconds: int
+indexes:
+  lesson_progress_auth_user_id_idx:
+    fields: authUserId
+    unique: false
+  lesson_progress_auth_user_id_lesson_id_unique:
+    fields: authUserId, lessonId
+    unique: true

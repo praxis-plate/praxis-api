@@ -3,9 +3,15 @@ import 'dart:io';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
+import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/lesson_data_source.dart';
+import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/task_data_source.dart';
+import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
+import 'package:praxis_server/src/services/course_seed/course_seed_service.dart';
 import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
@@ -109,4 +115,11 @@ void run(List<String> args) async {
   // Start the server.
   await pod.start();
   await UserSeedService(emailIdpConfig: emailIdpConfig).createTestUser(pod);
+  await CourseSeedService(
+    courseDataSource: const CourseDataSource(),
+    moduleDataSource: const ModuleDataSource(),
+    lessonDataSource: const LessonDataSource(),
+    taskDataSource: const TaskDataSource(),
+    taskOptionDataSource: const TaskOptionDataSource(),
+  ).seedFirstCourse(pod);
 }
