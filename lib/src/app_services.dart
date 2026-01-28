@@ -27,7 +27,7 @@ import 'package:serverpod/serverpod.dart';
 
 class AppServices {
   final AchievementService achievementService;
-  final AiService aiService;
+  final AiService? aiService;
   final CourseService courseService;
   final LessonService lessonService;
   final ModuleService moduleService;
@@ -47,11 +47,12 @@ class AppServices {
   });
 
   factory AppServices.build(Serverpod pod) {
-    final geminiApiKey = pod.getPassword('geminiApiKey')!;
-    final proxyHost = pod.getPassword('proxyHost')!;
-    final proxyPort = int.parse(pod.getPassword('proxyPort')!);
-    final proxyUser = pod.getPassword('proxyUser')!;
-    final proxyPass = pod.getPassword('proxyPass')!;
+    final geminiApiKey = pod.getPassword('geminiApiKey');
+    final proxyHost = pod.getPassword('proxyHost');
+    final proxyPortRaw = pod.getPassword('proxyPort');
+    final proxyUser = pod.getPassword('proxyUser');
+    final proxyPass = pod.getPassword('proxyPass');
+    final proxyPort = proxyPortRaw == null ? null : int.tryParse(proxyPortRaw);
     const achievementDataSource = AchievementDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
@@ -100,6 +101,41 @@ class AppServices {
     );
     final moduleService = ModuleService(moduleDataSource: moduleDataSource);
 
+    final aiService = _buildAiService(
+      geminiApiKey: geminiApiKey,
+      proxyHost: proxyHost,
+      proxyPort: proxyPort,
+      proxyUser: proxyUser,
+      proxyPass: proxyPass,
+    );
+
+    return AppServices(
+      achievementService: achievementService,
+      aiService: aiService,
+      courseService: courseService,
+      lessonService: lessonService,
+      moduleService: moduleService,
+      taskService: taskService,
+      userStatisticsService: userStatisticsService,
+      walletService: walletService,
+    );
+  }
+
+  static AiService? _buildAiService({
+    required String? geminiApiKey,
+    required String? proxyHost,
+    required int? proxyPort,
+    required String? proxyUser,
+    required String? proxyPass,
+  }) {
+    if (geminiApiKey == null ||
+        proxyHost == null ||
+        proxyPort == null ||
+        proxyUser == null ||
+        proxyPass == null) {
+      return null;
+    }
+
     final dio = Dio(
       BaseOptions(
         connectTimeout: const Duration(seconds: 5),
@@ -120,20 +156,9 @@ class AppServices {
       },
     );
 
-    final aiService = AiService(
+    return AiService(
       dio: dio,
       apiKey: geminiApiKey,
-    );
-
-    return AppServices(
-      achievementService: achievementService,
-      aiService: aiService,
-      courseService: courseService,
-      lessonService: lessonService,
-      moduleService: moduleService,
-      taskService: taskService,
-      userStatisticsService: userStatisticsService,
-      walletService: walletService,
     );
   }
 }

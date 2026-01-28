@@ -12,16 +12,29 @@ class AiEndpoint extends Endpoint {
     Session session,
     GenerateHintRequest request,
   ) async {
-    return session.server.services.aiService.generateHint(session, request);
+    final aiService = session.server.services.aiService;
+    if (aiService == null) {
+      return AiResponse(
+        content: '',
+        success: false,
+        error: 'AI service is not configured',
+      );
+    }
+    return aiService.generateHint(session, request);
   }
 
   Future<AiResponse> generateExplanation(
     Session session,
     GenerateExplanationRequest request,
   ) async {
-    return session.server.services.aiService.generateExplanation(
-      session,
-      request,
-    );
+    final aiService = session.server.services.aiService;
+    if (aiService == null) {
+      return AiResponse(
+        content: '',
+        success: false,
+        error: 'AI service is not configured',
+      );
+    }
+    return aiService.generateExplanation(session, request);
   }
 }
