@@ -17,10 +17,12 @@ class UserStatisticsService {
   Future<UserStatisticsDto> get(
     Session session, {
     required UuidValue authUserId,
+    Transaction? transaction,
   }) async {
     final statistic = await _dataSource.findByAuthUserId(
       session,
       authUserId,
+      transaction: transaction,
     );
 
     if (statistic != null) {
@@ -31,6 +33,7 @@ class UserStatisticsService {
     final newStatistic = await ensureStatistics(
       session,
       authUserId: authUserId,
+      transaction: transaction,
     );
 
     return newStatistic.toUserStatisticsDto();

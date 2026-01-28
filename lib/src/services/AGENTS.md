@@ -35,6 +35,10 @@ DataSources:
   `Session` is allowed only for:
   - reading request/auth context (e.g., `session.authenticated`, user identity),
   - passing through to DataSources when DB access is required.
+- Transactions are managed at the service layer.
+  - Use `DataSource.runInTransaction(...)` to wrap multi-step, atomic workflows.
+  - Pass the resulting `Transaction` through to all participating DataSources and services.
+  - Helper methods should accept `Transaction?` but must not create their own transactions.
 - If a service method needs DB access, it may accept `Session` as a parameter and pass it to DataSources.
   Do not store `Session` in fields and do not pass it via constructors.
 - A service MUST use `DataSource` for all data operations.

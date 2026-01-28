@@ -58,7 +58,7 @@ class WalletService {
     Session session,
     CreateCoinTransactionRequest request, {
     required UuidValue authUserId,
-  ) async {
+  }) async {
     request.validateForTopUp();
 
     return _transactionProcessor.processTransaction(
@@ -79,7 +79,7 @@ class WalletService {
     Session session,
     CreateCoinTransactionRequest request, {
     required UuidValue authUserId,
-  ) async {
+  }) async {
     request.validateForBuy();
 
     return _transactionProcessor.processTransaction(
@@ -119,6 +119,7 @@ class WalletService {
     required int amount,
     required String reason,
     String? relatedEntityId,
+    Transaction? transaction,
   }) {
     final transactionKey = 'reward:$reason:$relatedEntityId:$authUserId';
 
@@ -131,6 +132,7 @@ class WalletService {
       transactionKey: transactionKey,
       relatedEntityId: relatedEntityId,
       reason: reason,
+      transaction: transaction,
     );
   }
 }

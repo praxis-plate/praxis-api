@@ -68,16 +68,110 @@ class LessonService {
     return lessons;
   }
 
+  Future<LessonCompletionResultDto> complete(
+    Session session,
+    CompleteLessonSessionRequest request, {
+    required UuidValue authUserId,
+  }) async {
+    return _lessonProgressDataSource.runInTransaction(
+      session,
+      (transaction) async {
+      await _markComplete(
+        session,
+        authUserId: authUserId,
+        lessonId: request.lessonId,
+        timeSpentSeconds: request.timeSpentSeconds,
+        transaction: transaction,
+      );
+
+      await _userStatisticsService.updateDailyStreak(
+        session,
+        authUserId: authUserId,
+        transaction: transaction,
+      );
+
+      final totalXpWithBonus = request.totalXpEarned + request.bonusXp;
+      await _userStatisticsService.addExperiencePoints(
+        session,
+        authUserId: authUserId,
+        points: totalXpWithBonus,
+        transaction: transaction,
+      );
+
+      await _walletService.grantReward(
+        session,
+        authUserId: authUserId,
+        amount: _lessonCompletionRewardCoins,
+        reason: 'lesson_completion',
+        relatedEntityId: request.lessonId.toString(),
+        transaction: transaction,
+      );
+
+      final statistics = await _userStatisticsService.get(
+        session,
+        authUserId: authUserId,
+        transaction: transaction,
+      );
+      final unlockedAchievements = await _achievementService
+          .awardStreakAchievements(
+            session,
+            authUserId: authUserId,
+            currentStreak: statistics.currentStreak,
+            transaction: transaction,
+          );
+
+      final accuracy = request.totalTasks == 0
+          ? 0.0
+          : (request.correctTasks / request.totalTasks) * 100;
+
+      return LessonCompletionResultDto(
+        lessonId: request.lessonId,
+        totalXpEarned: request.totalXpEarned,
+        bonusXp: request.bonusXp,
+        totalXpWithBonus: totalXpWithBonus,
+        timeSpentSeconds: request.timeSpentSeconds,
+        totalTasks: request.totalTasks,
+        correctTasks: request.correctTasks,
+        accuracyPercentage: accuracy,
+        coinsAwarded: _lessonCompletionRewardCoins,
+        experiencePoints: statistics.experiencePoints,
+        currentStreak: statistics.currentStreak,
+        unlockedAchievements: unlockedAchievements,
+      );
+      },
+    );
+  }
+
   Future<void> markComplete(
     Session session, {
     required UuidValue authUserId,
     required int lessonId,
     int timeSpentSeconds = 0,
+  }) {
+    return _lessonProgressDataSource.runInTransaction(
+      session,
+      (transaction) => _markComplete(
+        session,
+        authUserId: authUserId,
+        lessonId: lessonId,
+        timeSpentSeconds: timeSpentSeconds,
+        transaction: transaction,
+      ),
+    );
+  }
+
+  Future<void> _markComplete(
+    Session session, {
+    required UuidValue authUserId,
+    required int lessonId,
+    int timeSpentSeconds = 0,
+    Transaction? transaction,
   }) async {
     final existing = await _lessonProgressDataSource.findByAuthUserIdAndLessonId(
       session,
       authUserId,
       lessonId,
+      transaction: transaction,
     );
 
     if (existing != null) {
@@ -87,6 +181,7 @@ class LessonService {
         isCompleted: true,
         completedAt: DateTime.now(),
         timeSpentSeconds: timeSpentSeconds,
+        transaction: transaction,
       );
       return;
     }
@@ -98,69 +193,7 @@ class LessonService {
       isCompleted: true,
       completedAt: DateTime.now(),
       timeSpentSeconds: timeSpentSeconds,
-    );
-  }
-
-  Future<LessonCompletionResultDto> complete(
-    Session session,
-    CompleteLessonSessionRequest request, {
-    required UuidValue authUserId,
-  }) async {
-    await markComplete(
-      session,
-      authUserId: authUserId,
-      lessonId: request.lessonId,
-      timeSpentSeconds: request.timeSpentSeconds,
-    );
-
-    await _userStatisticsService.updateDailyStreak(
-      session,
-      authUserId: authUserId,
-    );
-
-    final totalXpWithBonus = request.totalXpEarned + request.bonusXp;
-    await _userStatisticsService.addExperiencePoints(
-      session,
-      authUserId: authUserId,
-      points: totalXpWithBonus,
-    );
-
-    await _walletService.grantReward(
-      session,
-      authUserId: authUserId,
-      amount: _lessonCompletionRewardCoins,
-      reason: 'lesson_completion',
-      relatedEntityId: request.lessonId.toString(),
-    );
-
-    final statistics = await _userStatisticsService.get(
-      session,
-      authUserId: authUserId,
-    );
-    final unlockedAchievements = await _achievementService
-        .awardStreakAchievements(
-          session,
-          authUserId: authUserId,
-          currentStreak: statistics.currentStreak,
-        );
-
-    final accuracy = request.totalTasks == 0
-        ? 0.0
-        : (request.correctTasks / request.totalTasks) * 100;
-
-    return LessonCompletionResultDto(
-      lessonId: request.lessonId,
-      totalXpEarned: request.totalXpEarned,
-      bonusXp: request.bonusXp,
-      totalXpWithBonus: totalXpWithBonus,
-      timeSpentSeconds: request.timeSpentSeconds,
-      totalTasks: request.totalTasks,
-      correctTasks: request.correctTasks,
-      accuracyPercentage: accuracy,
-      coinsAwarded: _lessonCompletionRewardCoins,
-      experiencePoints: statistics.experiencePoints,
-      currentStreak: statistics.currentStreak,
-      unlockedAchievements: unlockedAchievements,
+      transaction: transaction,
     );
   }
 }
