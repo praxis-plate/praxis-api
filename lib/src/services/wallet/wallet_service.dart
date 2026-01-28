@@ -8,7 +8,7 @@ import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
 import 'package:praxis_server/src/shared/mappers/wallet_balance_mapper.dart';
-import 'package:praxis_server/src/shared/transaction_runner.dart';
+import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:praxis_server/src/validation/wallet_transaction_request_validation.dart';
 import 'package:serverpod/serverpod.dart';
 

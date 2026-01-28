@@ -23,7 +23,7 @@ import 'package:praxis_server/src/services/module/module_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
-import 'package:praxis_server/src/shared/transaction_runner.dart';
+import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AppServices {

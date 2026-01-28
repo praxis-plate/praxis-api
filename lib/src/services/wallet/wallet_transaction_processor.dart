@@ -7,7 +7,7 @@ import 'package:praxis_server/src/services/wallet/wallet_validator.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
-import 'package:praxis_server/src/shared/transaction_runner.dart';
+import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Handles wallet transaction processing

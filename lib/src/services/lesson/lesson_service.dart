@@ -3,7 +3,7 @@ import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
-import 'package:praxis_server/src/shared/transaction_runner.dart';
+import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 class LessonService {
