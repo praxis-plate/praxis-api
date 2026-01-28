@@ -1,0 +1,26 @@
+class: Task
+serverOnly: true
+table: task
+fields:
+  lessonId: int
+  taskType: String
+  questionText: String
+  correctAnswer: String
+  optionsJson: String?
+  codeTemplate: String?
+  testCasesJson: String?
+  programmingLanguage: String?
+  difficultyLevel: int
+  xpValue: int
+  orderIndex: int
+  fallbackHint: String?
+  fallbackExplanation: String?
+  topic: String
+  createdAt: DateTime
+indexes:
+  task_lesson_id_idx:
+    fields: lessonId
+    unique: false
+  task_lesson_id_order_idx:
+    fields: lessonId, orderIndex
+    unique: false

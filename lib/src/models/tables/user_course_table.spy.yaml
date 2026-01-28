@@ -1,0 +1,16 @@
+class: UserCourse
+serverOnly: true
+table: user_course
+fields:
+  authUserId: UuidValue
+  courseId: int
+  enrolledAt: DateTime
+  isCompleted: bool
+  completedAt: DateTime?
+indexes:
+  user_course_auth_user_id_idx:
+    fields: authUserId
+    unique: false
+  user_course_auth_user_id_course_id_unique:
+    fields: authUserId, courseId
+    unique: true

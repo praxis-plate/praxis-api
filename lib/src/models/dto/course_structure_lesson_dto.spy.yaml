@@ -1,0 +1,7 @@
+class: CourseStructureLessonDto
+fields:
+  id: int
+  title: String
+  orderIndex: int
+  durationMinutes: int
+  tasks: List<CourseStructureTaskDto>

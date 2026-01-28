@@ -1,0 +1,16 @@
+class: Module
+serverOnly: true
+table: module
+fields:
+  courseId: int
+  title: String
+  description: String
+  orderIndex: int
+  createdAt: DateTime
+indexes:
+  module_course_id_idx:
+    fields: courseId
+    unique: false
+  module_course_id_order_idx:
+    fields: courseId, orderIndex
+    unique: false

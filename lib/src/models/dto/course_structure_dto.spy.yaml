@@ -1,0 +1,5 @@
+class: CourseStructureDto
+fields:
+  courseId: int
+  title: String
+  modules: List<CourseStructureModuleDto>

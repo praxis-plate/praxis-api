@@ -1,0 +1,8 @@
+class: ModuleDto
+fields:
+  id: int
+  courseId: int
+  title: String
+  description: String
+  orderIndex: int
+  createdAt: DateTime

@@ -1,0 +1,8 @@
+class: TaskTestCaseDto
+fields:
+  id: int
+  taskId: int
+  input: String
+  expectedOutput: String
+  isHidden: bool
+  orderIndex: int
