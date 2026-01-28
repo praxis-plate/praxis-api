@@ -1,4 +1,4 @@
-import 'package:praxis_server/src/app_services_binding.dart';
+import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
@@ -16,7 +16,7 @@ class WalletEndpoint extends Endpoint {
   /// Throws [NotAuthorizedException] if user is not authenticated
   Future<UserWallet> getBalance(Session session) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.walletService.getBalance(
+    return session.server.useCases.getWalletBalanceUseCase.execute(
       session,
       authUserId: authUserId,
     );
@@ -46,7 +46,7 @@ class WalletEndpoint extends Endpoint {
     CreateCoinTransactionRequest request,
   ) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.walletService.topUp(
+    return session.server.useCases.topUpWalletUseCase.execute(
       session,
       request,
       authUserId: authUserId,
@@ -73,7 +73,7 @@ class WalletEndpoint extends Endpoint {
     CreateCoinTransactionRequest request,
   ) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.walletService.buy(
+    return session.server.useCases.buyWithWalletUseCase.execute(
       session,
       request,
       authUserId: authUserId,
@@ -101,7 +101,7 @@ class WalletEndpoint extends Endpoint {
     int? offset,
   }) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.walletService.getHistory(
+    return session.server.useCases.getWalletHistoryUseCase.execute(
       session,
       authUserId: authUserId,
       limit: limit,

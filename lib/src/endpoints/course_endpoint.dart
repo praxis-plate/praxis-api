@@ -1,4 +1,4 @@
-import 'package:praxis_server/src/app_services_binding.dart';
+import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
@@ -9,7 +9,7 @@ class CourseEndpoint extends Endpoint {
     required int limit,
     required int offset,
   }) {
-    return session.server.services.courseService.getCourses(
+    return session.server.useCases.getCoursesUseCase.execute(
       session,
       limit: limit,
       offset: offset,
@@ -17,7 +17,7 @@ class CourseEndpoint extends Endpoint {
   }
 
   Future<CourseDetailDto> getById(Session session, int courseId) {
-    return session.server.services.courseService.getCourseById(
+    return session.server.useCases.getCourseByIdUseCase.execute(
       session,
       courseId,
     );
@@ -25,7 +25,7 @@ class CourseEndpoint extends Endpoint {
 
   Future<List<CourseDto>> getEnrolled(Session session) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.courseService.getEnrolledCourses(
+    return session.server.useCases.getEnrolledCoursesUseCase.execute(
       session,
       authUserId: authUserId,
     );
@@ -33,7 +33,7 @@ class CourseEndpoint extends Endpoint {
 
   Future<void> enroll(Session session, int courseId) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.courseService.enroll(
+    return session.server.useCases.enrollCourseUseCase.execute(
       session,
       courseId,
       authUserId: authUserId,
@@ -42,7 +42,7 @@ class CourseEndpoint extends Endpoint {
 
   Future<void> unenroll(Session session, int courseId) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.courseService.unenroll(
+    return session.server.useCases.unenrollCourseUseCase.execute(
       session,
       courseId,
       authUserId: authUserId,
@@ -50,7 +50,7 @@ class CourseEndpoint extends Endpoint {
   }
 
   Future<CourseStructureDto> getTableOfContents(Session session, int courseId) {
-    return session.server.services.courseService.getCourseStructure(
+    return session.server.useCases.getCourseTableOfContentsUseCase.execute(
       session,
       courseId,
     );

@@ -1,4 +1,4 @@
-import 'package:praxis_server/src/app_services_binding.dart';
+import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
@@ -18,7 +18,7 @@ class UserStatisticsEndpoint extends Endpoint {
   /// Throws [NotAuthorizedException] if user is not authenticated
   Future<UserStatisticsDto> get(Session session) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.userStatisticsService.get(
+    return session.server.useCases.getUserStatisticsUseCase.execute(
       session,
       authUserId: authUserId,
     );

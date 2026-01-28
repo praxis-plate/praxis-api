@@ -1,4 +1,4 @@
-import 'package:praxis_server/src/app_services_binding.dart';
+import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
@@ -8,7 +8,7 @@ class LessonEndpoint extends Endpoint {
     Session session,
     int courseId,
   ) {
-    return session.server.services.lessonService.getByCourseId(
+    return session.server.useCases.getLessonsByCourseIdUseCase.execute(
       session,
       courseId,
     );
@@ -18,7 +18,7 @@ class LessonEndpoint extends Endpoint {
     Session session,
     int moduleId,
   ) {
-    return session.server.services.lessonService.getByModuleId(
+    return session.server.useCases.getLessonsByModuleIdUseCase.execute(
       session,
       moduleId,
     );
@@ -30,7 +30,7 @@ class LessonEndpoint extends Endpoint {
     int timeSpentSeconds = 0,
   }) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.lessonService.markComplete(
+    return session.server.useCases.markLessonCompleteUseCase.execute(
       session,
       authUserId: authUserId,
       lessonId: lessonId,
@@ -43,7 +43,7 @@ class LessonEndpoint extends Endpoint {
     CompleteLessonSessionRequest request,
   ) {
     final authUserId = AuthUtils.getAuthUserId(session);
-    return session.server.services.lessonService.complete(
+    return session.server.useCases.completeLessonUseCase.execute(
       session,
       request,
       authUserId: authUserId,
