@@ -93,7 +93,7 @@ class LessonService {
           transaction: transaction,
         );
       },
-      existingTransaction: transaction,
+      transaction: transaction,
     );
   }
 }

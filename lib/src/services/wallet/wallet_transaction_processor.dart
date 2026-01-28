@@ -58,7 +58,7 @@ class WalletTransactionProcessor {
         reason: reason,
         metadata: metadata,
       ),
-      existingTransaction: transaction,
+      transaction: transaction,
     );
   }
 

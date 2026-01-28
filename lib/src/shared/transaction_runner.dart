@@ -5,11 +5,11 @@ class TransactionRunner {
 
   Future<T> run<T>(
     Session session,
-    Future<T> Function(Transaction transaction) action,
-    {Transaction? existingTransaction},
-  ) {
-    if (existingTransaction != null) {
-      return action(existingTransaction);
+    Future<T> Function(Transaction transaction) action, {
+    Transaction? transaction,
+  }) {
+    if (transaction != null) {
+      return action(transaction);
     }
     return session.db.transaction(action);
   }
