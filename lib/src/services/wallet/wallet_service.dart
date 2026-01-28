@@ -7,7 +7,6 @@ import 'package:praxis_server/src/services/wallet/wallet_transaction_processor.d
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
-import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:praxis_server/src/validation/wallet_transaction_request_validation.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -31,9 +30,10 @@ class WalletService {
          ),
        );
 
-  Future<void> initializeBalance(Session session) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+  Future<void> initializeBalance(
+    Session session, {
+    required UuidValue authUserId,
+  }) async {
     await _walletManager.ensureWallet(
       session,
       authUserId: authUserId,
@@ -41,9 +41,10 @@ class WalletService {
     );
   }
 
-  Future<UserWallet> getBalance(Session session) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+  Future<UserWallet> getBalance(
+    Session session, {
+    required UuidValue authUserId,
+  }) async {
     final wallet = await _walletManager.ensureWallet(
       session,
       authUserId: authUserId,
@@ -55,9 +56,9 @@ class WalletService {
 
   Future<CoinTransactionDto> topUp(
     Session session,
-    CreateCoinTransactionRequest request,
+    CreateCoinTransactionRequest request, {
+    required UuidValue authUserId,
   ) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
     request.validateForTopUp();
 
     return _transactionProcessor.processTransaction(
@@ -76,9 +77,9 @@ class WalletService {
 
   Future<CoinTransactionDto> buy(
     Session session,
-    CreateCoinTransactionRequest request,
+    CreateCoinTransactionRequest request, {
+    required UuidValue authUserId,
   ) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
     request.validateForBuy();
 
     return _transactionProcessor.processTransaction(
@@ -97,11 +98,10 @@ class WalletService {
 
   Future<List<CoinTransactionDto>> getHistory(
     Session session, {
+    required UuidValue authUserId,
     int? limit,
     int? offset,
   }) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
     final transactions = await _coinTransactionsDataSource.listByAuthUserId(
       session,
       authUserId,
@@ -115,11 +115,11 @@ class WalletService {
 
   Future<CoinTransactionDto> grantReward(
     Session session, {
+    required UuidValue authUserId,
     required int amount,
     required String reason,
     String? relatedEntityId,
   }) {
-    final authUserId = AuthUtils.getAuthUserId(session);
     final transactionKey = 'reward:$reason:$relatedEntityId:$authUserId';
 
     return _transactionProcessor.processTransaction(

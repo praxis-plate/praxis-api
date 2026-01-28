@@ -11,6 +11,7 @@ import 'package:praxis_server/src/services/achievement/achievement_service.dart'
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
+import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class LessonEndpoint extends Endpoint {
@@ -51,8 +52,10 @@ class LessonEndpoint extends Endpoint {
     int lessonId, {
     int timeSpentSeconds = 0,
   }) {
+    final authUserId = AuthUtils.getAuthUserId(session);
     return _lessonService.markComplete(
       session,
+      authUserId: authUserId,
       lessonId: lessonId,
       timeSpentSeconds: timeSpentSeconds,
     );
@@ -62,6 +65,11 @@ class LessonEndpoint extends Endpoint {
     Session session,
     CompleteLessonSessionRequest request,
   ) {
-    return _lessonService.complete(session, request);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return _lessonService.complete(
+      session,
+      request,
+      authUserId: authUserId,
+    );
   }
 }

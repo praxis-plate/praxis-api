@@ -6,7 +6,6 @@ import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
-import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CourseService {
@@ -85,8 +84,10 @@ class CourseService {
     );
   }
 
-  Future<List<CourseDto>> getEnrolledCourses(Session session) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
+  Future<List<CourseDto>> getEnrolledCourses(
+    Session session, {
+    required UuidValue authUserId,
+  }) async {
     final enrollments = await _userCourseDataSource.listByAuthUserId(
       session,
       authUserId,
@@ -113,9 +114,11 @@ class CourseService {
     return result;
   }
 
-  Future<void> enroll(Session session, int courseId) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+  Future<void> enroll(
+    Session session,
+    int courseId, {
+    required UuidValue authUserId,
+  }) async {
     final existing = await _userCourseDataSource.findByAuthUserAndCourse(
       session,
       authUserId,
@@ -134,9 +137,11 @@ class CourseService {
     );
   }
 
-  Future<void> unenroll(Session session, int courseId) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+  Future<void> unenroll(
+    Session session,
+    int courseId, {
+    required UuidValue authUserId,
+  }) async {
     final existing = await _userCourseDataSource.findByAuthUserAndCourse(
       session,
       authUserId,

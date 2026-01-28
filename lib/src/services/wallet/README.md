@@ -60,16 +60,29 @@ Validates wallet invariants, balance sufficiency, and transaction idempotency.
 
 ```dart
 // Get current wallet balance
-Future<UserWallet> getBalance(Session session)
+Future<UserWallet> getBalance(Session session, {required UuidValue authUserId})
 
 // ⚠️ Add coins to wallet (INTERNAL USE ONLY - no payment verification)
-Future<CoinTransactionDto> topUp(Session session, CreateCoinTransactionRequest request)
+Future<CoinTransactionDto> topUp(
+  Session session,
+  CreateCoinTransactionRequest request, {
+  required UuidValue authUserId,
+})
 
 // Purchase courses with coins
-Future<CoinTransactionDto> buy(Session session, CreateCoinTransactionRequest request)
+Future<CoinTransactionDto> buy(
+  Session session,
+  CreateCoinTransactionRequest request, {
+  required UuidValue authUserId,
+})
 
 // Get transaction history with pagination
-Future<List<CoinTransactionDto>> getHistory(Session session, {int? limit, int? offset})
+Future<List<CoinTransactionDto>> getHistory(
+  Session session, {
+  required UuidValue authUserId,
+  int? limit,
+  int? offset,
+})
 ```
 
 **Important Notes**:
@@ -232,7 +245,11 @@ final request = CreateCoinTransactionRequest(
   transactionKey: 'topup_${userId}_${timestamp}',
 );
 
-final transaction = await walletService.topUp(session, request);
+final transaction = await walletService.topUp(
+  session,
+  request,
+  authUserId: authUserId,
+);
 ```
 
 ### Purchase Course
@@ -245,12 +262,19 @@ final request = CreateCoinTransactionRequest(
   relatedEntityId: courseId,
 );
 
-final transaction = await walletService.buy(session, request);
+final transaction = await walletService.buy(
+  session,
+  request,
+  authUserId: authUserId,
+);
 ```
 
 ### Get Balance
 ```dart
-final wallet = await walletService.getBalance(session);
+final wallet = await walletService.getBalance(
+  session,
+  authUserId: authUserId,
+);
 print('Available: ${wallet.available} COIN');
 print('Total: ${wallet.balance} COIN');
 ```

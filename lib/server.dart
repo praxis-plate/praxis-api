@@ -47,7 +47,10 @@ void run(List<String> args) async {
           required emailAccountId,
           required transaction,
         }) async {
-          await walletService.initializeBalance(session);
+          await walletService.initializeBalance(
+            session,
+            authUserId: authUserId,
+          );
           await userStatisticsService.ensureStatistics(
             session,
             authUserId: authUserId,

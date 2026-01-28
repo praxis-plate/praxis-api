@@ -8,6 +8,7 @@ import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
+import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CourseEndpoint extends Endpoint {
@@ -44,15 +45,29 @@ class CourseEndpoint extends Endpoint {
   }
 
   Future<List<CourseDto>> getEnrolled(Session session) {
-    return _courseService.getEnrolledCourses(session);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return _courseService.getEnrolledCourses(
+      session,
+      authUserId: authUserId,
+    );
   }
 
   Future<void> enroll(Session session, int courseId) {
-    return _courseService.enroll(session, courseId);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return _courseService.enroll(
+      session,
+      courseId,
+      authUserId: authUserId,
+    );
   }
 
   Future<void> unenroll(Session session, int courseId) {
-    return _courseService.unenroll(session, courseId);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return _courseService.unenroll(
+      session,
+      courseId,
+      authUserId: authUserId,
+    );
   }
 
   Future<CourseStructureDto> getTableOfContents(Session session, int courseId) {

@@ -6,7 +6,6 @@ import 'package:praxis_server/src/services/achievement/achievement_service.dart'
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
-import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class LessonService {
@@ -71,10 +70,10 @@ class LessonService {
 
   Future<void> markComplete(
     Session session, {
+    required UuidValue authUserId,
     required int lessonId,
     int timeSpentSeconds = 0,
   }) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
     final existing = await _lessonProgressDataSource.findByAuthUserIdAndLessonId(
       session,
       authUserId,
@@ -104,12 +103,12 @@ class LessonService {
 
   Future<LessonCompletionResultDto> complete(
     Session session,
-    CompleteLessonSessionRequest request,
-  ) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+    CompleteLessonSessionRequest request, {
+    required UuidValue authUserId,
+  }) async {
     await markComplete(
       session,
+      authUserId: authUserId,
       lessonId: request.lessonId,
       timeSpentSeconds: request.timeSpentSeconds,
     );
@@ -128,15 +127,20 @@ class LessonService {
 
     await _walletService.grantReward(
       session,
+      authUserId: authUserId,
       amount: _lessonCompletionRewardCoins,
       reason: 'lesson_completion',
       relatedEntityId: request.lessonId.toString(),
     );
 
-    final statistics = await _userStatisticsService.get(session);
+    final statistics = await _userStatisticsService.get(
+      session,
+      authUserId: authUserId,
+    );
     final unlockedAchievements = await _achievementService
         .awardStreakAchievements(
           session,
+          authUserId: authUserId,
           currentStreak: statistics.currentStreak,
         );
 

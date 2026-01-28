@@ -2,6 +2,7 @@ import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
+import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Wallet endpoint for managing user coin balances and transactions
@@ -21,7 +22,11 @@ class WalletEndpoint extends Endpoint {
   ///
   /// Throws [NotAuthorizedException] if user is not authenticated
   Future<UserWallet> getBalance(Session session) {
-    return walletService.getBalance(session);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return walletService.getBalance(
+      session,
+      authUserId: authUserId,
+    );
   }
 
   /// Adds coins to user wallet (INTERNAL USE ONLY)
@@ -47,7 +52,12 @@ class WalletEndpoint extends Endpoint {
     Session session,
     CreateCoinTransactionRequest request,
   ) {
-    return walletService.topUp(session, request);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return walletService.topUp(
+      session,
+      request,
+      authUserId: authUserId,
+    );
   }
 
   /// Purchases courses or items using available coins
@@ -69,7 +79,12 @@ class WalletEndpoint extends Endpoint {
     Session session,
     CreateCoinTransactionRequest request,
   ) {
-    return walletService.buy(session, request);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return walletService.buy(
+      session,
+      request,
+      authUserId: authUserId,
+    );
   }
 
   /// Gets transaction history for authenticated user with pagination
@@ -92,6 +107,12 @@ class WalletEndpoint extends Endpoint {
     int? limit,
     int? offset,
   }) {
-    return walletService.getHistory(session, limit: limit, offset: offset);
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return walletService.getHistory(
+      session,
+      authUserId: authUserId,
+      limit: limit,
+      offset: offset,
+    );
   }
 }
