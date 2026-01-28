@@ -12,23 +12,25 @@ import 'package:serverpod/serverpod.dart';
 
 /// Main wallet service - coordinates components
 class WalletService {
-  final WalletTransactionProcessor _transactionProcessor;
-  final WalletManager _walletManager;
-  final CoinTransactionsDataSource _coinTransactionsDataSource;
+  late final WalletTransactionProcessor _transactionProcessor;
+  late final WalletManager _walletManager;
+  late final CoinTransactionsDataSource _coinTransactionsDataSource;
 
   WalletService({
     required CoinTransactionsDataSource coinTransactionsDataSource,
     required WalletDataSource walletDataSource,
-  }) : _coinTransactionsDataSource = coinTransactionsDataSource,
-       _walletManager = WalletManager(walletDataSource: walletDataSource),
-       _transactionProcessor = WalletTransactionProcessor(
-         coinTransactionsDataSource: coinTransactionsDataSource,
-         walletDataSource: walletDataSource,
-         walletManager: WalletManager(walletDataSource: walletDataSource),
-         walletCalculator: WalletCalculator(
-           coinTransactionsDataSource: coinTransactionsDataSource,
-         ),
-       );
+  }) {
+    _coinTransactionsDataSource = coinTransactionsDataSource;
+    _walletManager = WalletManager(walletDataSource: walletDataSource);
+    _transactionProcessor = WalletTransactionProcessor(
+      coinTransactionsDataSource: coinTransactionsDataSource,
+      walletDataSource: walletDataSource,
+      walletManager: _walletManager,
+      walletCalculator: WalletCalculator(
+        coinTransactionsDataSource: coinTransactionsDataSource,
+      ),
+    );
+  }
 
   Future<void> initializeBalance(
     Session session, {
