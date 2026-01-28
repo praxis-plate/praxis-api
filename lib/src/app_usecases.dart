@@ -120,8 +120,17 @@ class AppUseCases {
       getLessonsByModuleIdUseCase: GetLessonsByModuleIdUseCase(
         lessonService: services.lessonService,
       ),
-      completeLessonUseCase: services.completeLessonUseCase,
-      markLessonCompleteUseCase: services.markLessonCompleteUseCase,
+      completeLessonUseCase: CompleteLessonUseCase(
+        lessonService: services.lessonService,
+        userStatisticsService: services.userStatisticsService,
+        walletService: services.walletService,
+        achievementService: services.achievementService,
+        transactionRunner: services.transactionRunner,
+      ),
+      markLessonCompleteUseCase: MarkLessonCompleteUseCase(
+        lessonService: services.lessonService,
+        transactionRunner: services.transactionRunner,
+      ),
       getModulesByCourseIdUseCase: GetModulesByCourseIdUseCase(
         moduleService: services.moduleService,
       ),

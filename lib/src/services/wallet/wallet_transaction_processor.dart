@@ -7,6 +7,7 @@ import 'package:praxis_server/src/services/wallet/wallet_validator.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
+import 'package:praxis_server/src/shared/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Handles wallet transaction processing
@@ -15,16 +16,19 @@ class WalletTransactionProcessor {
   final WalletDataSource _walletDataSource;
   final WalletManager _walletManager;
   final WalletCalculator _walletCalculator;
+  final TransactionRunner _transactionRunner;
 
   WalletTransactionProcessor({
     required CoinTransactionsDataSource coinTransactionsDataSource,
     required WalletDataSource walletDataSource,
     required WalletManager walletManager,
     required WalletCalculator walletCalculator,
+    required TransactionRunner transactionRunner,
   }) : _coinTransactionsDataSource = coinTransactionsDataSource,
        _walletDataSource = walletDataSource,
        _walletManager = walletManager,
-       _walletCalculator = walletCalculator;
+       _walletCalculator = walletCalculator,
+       _transactionRunner = transactionRunner;
 
   Future<CoinTransactionDto> processTransaction(
     Session session, {
@@ -39,7 +43,7 @@ class WalletTransactionProcessor {
     String? metadata,
     Transaction? transaction,
   }) {
-    return _walletDataSource.runInTransaction(
+    return _transactionRunner.run(
       session,
       (transaction) => _processTransaction(
         session,
@@ -54,7 +58,7 @@ class WalletTransactionProcessor {
         reason: reason,
         metadata: metadata,
       ),
-      transaction: transaction,
+      existingTransaction: transaction,
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:praxis_server/src/services/wallet/wallet_transaction_processor.d
 import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
+import 'package:praxis_server/src/shared/transaction_runner.dart';
 import 'package:praxis_server/src/validation/wallet_transaction_request_validation.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -15,13 +16,16 @@ class WalletService {
   late final WalletTransactionProcessor _transactionProcessor;
   late final WalletManager _walletManager;
   late final CoinTransactionsDataSource _coinTransactionsDataSource;
+  late final TransactionRunner _transactionRunner;
 
   WalletService({
     required CoinTransactionsDataSource coinTransactionsDataSource,
     required WalletDataSource walletDataSource,
+    required TransactionRunner transactionRunner,
   }) {
     _coinTransactionsDataSource = coinTransactionsDataSource;
     _walletManager = WalletManager(walletDataSource: walletDataSource);
+    _transactionRunner = transactionRunner;
     _transactionProcessor = WalletTransactionProcessor(
       coinTransactionsDataSource: coinTransactionsDataSource,
       walletDataSource: walletDataSource,
@@ -29,6 +33,7 @@ class WalletService {
       walletCalculator: WalletCalculator(
         coinTransactionsDataSource: coinTransactionsDataSource,
       ),
+      transactionRunner: _transactionRunner,
     );
   }
 

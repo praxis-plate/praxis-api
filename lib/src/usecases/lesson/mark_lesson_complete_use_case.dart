@@ -20,7 +20,7 @@ class MarkLessonCompleteUseCase {
   }) {
     return _transactionRunner.run(
       session,
-      (transaction) => _lessonService.markCompleteInTransaction(
+      (transaction) => _lessonService.markComplete(
         session,
         authUserId: authUserId,
         lessonId: lessonId,

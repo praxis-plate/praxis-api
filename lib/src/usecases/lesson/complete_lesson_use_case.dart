@@ -35,7 +35,7 @@ class CompleteLessonUseCase {
     return _transactionRunner.run(
       session,
       (transaction) async {
-        await _lessonService.markCompleteInTransaction(
+        await _lessonService.markComplete(
           session,
           authUserId: authUserId,
           lessonId: request.lessonId,

@@ -2,10 +2,11 @@ import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
+import 'package:praxis_server/src/datasources/task_option_data_source.dart';
+import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/course/entities/course_content_counts.dart';
-import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -14,22 +15,25 @@ class CourseService {
   final ModuleDataSource _moduleDataSource;
   final LessonDataSource _lessonDataSource;
   final TaskDataSource _taskDataSource;
+  final TaskOptionDataSource _taskOptionDataSource;
+  final TaskTestCaseDataSource _taskTestCaseDataSource;
   final UserCourseDataSource _userCourseDataSource;
-  final TaskService _taskService;
 
   CourseService({
     required CourseDataSource courseDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonDataSource lessonDataSource,
     required TaskDataSource taskDataSource,
+    required TaskOptionDataSource taskOptionDataSource,
+    required TaskTestCaseDataSource taskTestCaseDataSource,
     required UserCourseDataSource userCourseDataSource,
-    required TaskService taskService,
   }) : _courseDataSource = courseDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonDataSource = lessonDataSource,
        _taskDataSource = taskDataSource,
-       _userCourseDataSource = userCourseDataSource,
-       _taskService = taskService;
+       _taskOptionDataSource = taskOptionDataSource,
+       _taskTestCaseDataSource = taskTestCaseDataSource,
+       _userCourseDataSource = userCourseDataSource;
 
   Future<List<CourseDto>> getCourses(
     Session session, {
@@ -80,7 +84,7 @@ class CourseService {
         .map((lesson) => lesson.toLessonDto())
         .toList();
     final lessonIds = lessonEntities.map((lesson) => lesson.id!).toList();
-    final tasks = await _taskService.getTasksByLessonIds(session, lessonIds);
+    final tasks = await _getTasksByLessonIds(session, lessonIds);
     final totalLessons = lessonEntities.length;
     final totalTasks = tasks.length;
 
@@ -326,5 +330,59 @@ class CourseService {
       );
     }
     return result;
+  }
+
+  Future<List<TaskDto>> _getTasksByLessonIds(
+    Session session,
+    List<int> lessonIds,
+  ) async {
+    if (lessonIds.isEmpty) {
+      return [];
+    }
+
+    final tasks = await _taskDataSource.listByLessonIds(session, lessonIds);
+    if (tasks.isEmpty) {
+      return [];
+    }
+
+    final taskIds = tasks.map((task) => task.id!).toList();
+    final options = await _taskOptionDataSource.listByTaskIds(
+      session,
+      taskIds,
+    );
+    final testCases = await _taskTestCaseDataSource.listByTaskIds(
+      session,
+      taskIds,
+    );
+
+    final optionsByTaskId = <int, List<TaskOptionDto>>{};
+    for (final option in options) {
+      final list = optionsByTaskId.putIfAbsent(option.taskId, () => []);
+      list.add(option.toTaskOptionDto());
+    }
+
+    final testCasesByTaskId = <int, List<TaskTestCaseDto>>{};
+    for (final testCase in testCases) {
+      final list = testCasesByTaskId.putIfAbsent(testCase.taskId, () => []);
+      list.add(testCase.toTaskTestCaseDto());
+    }
+
+    final sortedTasks = List<Task>.from(tasks)
+      ..sort((a, b) {
+        final lessonCompare = a.lessonId.compareTo(b.lessonId);
+        if (lessonCompare != 0) {
+          return lessonCompare;
+        }
+        return a.orderIndex.compareTo(b.orderIndex);
+      });
+
+    return sortedTasks
+        .map(
+          (task) => task.toTaskDto(
+            options: optionsByTaskId[task.id!] ?? const [],
+            testCases: testCasesByTaskId[task.id!] ?? const [],
+          ),
+        )
+        .toList();
   }
 }

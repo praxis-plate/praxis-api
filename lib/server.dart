@@ -9,6 +9,8 @@ import 'package:praxis_server/src/generated/endpoints.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/app_services.dart';
 import 'package:praxis_server/src/app_services_binding.dart';
+import 'package:praxis_server/src/app_usecases.dart';
+import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/services/email_idp_notification/email_idp_notification_service.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_service.dart';
 import 'package:praxis_server/src/services/user_seed/user_seed_service.dart';
@@ -24,6 +26,7 @@ void run(List<String> args) async {
   final pod = Serverpod(args, Protocol(), Endpoints());
   const emailIdpNotifications = EmailIdpNotificationService();
   pod.server.services = AppServices.build(pod);
+  pod.server.useCases = AppUseCases.build(pod, pod.server.services);
 
   final emailIdpConfig = EmailIdpConfigFromPasswords(
     sendRegistrationVerificationCode:

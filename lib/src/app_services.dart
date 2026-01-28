@@ -23,12 +23,14 @@ import 'package:praxis_server/src/services/module/module_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
+import 'package:praxis_server/src/shared/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AppServices {
   final AchievementService achievementService;
   final AiService? aiService;
   final CourseService courseService;
+  final TransactionRunner transactionRunner;
   final LessonService lessonService;
   final ModuleService moduleService;
   final TaskService taskService;
@@ -39,6 +41,7 @@ class AppServices {
     required this.achievementService,
     required this.aiService,
     required this.courseService,
+    required this.transactionRunner,
     required this.lessonService,
     required this.moduleService,
     required this.taskService,
@@ -75,9 +78,11 @@ class AppServices {
     final userStatisticsService = UserStatisticsService(
       dataSource: userStatisticsDataSource,
     );
+    final transactionRunner = const TransactionRunner();
     final walletService = WalletService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       walletDataSource: walletDataSource,
+      transactionRunner: transactionRunner,
     );
     final achievementService = AchievementService(
       achievementDataSource: achievementDataSource,
@@ -87,20 +92,18 @@ class AppServices {
       lessonDataSource: lessonDataSource,
       moduleDataSource: moduleDataSource,
       lessonProgressDataSource: lessonProgressDataSource,
-      userStatisticsService: userStatisticsService,
-      walletService: walletService,
-      achievementService: achievementService,
+      transactionRunner: transactionRunner,
     );
     final courseService = CourseService(
       courseDataSource: courseDataSource,
       moduleDataSource: moduleDataSource,
       lessonDataSource: lessonDataSource,
       taskDataSource: taskDataSource,
+      taskOptionDataSource: taskOptionDataSource,
+      taskTestCaseDataSource: taskTestCaseDataSource,
       userCourseDataSource: userCourseDataSource,
-      taskService: taskService,
     );
     final moduleService = ModuleService(moduleDataSource: moduleDataSource);
-
     final aiService = _buildAiService(
       geminiApiKey: geminiApiKey,
       proxyHost: proxyHost,
@@ -113,6 +116,7 @@ class AppServices {
       achievementService: achievementService,
       aiService: aiService,
       courseService: courseService,
+      transactionRunner: transactionRunner,
       lessonService: lessonService,
       moduleService: moduleService,
       taskService: taskService,
