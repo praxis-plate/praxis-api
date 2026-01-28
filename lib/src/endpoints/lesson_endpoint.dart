@@ -4,15 +4,23 @@ import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class LessonEndpoint extends Endpoint {
-  Future<List<LessonDto>> get(
-    Session session, {
-    int? courseId,
-    int? moduleId,
-  }) {
-    return session.server.services.lessonService.get(
+  Future<List<LessonDto>> getByCourseId(
+    Session session,
+    int courseId,
+  ) {
+    return session.server.services.lessonService.getByCourseId(
       session,
-      courseId: courseId,
-      moduleId: moduleId,
+      courseId,
+    );
+  }
+
+  Future<List<LessonDto>> getByModuleId(
+    Session session,
+    int moduleId,
+  ) {
+    return session.server.services.lessonService.getByModuleId(
+      session,
+      moduleId,
     );
   }
 

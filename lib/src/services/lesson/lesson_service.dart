@@ -32,29 +32,24 @@ class LessonService {
        _walletService = walletService,
        _achievementService = achievementService;
 
-  Future<List<LessonDto>> get(
-    Session session, {
-    int? courseId,
-    int? moduleId,
-  }) async {
-    if (courseId == null && moduleId == null) {
-      throw ValidationException(
-        message: 'courseId or moduleId must be provided',
-        field: 'courseId',
-      );
-    }
+  Future<List<LessonDto>> getByModuleId(
+    Session session,
+    int moduleId,
+  ) async {
+    final lessons = await _lessonDataSource.listByModuleId(
+      session,
+      moduleId,
+    );
+    return lessons.map((lesson) => lesson.toLessonDto()).toList();
+  }
 
-    if (moduleId != null) {
-      final lessons = await _lessonDataSource.listByModuleId(
-        session,
-        moduleId,
-      );
-      return lessons.map((lesson) => lesson.toLessonDto()).toList();
-    }
-
+  Future<List<LessonDto>> getByCourseId(
+    Session session,
+    int courseId,
+  ) async {
     final modules = await _moduleDataSource.listByCourseId(
       session,
-      courseId!,
+      courseId,
     );
     final lessons = <LessonDto>[];
     for (final module in modules) {
