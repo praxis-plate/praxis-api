@@ -26,7 +26,8 @@ health:
 jwtRefresh:
   - refreshAccessToken:
 lesson:
-  - get:
+  - getByCourseId:
+  - getByModuleId:
   - markComplete:
   - complete:
 module:

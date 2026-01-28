@@ -5,13 +5,6 @@ import 'package:praxis_server/src/generated/protocol.dart';
 class WalletDataSource {
   const WalletDataSource();
 
-  Future<T> runInTransaction<T>(
-    Session session,
-    Future<T> Function(Transaction transaction) action,
-  ) {
-    return session.db.transaction(action);
-  }
-
   Future<UserWallet?> findByAuthUserId(
     Session session,
     UuidValue authUserId, {

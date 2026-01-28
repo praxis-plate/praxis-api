@@ -44,7 +44,7 @@ class AiService {
         return AiResponse(
           content: '',
           success: false,
-          error: 'Failed to parse AI response',
+          error: 'Invalid AI response',
         );
       }
 
@@ -52,11 +52,16 @@ class AiService {
         content: content,
         success: true,
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      session.log(
+        '[AI] generateHint failed: $e',
+        level: LogLevel.error,
+        stackTrace: stackTrace,
+      );
       return AiResponse(
         content: '',
         success: false,
-        error: e.toString(),
+        error: 'AI service unavailable',
       );
     }
   }
@@ -81,7 +86,7 @@ class AiService {
         return AiResponse(
           content: '',
           success: false,
-          error: 'Failed to parse AI response',
+          error: 'Invalid AI response',
         );
       }
 
@@ -89,11 +94,16 @@ class AiService {
         content: content,
         success: true,
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      session.log(
+        '[AI] generateExplanation failed: $e',
+        level: LogLevel.error,
+        stackTrace: stackTrace,
+      );
       return AiResponse(
         content: '',
         success: false,
-        error: e.toString(),
+        error: 'AI service unavailable',
       );
     }
   }

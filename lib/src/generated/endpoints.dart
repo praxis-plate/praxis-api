@@ -540,29 +540,43 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'lesson',
       endpoint: endpoints['lesson']!,
       methodConnectors: {
-        'get': _i1.MethodConnector(
-          name: 'get',
+        'getByCourseId': _i1.MethodConnector(
+          name: 'getByCourseId',
           params: {
             'courseId': _i1.ParameterDescription(
               name: 'courseId',
-              type: _i1.getType<int?>(),
-              nullable: true,
-            ),
-            'moduleId': _i1.ParameterDescription(
-              name: 'moduleId',
-              type: _i1.getType<int?>(),
-              nullable: true,
+              type: _i1.getType<int>(),
+              nullable: false,
             ),
           },
           call:
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['lesson'] as _i8.LessonEndpoint).get(
-                session,
-                courseId: params['courseId'],
-                moduleId: params['moduleId'],
-              ),
+              ) async =>
+                  (endpoints['lesson'] as _i8.LessonEndpoint).getByCourseId(
+                    session,
+                    params['courseId'],
+                  ),
+        ),
+        'getByModuleId': _i1.MethodConnector(
+          name: 'getByModuleId',
+          params: {
+            'moduleId': _i1.ParameterDescription(
+              name: 'moduleId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['lesson'] as _i8.LessonEndpoint).getByModuleId(
+                    session,
+                    params['moduleId'],
+                  ),
         ),
         'markComplete': _i1.MethodConnector(
           name: 'markComplete',

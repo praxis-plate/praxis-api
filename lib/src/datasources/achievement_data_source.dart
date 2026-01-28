@@ -12,6 +12,19 @@ class AchievementDataSource {
     return Achievement.db.findById(session, id);
   }
 
+  Future<List<Achievement>> listByIds(
+    Session session,
+    List<int> achievementIds,
+  ) {
+    if (achievementIds.isEmpty) {
+      return Future.value([]);
+    }
+    return Achievement.db.find(
+      session,
+      where: (t) => t.id.inSet(achievementIds.toSet()),
+    );
+  }
+
   Future<List<Achievement>> listByConditionType(
     Session session,
     String conditionType,

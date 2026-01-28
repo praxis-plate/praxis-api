@@ -2,7 +2,6 @@ import 'package:praxis_server/src/datasources/achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/user_achievement_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/mappers/achievement_mapper.dart';
-import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AchievementService {
@@ -17,22 +16,39 @@ class AchievementService {
 
   Future<List<AchievementDto>> getAll(Session session) async {
     final achievements = await _achievementDataSource.listAll(session);
-    return achievements.map((achievement) => achievement.toAchievementDto()).toList();
+    return achievements
+        .map((achievement) => achievement.toAchievementDto())
+        .toList();
   }
 
-  Future<List<AchievementDto>> getUserAchievements(Session session) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
+  Future<List<AchievementDto>> getUserAchievements(
+    Session session, {
+    required UuidValue authUserId,
+  }) async {
     final userAchievements = await _userAchievementDataSource.listByAuthUserId(
       session,
       authUserId,
     );
 
+    if (userAchievements.isEmpty) {
+      return [];
+    }
+
+    final achievementIds = userAchievements
+        .map((userAchievement) => userAchievement.achievementId)
+        .toSet()
+        .toList();
+    final achievements = await _achievementDataSource.listByIds(
+      session,
+      achievementIds,
+    );
+    final achievementsById = <int, Achievement>{
+      for (final achievement in achievements) achievement.id!: achievement,
+    };
+
     final result = <AchievementDto>[];
     for (final userAchievement in userAchievements) {
-      final achievement = await _achievementDataSource.findById(
-        session,
-        userAchievement.achievementId,
-      );
+      final achievement = achievementsById[userAchievement.achievementId];
       if (achievement == null) {
         continue;
       }
@@ -46,9 +62,9 @@ class AchievementService {
 
   Future<bool> isAchievementUnlocked(
     Session session,
-    int achievementId,
-  ) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
+    int achievementId, {
+    required UuidValue authUserId,
+  }) async {
     final existing = await _userAchievementDataSource
         .findByAuthUserAndAchievement(session, authUserId, achievementId);
     return existing != null;
@@ -56,9 +72,9 @@ class AchievementService {
 
   Future<void> unlockAchievement(
     Session session,
-    int achievementId,
-  ) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
+    int achievementId, {
+    required UuidValue authUserId,
+  }) async {
     final existing = await _userAchievementDataSource
         .findByAuthUserAndAchievement(session, authUserId, achievementId);
     if (existing != null) {
@@ -75,10 +91,10 @@ class AchievementService {
 
   Future<List<AchievementDto>> awardStreakAchievements(
     Session session, {
+    required UuidValue authUserId,
     required int currentStreak,
     Transaction? transaction,
   }) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
     final achievements = await _achievementDataSource.listByConditionType(
       session,
       'STREAK_DAYS',

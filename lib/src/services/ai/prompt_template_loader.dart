@@ -4,12 +4,16 @@ class PromptTemplateLoader {
   static const String _hintTemplatePath = 'assets/prompts/task_hint_prompt.txt';
   static const String _explanationTemplatePath =
       'assets/prompts/task_explanation_prompt.txt';
+  static String? _cachedHintTemplate;
+  static String? _cachedExplanationTemplate;
 
   String loadHintTemplate() {
-    return AssetLoader.loadAsset(_hintTemplatePath);
+    return _cachedHintTemplate ??= AssetLoader.loadAsset(_hintTemplatePath);
   }
 
   String loadExplanationTemplate() {
-    return AssetLoader.loadAsset(_explanationTemplatePath);
+    return _cachedExplanationTemplate ??= AssetLoader.loadAsset(
+      _explanationTemplatePath,
+    );
   }
 }

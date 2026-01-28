@@ -37,8 +37,9 @@ class PromptBuilder {
     String compilationError = '',
   }) {
     final languageName = language ?? 'programming';
-    final compilationErrorSection =
-        compilationError.isEmpty ? '' : '$compilationError\n';
+    final compilationErrorSection = compilationError.isEmpty
+        ? ''
+        : '$compilationError\n';
 
     return TemplateEngineUtils.render(_explanationTemplate, {
       'language': languageName,

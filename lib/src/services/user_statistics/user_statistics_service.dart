@@ -1,7 +1,6 @@
 import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/mappers/user_statistics_mapper.dart';
-import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Statistics service for internal server operations
@@ -15,12 +14,15 @@ class UserStatisticsService {
 
   /// Gets user statistics for authenticated user (public API)
   /// Always returns UserStatisticsDto, creates empty statistics for first-time users
-  Future<UserStatisticsDto> get(Session session) async {
-    final authUserId = AuthUtils.getAuthUserId(session);
-
+  Future<UserStatisticsDto> get(
+    Session session, {
+    required UuidValue authUserId,
+    Transaction? transaction,
+  }) async {
     final statistic = await _dataSource.findByAuthUserId(
       session,
       authUserId,
+      transaction: transaction,
     );
 
     if (statistic != null) {
@@ -31,6 +33,7 @@ class UserStatisticsService {
     final newStatistic = await ensureStatistics(
       session,
       authUserId: authUserId,
+      transaction: transaction,
     );
 
     return newStatistic.toUserStatisticsDto();

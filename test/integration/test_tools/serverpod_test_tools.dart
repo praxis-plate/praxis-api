@@ -35,7 +35,7 @@ import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i15;
 import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i16;
 import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i17;
-import 'package:praxis_server/src/generated/tables/user_wallet_table.dart'
+import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
     as _i18;
 import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
     as _i19;
@@ -970,26 +970,53 @@ class _LessonEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i12.LessonDto>> get(
-    _i1.TestSessionBuilder sessionBuilder, {
-    int? courseId,
-    int? moduleId,
-  }) async {
+  _i3.Future<List<_i12.LessonDto>> getByCourseId(
+    _i1.TestSessionBuilder sessionBuilder,
+    int courseId,
+  ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
             endpoint: 'lesson',
-            method: 'get',
+            method: 'getByCourseId',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'lesson',
-          methodName: 'get',
-          parameters: _i1.testObjectToJson({
-            'courseId': courseId,
-            'moduleId': moduleId,
-          }),
+          methodName: 'getByCourseId',
+          parameters: _i1.testObjectToJson({'courseId': courseId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i12.LessonDto>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<List<_i12.LessonDto>> getByModuleId(
+    _i1.TestSessionBuilder sessionBuilder,
+    int moduleId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'lesson',
+            method: 'getByModuleId',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'lesson',
+          methodName: 'getByModuleId',
+          parameters: _i1.testObjectToJson({'moduleId': moduleId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1207,7 +1234,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i18.UserWallet> getBalance(
+  _i3.Future<_i18.WalletBalanceDto> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1229,7 +1256,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.UserWallet>);
+                as _i3.Future<_i18.WalletBalanceDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

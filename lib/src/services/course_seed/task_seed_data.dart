@@ -181,7 +181,8 @@ class TaskSeedData {
       ),
       TaskSeed(
         taskType: 'code_completion',
-        questionText: 'Declare a boolean variable named isValid with value true',
+        questionText:
+            'Declare a boolean variable named isValid with value true',
         correctAnswer: 'bool isValid = true;',
         options: null,
         codeTemplate: 'bool isValid = ___;',
@@ -362,7 +363,8 @@ class TaskSeedData {
         xpValue: 15,
         orderIndex: 1,
         fallbackHint: 'Use return to output the sum',
-        fallbackExplanation: 'Functions return values using the return keyword.',
+        fallbackExplanation:
+            'Functions return values using the return keyword.',
         topic: 'functions',
       ),
       TaskSeed(
@@ -388,7 +390,8 @@ class TaskSeedData {
       ),
       TaskSeed(
         taskType: 'text_input',
-        questionText: 'What is the return type of a function that returns nothing?',
+        questionText:
+            'What is the return type of a function that returns nothing?',
         correctAnswer: 'void',
         options: null,
         codeTemplate: null,
@@ -398,7 +401,8 @@ class TaskSeedData {
         xpValue: 10,
         orderIndex: 3,
         fallbackHint: 'Think about empty returns',
-        fallbackExplanation: 'Functions that return nothing have a void return type.',
+        fallbackExplanation:
+            'Functions that return nothing have a void return type.',
         topic: 'functions',
       ),
       TaskSeed(
@@ -418,8 +422,7 @@ class TaskSeedData {
         xpValue: 15,
         orderIndex: 4,
         fallbackHint: 'Think about function structure',
-        fallbackExplanation:
-            'Each part has a specific role in the function.',
+        fallbackExplanation: 'Each part has a specific role in the function.',
         topic: 'functions',
       ),
     ];

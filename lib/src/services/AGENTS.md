@@ -6,7 +6,7 @@ The services layer contains business logic and orchestration. Data access must h
 
 Services:
 - implement business rules and validations
-- orchestrate multiple `DataSource` calls when needed
+- orchestrate multiple `DataSource` calls when needed (within a single domain)
 - translate low-level failures into domain-meaningful errors/results
 
 DataSources:
@@ -35,6 +35,11 @@ DataSources:
   `Session` is allowed only for:
   - reading request/auth context (e.g., `session.authenticated`, user identity),
   - passing through to DataSources when DB access is required.
+- Use cases orchestrate services; services should not depend on other services.
+- Transactions are primarily managed in the use case layer.
+  - Use `TransactionRunner` to wrap multi-step, atomic workflows.
+  - Pass the resulting `Transaction` through to participating services and data sources.
+  - A service MAY open its own transaction for self-contained, single-domain operations when required.
 - If a service method needs DB access, it may accept `Session` as a parameter and pass it to DataSources.
   Do not store `Session` in fields and do not pass it via constructors.
 - A service MUST use `DataSource` for all data operations.
@@ -44,7 +49,7 @@ DataSources:
 
 ## Review guidelines
 
-- No direct DB access from services (including `Session`).
+- No DB queries via Session in services (Session is allowed only for auth context reads and pass-through to DataSources).
 - Business rules/validation logic is in services, not in DataSources.
 - Service-local entities stay in `services/<service_name>/entities/` and do not leak into protocol/generated surfaces.
 - Entities use `Equatable` consistently (`props` overridden, `stringify` set).
