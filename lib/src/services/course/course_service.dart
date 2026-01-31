@@ -164,11 +164,12 @@ class CourseService {
     }
 
     if (course.priceInCoins > 0) {
-      final hasPurchase = await _coinTransactionsDataSource.hasPostedBuyForCourse(
-        session,
-        authUserId: authUserId,
-        courseId: courseId,
-      );
+      final hasPurchase = await _coinTransactionsDataSource
+          .hasPostedBuyForCourse(
+            session,
+            authUserId: authUserId,
+            courseId: courseId,
+          );
       if (!hasPurchase) {
         throw ValidationException(
           message: 'Course must be purchased before enrollment',

@@ -33,14 +33,16 @@ import 'package:praxis_server/src/generated/requests/complete_lesson_session_req
     as _i14;
 import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i15;
 import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i16;
-import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
+import 'package:praxis_server/src/generated/dto/task_answer_result_dto.dart'
     as _i17;
-import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
+import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i18;
-import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
     as _i19;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
     as _i20;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i21;
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -1244,7 +1246,7 @@ class _TaskEndpoint {
     });
   }
 
-  _i3.Future<Map<String, dynamic>> answer(
+  _i3.Future<_i17.TaskAnswerResultDto> answer(
     _i1.TestSessionBuilder sessionBuilder,
     int taskId,
     String userAnswer,
@@ -1271,7 +1273,7 @@ class _TaskEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<Map<String, dynamic>>);
+                as _i3.Future<_i17.TaskAnswerResultDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1290,7 +1292,7 @@ class _UserStatisticsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i17.UserStatisticsDto> get(
+  _i3.Future<_i18.UserStatisticsDto> get(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1312,7 +1314,7 @@ class _UserStatisticsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i17.UserStatisticsDto>);
+                as _i3.Future<_i18.UserStatisticsDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1331,7 +1333,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i18.WalletBalanceDto> getBalance(
+  _i3.Future<_i19.WalletBalanceDto> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1353,7 +1355,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i18.WalletBalanceDto>);
+                as _i3.Future<_i19.WalletBalanceDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1361,9 +1363,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i19.CoinTransactionDto> topUp(
+  _i3.Future<_i20.CoinTransactionDto> topUp(
     _i1.TestSessionBuilder sessionBuilder,
-    _i20.CreateCoinTransactionRequest request,
+    _i21.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1384,7 +1386,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i19.CoinTransactionDto>);
+                as _i3.Future<_i20.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1392,9 +1394,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i19.CoinTransactionDto> buy(
+  _i3.Future<_i20.CoinTransactionDto> buy(
     _i1.TestSessionBuilder sessionBuilder,
-    _i20.CreateCoinTransactionRequest request,
+    _i21.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1415,7 +1417,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i19.CoinTransactionDto>);
+                as _i3.Future<_i20.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1423,7 +1425,7 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<List<_i19.CoinTransactionDto>> getHistory(
+  _i3.Future<List<_i20.CoinTransactionDto>> getHistory(
     _i1.TestSessionBuilder sessionBuilder, {
     int? limit,
     int? offset,
@@ -1450,7 +1452,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i19.CoinTransactionDto>>);
+                as _i3.Future<List<_i20.CoinTransactionDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

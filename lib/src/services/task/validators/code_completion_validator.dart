@@ -20,7 +20,8 @@ class CodeCompletionValidator implements TaskValidator {
     return TaskAnswerResult(
       isCorrect: false,
       feedbackType: TaskAnswerFeedbackType.incorrect,
-      feedbackMessage: 'Code does not match the expected solution',
+      feedbackMessage:
+          task.fallbackExplanation ?? 'Code does not match the expected solution',
       xpEarned: 0,
     );
   }

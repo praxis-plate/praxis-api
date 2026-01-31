@@ -16,7 +16,8 @@ enum TaskType implements _i1.SerializableModel {
   multipleChoice,
   codeCompletion,
   matching,
-  textInput;
+  textInput
+  ;
 
   static TaskType fromJson(String name) {
     switch (name) {

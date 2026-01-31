@@ -19,7 +19,7 @@ class MultipleChoiceValidator implements TaskValidator {
     return TaskAnswerResult(
       isCorrect: false,
       feedbackType: TaskAnswerFeedbackType.incorrect,
-      feedbackMessage: 'The correct answer is: ${task.correctAnswer}',
+      feedbackMessage: task.fallbackExplanation ?? 'Incorrect answer',
       xpEarned: 0,
     );
   }

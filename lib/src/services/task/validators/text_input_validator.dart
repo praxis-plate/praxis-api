@@ -27,7 +27,7 @@ class TextInputValidator implements TaskValidator {
     return TaskAnswerResult(
       isCorrect: false,
       feedbackType: TaskAnswerFeedbackType.incorrect,
-      feedbackMessage: 'Incorrect answer',
+      feedbackMessage: task.fallbackExplanation ?? 'Incorrect answer',
       xpEarned: 0,
     );
   }

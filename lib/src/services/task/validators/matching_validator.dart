@@ -26,7 +26,8 @@ class MatchingValidator implements TaskValidator {
       return TaskAnswerResult(
         isCorrect: false,
         feedbackType: TaskAnswerFeedbackType.incorrect,
-        feedbackMessage: 'Some matches are incorrect',
+        feedbackMessage:
+            task.fallbackExplanation ?? 'Some matches are incorrect',
         xpEarned: 0,
       );
     } catch (e) {

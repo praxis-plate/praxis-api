@@ -17,7 +17,7 @@ class TaskEndpoint extends Endpoint {
     );
   }
 
-  Future<Map<String, dynamic>> answer(
+  Future<TaskAnswerResultDto> answer(
     Session session,
     int taskId,
     String userAnswer,
@@ -27,6 +27,11 @@ class TaskEndpoint extends Endpoint {
       taskId,
       userAnswer,
     );
-    return result.toJson();
+    return TaskAnswerResultDto(
+      isCorrect: result.isCorrect,
+      feedbackType: result.feedbackType.value,
+      feedbackMessage: result.feedbackMessage,
+      xpEarned: result.xpEarned,
+    );
   }
 }
