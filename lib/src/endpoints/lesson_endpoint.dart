@@ -24,6 +24,16 @@ class LessonEndpoint extends Endpoint {
     );
   }
 
+  Future<LessonDto> getById(
+    Session session,
+    int lessonId,
+  ) {
+    return session.server.useCases.getLessonByIdUseCase.execute(
+      session,
+      lessonId,
+    );
+  }
+
   Future<void> markComplete(
     Session session,
     int lessonId, {

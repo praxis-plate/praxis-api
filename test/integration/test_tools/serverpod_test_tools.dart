@@ -1032,6 +1032,37 @@ class _LessonEndpoint {
     });
   }
 
+  _i3.Future<_i12.LessonDto> getById(
+    _i1.TestSessionBuilder sessionBuilder,
+    int lessonId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'lesson',
+            method: 'getById',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'lesson',
+          methodName: 'getById',
+          parameters: _i1.testObjectToJson({'lessonId': lessonId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i12.LessonDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<void> markComplete(
     _i1.TestSessionBuilder sessionBuilder,
     int lessonId, {

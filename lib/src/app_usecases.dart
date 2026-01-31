@@ -12,6 +12,7 @@ import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_enrolled_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/unenroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/complete_lesson_use_case.dart';
+import 'package:praxis_server/src/usecases/lesson/get_lesson_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lessons_by_course_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lessons_by_module_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/mark_lesson_complete_use_case.dart';
@@ -41,6 +42,7 @@ class AppUseCases {
   final GetCourseTableOfContentsUseCase getCourseTableOfContentsUseCase;
   final GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase;
   final GetLessonsByModuleIdUseCase getLessonsByModuleIdUseCase;
+  final GetLessonByIdUseCase getLessonByIdUseCase;
   final CompleteLessonUseCase completeLessonUseCase;
   final MarkLessonCompleteUseCase markLessonCompleteUseCase;
   final GetModulesByCourseIdUseCase getModulesByCourseIdUseCase;
@@ -68,6 +70,7 @@ class AppUseCases {
     required this.getCourseTableOfContentsUseCase,
     required this.getLessonsByCourseIdUseCase,
     required this.getLessonsByModuleIdUseCase,
+    required this.getLessonByIdUseCase,
     required this.completeLessonUseCase,
     required this.markLessonCompleteUseCase,
     required this.getModulesByCourseIdUseCase,
@@ -124,6 +127,9 @@ class AppUseCases {
         lessonService: services.lessonService,
       ),
       getLessonsByModuleIdUseCase: GetLessonsByModuleIdUseCase(
+        lessonService: services.lessonService,
+      ),
+      getLessonByIdUseCase: GetLessonByIdUseCase(
         lessonService: services.lessonService,
       ),
       completeLessonUseCase: CompleteLessonUseCase(

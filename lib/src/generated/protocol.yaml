@@ -28,6 +28,7 @@ jwtRefresh:
 lesson:
   - getByCourseId:
   - getByModuleId:
+  - getById:
   - markComplete:
   - complete:
 module:

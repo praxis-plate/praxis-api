@@ -53,6 +53,18 @@ class LessonService {
     return lessons;
   }
 
+  Future<LessonDto> getById(
+    Session session,
+    int lessonId,
+  ) async {
+    final lesson = await _lessonDataSource.findById(session, lessonId);
+    if (lesson == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
+
+    return lesson.toLessonDto();
+  }
+
   Future<void> markComplete(
     Session session, {
     required UuidValue authUserId,
