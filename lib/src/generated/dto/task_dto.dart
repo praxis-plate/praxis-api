@@ -11,9 +11,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../dto/task_option_dto.dart' as _i2;
-import '../dto/task_test_case_dto.dart' as _i3;
-import 'package:praxis_server/src/generated/protocol.dart' as _i4;
+import '../enums/task_type.dart' as _i2;
+import '../dto/task_option_dto.dart' as _i3;
+import '../dto/task_test_case_dto.dart' as _i4;
+import 'package:praxis_server/src/generated/protocol.dart' as _i5;
 
 abstract class TaskDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -41,7 +42,7 @@ abstract class TaskDto
   factory TaskDto({
     required int id,
     required int lessonId,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
     String? optionsJson,
@@ -55,15 +56,17 @@ abstract class TaskDto
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
-    required List<_i2.TaskOptionDto> options,
-    required List<_i3.TaskTestCaseDto> testCases,
+    required List<_i3.TaskOptionDto> options,
+    required List<_i4.TaskTestCaseDto> testCases,
   }) = _TaskDtoImpl;
 
   factory TaskDto.fromJson(Map<String, dynamic> jsonSerialization) {
     return TaskDto(
       id: jsonSerialization['id'] as int,
       lessonId: jsonSerialization['lessonId'] as int,
-      taskType: jsonSerialization['taskType'] as String,
+      taskType: _i2.TaskType.fromJson(
+        (jsonSerialization['taskType'] as String),
+      ),
       questionText: jsonSerialization['questionText'] as String,
       correctAnswer: jsonSerialization['correctAnswer'] as String,
       optionsJson: jsonSerialization['optionsJson'] as String?,
@@ -79,10 +82,10 @@ abstract class TaskDto
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
-      options: _i4.Protocol().deserialize<List<_i2.TaskOptionDto>>(
+      options: _i5.Protocol().deserialize<List<_i3.TaskOptionDto>>(
         jsonSerialization['options'],
       ),
-      testCases: _i4.Protocol().deserialize<List<_i3.TaskTestCaseDto>>(
+      testCases: _i5.Protocol().deserialize<List<_i4.TaskTestCaseDto>>(
         jsonSerialization['testCases'],
       ),
     );
@@ -92,7 +95,7 @@ abstract class TaskDto
 
   int lessonId;
 
-  String taskType;
+  _i2.TaskType taskType;
 
   String questionText;
 
@@ -120,9 +123,9 @@ abstract class TaskDto
 
   DateTime createdAt;
 
-  List<_i2.TaskOptionDto> options;
+  List<_i3.TaskOptionDto> options;
 
-  List<_i3.TaskTestCaseDto> testCases;
+  List<_i4.TaskTestCaseDto> testCases;
 
   /// Returns a shallow copy of this [TaskDto]
   /// with some or all fields replaced by the given arguments.
@@ -130,7 +133,7 @@ abstract class TaskDto
   TaskDto copyWith({
     int? id,
     int? lessonId,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
     String? optionsJson,
@@ -144,8 +147,8 @@ abstract class TaskDto
     String? fallbackExplanation,
     String? topic,
     DateTime? createdAt,
-    List<_i2.TaskOptionDto>? options,
-    List<_i3.TaskTestCaseDto>? testCases,
+    List<_i3.TaskOptionDto>? options,
+    List<_i4.TaskTestCaseDto>? testCases,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -153,7 +156,7 @@ abstract class TaskDto
       '__className__': 'TaskDto',
       'id': id,
       'lessonId': lessonId,
-      'taskType': taskType,
+      'taskType': taskType.toJson(),
       'questionText': questionText,
       'correctAnswer': correctAnswer,
       if (optionsJson != null) 'optionsJson': optionsJson,
@@ -180,7 +183,7 @@ abstract class TaskDto
       '__className__': 'TaskDto',
       'id': id,
       'lessonId': lessonId,
-      'taskType': taskType,
+      'taskType': taskType.toJson(),
       'questionText': questionText,
       'correctAnswer': correctAnswer,
       if (optionsJson != null) 'optionsJson': optionsJson,
@@ -213,7 +216,7 @@ class _TaskDtoImpl extends TaskDto {
   _TaskDtoImpl({
     required int id,
     required int lessonId,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
     String? optionsJson,
@@ -227,8 +230,8 @@ class _TaskDtoImpl extends TaskDto {
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
-    required List<_i2.TaskOptionDto> options,
-    required List<_i3.TaskTestCaseDto> testCases,
+    required List<_i3.TaskOptionDto> options,
+    required List<_i4.TaskTestCaseDto> testCases,
   }) : super._(
          id: id,
          lessonId: lessonId,
@@ -257,7 +260,7 @@ class _TaskDtoImpl extends TaskDto {
   TaskDto copyWith({
     int? id,
     int? lessonId,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
     Object? optionsJson = _Undefined,
@@ -271,8 +274,8 @@ class _TaskDtoImpl extends TaskDto {
     Object? fallbackExplanation = _Undefined,
     String? topic,
     DateTime? createdAt,
-    List<_i2.TaskOptionDto>? options,
-    List<_i3.TaskTestCaseDto>? testCases,
+    List<_i3.TaskOptionDto>? options,
+    List<_i4.TaskTestCaseDto>? testCases,
   }) {
     return TaskDto(
       id: id ?? this.id,

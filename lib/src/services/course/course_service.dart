@@ -1,3 +1,4 @@
+import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
@@ -11,6 +12,7 @@ import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CourseService {
+  final CoinTransactionsDataSource _coinTransactionsDataSource;
   final CourseDataSource _courseDataSource;
   final ModuleDataSource _moduleDataSource;
   final LessonDataSource _lessonDataSource;
@@ -20,6 +22,7 @@ class CourseService {
   final UserCourseDataSource _userCourseDataSource;
 
   CourseService({
+    required CoinTransactionsDataSource coinTransactionsDataSource,
     required CourseDataSource courseDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonDataSource lessonDataSource,
@@ -27,7 +30,8 @@ class CourseService {
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
     required UserCourseDataSource userCourseDataSource,
-  }) : _courseDataSource = courseDataSource,
+  }) : _coinTransactionsDataSource = coinTransactionsDataSource,
+       _courseDataSource = courseDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonDataSource = lessonDataSource,
        _taskDataSource = taskDataSource,
@@ -152,6 +156,26 @@ class CourseService {
     );
     if (existing != null) {
       return;
+    }
+
+    final course = await _courseDataSource.findById(session, courseId);
+    if (course == null) {
+      throw NotFoundException(message: 'Course not found');
+    }
+
+    if (course.priceInCoins > 0) {
+      final hasPurchase = await _coinTransactionsDataSource
+          .hasPostedBuyForCourse(
+            session,
+            authUserId: authUserId,
+            courseId: courseId,
+          );
+      if (!hasPurchase) {
+        throw ValidationException(
+          message: 'Course must be purchased before enrollment',
+          field: 'courseId',
+        );
+      }
     }
 
     await _userCourseDataSource.insert(

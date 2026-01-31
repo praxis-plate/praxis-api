@@ -30,7 +30,7 @@ class TaskDataSource {
   Future<Task> insert(
     Session session, {
     required int lessonId,
-    required String taskType,
+    required TaskType taskType,
     required String questionText,
     required String correctAnswer,
     String? optionsJson,

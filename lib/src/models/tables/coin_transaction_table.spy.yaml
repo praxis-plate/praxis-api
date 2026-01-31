@@ -4,7 +4,7 @@ table: coin_transaction
 fields:
   authUserId: UuidValue
   transactionKey: String
-  type: String
+  type: CoinTransactionType
   status: String
   amount: int
   currency: String

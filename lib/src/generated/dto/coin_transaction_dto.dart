@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/coin_transaction_type.dart' as _i2;
 
 abstract class CoinTransactionDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -33,7 +34,7 @@ abstract class CoinTransactionDto
     required int id,
     required String authUserId,
     required String transactionKey,
-    required String type,
+    required _i2.CoinTransactionType type,
     required String status,
     required int amount,
     required String currency,
@@ -49,7 +50,9 @@ abstract class CoinTransactionDto
       id: jsonSerialization['id'] as int,
       authUserId: jsonSerialization['authUserId'] as String,
       transactionKey: jsonSerialization['transactionKey'] as String,
-      type: jsonSerialization['type'] as String,
+      type: _i2.CoinTransactionType.fromJson(
+        (jsonSerialization['type'] as String),
+      ),
       status: jsonSerialization['status'] as String,
       amount: jsonSerialization['amount'] as int,
       currency: jsonSerialization['currency'] as String,
@@ -70,7 +73,7 @@ abstract class CoinTransactionDto
 
   String transactionKey;
 
-  String type;
+  _i2.CoinTransactionType type;
 
   String status;
 
@@ -95,7 +98,7 @@ abstract class CoinTransactionDto
     int? id,
     String? authUserId,
     String? transactionKey,
-    String? type,
+    _i2.CoinTransactionType? type,
     String? status,
     int? amount,
     String? currency,
@@ -112,7 +115,7 @@ abstract class CoinTransactionDto
       'id': id,
       'authUserId': authUserId,
       'transactionKey': transactionKey,
-      'type': type,
+      'type': type.toJson(),
       'status': status,
       'amount': amount,
       'currency': currency,
@@ -132,7 +135,7 @@ abstract class CoinTransactionDto
       'id': id,
       'authUserId': authUserId,
       'transactionKey': transactionKey,
-      'type': type,
+      'type': type.toJson(),
       'status': status,
       'amount': amount,
       'currency': currency,
@@ -158,7 +161,7 @@ class _CoinTransactionDtoImpl extends CoinTransactionDto {
     required int id,
     required String authUserId,
     required String transactionKey,
-    required String type,
+    required _i2.CoinTransactionType type,
     required String status,
     required int amount,
     required String currency,
@@ -190,7 +193,7 @@ class _CoinTransactionDtoImpl extends CoinTransactionDto {
     int? id,
     String? authUserId,
     String? transactionKey,
-    String? type,
+    _i2.CoinTransactionType? type,
     String? status,
     int? amount,
     String? currency,

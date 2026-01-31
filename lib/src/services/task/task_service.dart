@@ -2,6 +2,8 @@ import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/services/task/entities/task_answer_result.dart';
+import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -9,14 +11,50 @@ class TaskService {
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
+  final TaskAnswerValidationService _validationService;
 
   TaskService({
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
+    required TaskAnswerValidationService validationService,
   }) : _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
-       _taskTestCaseDataSource = taskTestCaseDataSource;
+       _taskTestCaseDataSource = taskTestCaseDataSource,
+       _validationService = validationService;
+
+  TaskAnswerResult validateAnswer(
+    TaskDto task,
+    String userAnswer,
+  ) {
+    return _validationService.validateAnswer(task, userAnswer);
+  }
+
+  Future<TaskDto> getTaskById(
+    Session session,
+    int taskId,
+  ) async {
+    final task = await _taskDataSource.findById(session, taskId);
+    if (task == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+
+    final options = await _taskOptionDataSource.listByTaskId(
+      session,
+      taskId,
+    );
+    final testCases = await _taskTestCaseDataSource.listByTaskId(
+      session,
+      taskId,
+    );
+
+    return task.toTaskDto(
+      options: options.map((option) => option.toTaskOptionDto()).toList(),
+      testCases: testCases
+          .map((testCase) => testCase.toTaskTestCaseDto())
+          .toList(),
+    );
+  }
 
   Future<List<TaskDto>> getTasksByLessonId(
     Session session,

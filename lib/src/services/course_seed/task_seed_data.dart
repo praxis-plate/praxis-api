@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_models.dart';
 
 class TaskSeedData {
@@ -49,7 +50,7 @@ class TaskSeedData {
   static List<TaskSeed> _introToVariablesTasks() {
     return [
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'What is a variable in programming?',
         correctAnswer: 'A container for storing data values',
         options: const [
@@ -70,7 +71,7 @@ class TaskSeedData {
         topic: 'variables',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'Which keyword is used to declare a variable in Dart?',
         correctAnswer: 'var',
         options: const ['var', 'let', 'variable', 'declare'],
@@ -86,7 +87,7 @@ class TaskSeedData {
         topic: 'variables',
       ),
       TaskSeed(
-        taskType: 'code_completion',
+        taskType: TaskType.codeCompletion,
         questionText:
             'Complete the code to declare a variable named age with value 25',
         correctAnswer: 'var age = 25;',
@@ -103,7 +104,7 @@ class TaskSeedData {
         topic: 'variables',
       ),
       TaskSeed(
-        taskType: 'matching',
+        taskType: TaskType.matching,
         questionText: 'Match the variable declaration with its description',
         correctAnswer: jsonEncode({
           'var name = "Alice"': 'String variable',
@@ -123,7 +124,7 @@ class TaskSeedData {
         topic: 'variables',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText:
             'What happens when you declare a variable without initializing it?',
         correctAnswer: 'It has a null value by default',
@@ -150,7 +151,7 @@ class TaskSeedData {
   static List<TaskSeed> _primitiveDataTypesTasks() {
     return [
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'Which data type is used for whole numbers?',
         correctAnswer: 'int',
         options: const ['int', 'double', 'String', 'bool'],
@@ -165,7 +166,7 @@ class TaskSeedData {
         topic: 'data_types',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'What data type would you use to store the value 3.14?',
         correctAnswer: 'double',
         options: const ['int', 'double', 'String', 'num'],
@@ -180,7 +181,7 @@ class TaskSeedData {
         topic: 'data_types',
       ),
       TaskSeed(
-        taskType: 'code_completion',
+        taskType: TaskType.codeCompletion,
         questionText:
             'Declare a boolean variable named isValid with value true',
         correctAnswer: 'bool isValid = true;',
@@ -196,7 +197,7 @@ class TaskSeedData {
         topic: 'data_types',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'Which data type is used for text?',
         correctAnswer: 'String',
         options: const ['String', 'Text', 'char', 'str'],
@@ -211,7 +212,7 @@ class TaskSeedData {
         topic: 'data_types',
       ),
       TaskSeed(
-        taskType: 'matching',
+        taskType: TaskType.matching,
         questionText: 'Match the data type with its example',
         correctAnswer: jsonEncode({
           'int': '42',
@@ -237,7 +238,7 @@ class TaskSeedData {
   static List<TaskSeed> _typeConversionTasks() {
     return [
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'How do you convert a String to an int in Dart?',
         correctAnswer: 'int.parse()',
         options: const ['int.parse()', 'toInt()', 'parseInt()', 'convert()'],
@@ -253,7 +254,7 @@ class TaskSeedData {
         topic: 'type_conversion',
       ),
       TaskSeed(
-        taskType: 'code_completion',
+        taskType: TaskType.codeCompletion,
         questionText: 'Convert the string "123" to an integer',
         correctAnswer: 'int.parse("123")',
         options: null,
@@ -269,7 +270,7 @@ class TaskSeedData {
         topic: 'type_conversion',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'What method converts a number to a String?',
         correctAnswer: 'toString()',
         options: const ['toString()', 'string()', 'toStr()', 'convert()'],
@@ -285,7 +286,7 @@ class TaskSeedData {
         topic: 'type_conversion',
       ),
       TaskSeed(
-        taskType: 'matching',
+        taskType: TaskType.matching,
         questionText: 'Match the conversion with the result type',
         correctAnswer: jsonEncode({
           'int.parse("42")': 'int',
@@ -305,7 +306,7 @@ class TaskSeedData {
         topic: 'type_conversion',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'What happens if int.parse() fails?',
         correctAnswer: 'It throws an exception',
         options: const [
@@ -331,7 +332,7 @@ class TaskSeedData {
   static List<TaskSeed> _functionBasicsTasks() {
     return [
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'What is a function?',
         correctAnswer: 'A reusable block of code that performs a specific task',
         options: const [
@@ -352,7 +353,7 @@ class TaskSeedData {
         topic: 'functions',
       ),
       TaskSeed(
-        taskType: 'code_completion',
+        taskType: TaskType.codeCompletion,
         questionText: 'Complete the function to return the sum of two numbers',
         correctAnswer: 'return a + b;',
         options: null,
@@ -368,7 +369,7 @@ class TaskSeedData {
         topic: 'functions',
       ),
       TaskSeed(
-        taskType: 'multiple_choice',
+        taskType: TaskType.multipleChoice,
         questionText: 'Which keyword is used to define a function in Dart?',
         correctAnswer: 'No keyword is required',
         options: const [
@@ -389,7 +390,7 @@ class TaskSeedData {
         topic: 'functions',
       ),
       TaskSeed(
-        taskType: 'text_input',
+        taskType: TaskType.textInput,
         questionText:
             'What is the return type of a function that returns nothing?',
         correctAnswer: 'void',
@@ -406,7 +407,7 @@ class TaskSeedData {
         topic: 'functions',
       ),
       TaskSeed(
-        taskType: 'matching',
+        taskType: TaskType.matching,
         questionText: 'Match function parts with their descriptions',
         correctAnswer: jsonEncode({
           'Function name': 'Identifies the function',
@@ -447,14 +448,14 @@ class TaskSeedData {
     for (int i = 0; i < 7; i++) {
       final difficulty = (i ~/ 2) + 1;
       final xp = difficulty * 10;
-      final taskType = _getTaskType(i);
+      final taskType = TaskType.values[i % TaskType.values.length];
 
       tasks.add(
         TaskSeed(
           taskType: taskType,
           questionText: 'Question ${i + 1} about $topic',
           correctAnswer: _getCorrectAnswer(taskType, i),
-          options: taskType == 'multiple_choice'
+          options: taskType == TaskType.multipleChoice
               ? [
                   _getCorrectAnswer(taskType, i),
                   'Option B',
@@ -462,7 +463,7 @@ class TaskSeedData {
                   'Option D',
                 ]
               : null,
-          codeTemplate: taskType == 'code_completion'
+          codeTemplate: taskType == TaskType.codeCompletion
               ? '// Complete this code\nvar result = ___;'
               : null,
           testCasesJson: null,
@@ -480,22 +481,12 @@ class TaskSeedData {
     return tasks;
   }
 
-  static String _getTaskType(int index) {
-    final types = [
-      'multiple_choice',
-      'code_completion',
-      'matching',
-      'text_input',
-    ];
-    return types[index % types.length];
-  }
-
-  static String _getCorrectAnswer(String taskType, int index) {
-    if (taskType == 'multiple_choice') {
+  static String _getCorrectAnswer(TaskType taskType, int index) {
+    if (taskType == TaskType.multipleChoice) {
       return 'Correct answer ${index + 1}';
-    } else if (taskType == 'code_completion') {
+    } else if (taskType == TaskType.codeCompletion) {
       return 'result';
-    } else if (taskType == 'matching') {
+    } else if (taskType == TaskType.matching) {
       return jsonEncode({'Term A': 'Definition A', 'Term B': 'Definition B'});
     } else {
       return 'Answer ${index + 1}';

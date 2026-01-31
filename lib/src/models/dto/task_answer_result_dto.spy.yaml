@@ -1,0 +1,6 @@
+class: TaskAnswerResultDto
+fields:
+  isCorrect: bool
+  feedbackType: String
+  feedbackMessage: String?
+  xpEarned: int?

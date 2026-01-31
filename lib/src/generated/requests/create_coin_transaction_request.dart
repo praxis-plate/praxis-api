@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/coin_transaction_type.dart' as _i2;
 
 abstract class CreateCoinTransactionRequest
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -29,7 +30,7 @@ abstract class CreateCoinTransactionRequest
     required String transactionKey,
     required int amount,
     String? currency,
-    required String type,
+    required _i2.CoinTransactionType type,
     String? relatedEntityId,
     int? reversalOfTransactionId,
     String? reason,
@@ -43,7 +44,9 @@ abstract class CreateCoinTransactionRequest
       transactionKey: jsonSerialization['transactionKey'] as String,
       amount: jsonSerialization['amount'] as int,
       currency: jsonSerialization['currency'] as String?,
-      type: jsonSerialization['type'] as String,
+      type: _i2.CoinTransactionType.fromJson(
+        (jsonSerialization['type'] as String),
+      ),
       relatedEntityId: jsonSerialization['relatedEntityId'] as String?,
       reversalOfTransactionId:
           jsonSerialization['reversalOfTransactionId'] as int?,
@@ -58,7 +61,7 @@ abstract class CreateCoinTransactionRequest
 
   String? currency;
 
-  String type;
+  _i2.CoinTransactionType type;
 
   String? relatedEntityId;
 
@@ -75,7 +78,7 @@ abstract class CreateCoinTransactionRequest
     String? transactionKey,
     int? amount,
     String? currency,
-    String? type,
+    _i2.CoinTransactionType? type,
     String? relatedEntityId,
     int? reversalOfTransactionId,
     String? reason,
@@ -88,7 +91,7 @@ abstract class CreateCoinTransactionRequest
       'transactionKey': transactionKey,
       'amount': amount,
       if (currency != null) 'currency': currency,
-      'type': type,
+      'type': type.toJson(),
       if (relatedEntityId != null) 'relatedEntityId': relatedEntityId,
       if (reversalOfTransactionId != null)
         'reversalOfTransactionId': reversalOfTransactionId,
@@ -104,7 +107,7 @@ abstract class CreateCoinTransactionRequest
       'transactionKey': transactionKey,
       'amount': amount,
       if (currency != null) 'currency': currency,
-      'type': type,
+      'type': type.toJson(),
       if (relatedEntityId != null) 'relatedEntityId': relatedEntityId,
       if (reversalOfTransactionId != null)
         'reversalOfTransactionId': reversalOfTransactionId,
@@ -126,7 +129,7 @@ class _CreateCoinTransactionRequestImpl extends CreateCoinTransactionRequest {
     required String transactionKey,
     required int amount,
     String? currency,
-    required String type,
+    required _i2.CoinTransactionType type,
     String? relatedEntityId,
     int? reversalOfTransactionId,
     String? reason,
@@ -150,7 +153,7 @@ class _CreateCoinTransactionRequestImpl extends CreateCoinTransactionRequest {
     String? transactionKey,
     int? amount,
     Object? currency = _Undefined,
-    String? type,
+    _i2.CoinTransactionType? type,
     Object? relatedEntityId = _Undefined,
     Object? reversalOfTransactionId = _Undefined,
     Object? reason = _Undefined,

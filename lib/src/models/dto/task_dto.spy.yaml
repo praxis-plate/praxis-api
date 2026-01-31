@@ -2,7 +2,7 @@ class: TaskDto
 fields:
   id: int
   lessonId: int
-  taskType: String
+  taskType: TaskType
   questionText: String
   correctAnswer: String
   optionsJson: String?

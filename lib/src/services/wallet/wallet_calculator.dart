@@ -2,7 +2,6 @@ import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/wallet/entities/entities.dart';
 import 'package:praxis_server/src/services/wallet/wallet_validator.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:serverpod/serverpod.dart';
 
 /// Handles wallet balance calculations

@@ -12,11 +12,14 @@ import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_enrolled_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/unenroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/complete_lesson_use_case.dart';
+import 'package:praxis_server/src/usecases/lesson/get_lesson_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lessons_by_course_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lessons_by_module_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/mark_lesson_complete_use_case.dart';
 import 'package:praxis_server/src/usecases/module/get_modules_by_course_id_use_case.dart';
+import 'package:praxis_server/src/usecases/task/get_task_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/task/get_tasks_by_lesson_id_use_case.dart';
+import 'package:praxis_server/src/usecases/task/task_answer_use_case.dart';
 import 'package:praxis_server/src/usecases/user_statistics/get_user_statistics_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/buy_with_wallet_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/get_wallet_balance_use_case.dart';
@@ -39,10 +42,13 @@ class AppUseCases {
   final GetCourseTableOfContentsUseCase getCourseTableOfContentsUseCase;
   final GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase;
   final GetLessonsByModuleIdUseCase getLessonsByModuleIdUseCase;
+  final GetLessonByIdUseCase getLessonByIdUseCase;
   final CompleteLessonUseCase completeLessonUseCase;
   final MarkLessonCompleteUseCase markLessonCompleteUseCase;
   final GetModulesByCourseIdUseCase getModulesByCourseIdUseCase;
+  final GetTaskByIdUseCase getTaskByIdUseCase;
   final GetTasksByLessonIdUseCase getTasksByLessonIdUseCase;
+  final TaskAnswerUseCase taskAnswerUseCase;
   final GetUserStatisticsUseCase getUserStatisticsUseCase;
   final GetWalletBalanceUseCase getWalletBalanceUseCase;
   final TopUpWalletUseCase topUpWalletUseCase;
@@ -64,10 +70,13 @@ class AppUseCases {
     required this.getCourseTableOfContentsUseCase,
     required this.getLessonsByCourseIdUseCase,
     required this.getLessonsByModuleIdUseCase,
+    required this.getLessonByIdUseCase,
     required this.completeLessonUseCase,
     required this.markLessonCompleteUseCase,
     required this.getModulesByCourseIdUseCase,
+    required this.getTaskByIdUseCase,
     required this.getTasksByLessonIdUseCase,
+    required this.taskAnswerUseCase,
     required this.getUserStatisticsUseCase,
     required this.getWalletBalanceUseCase,
     required this.topUpWalletUseCase,
@@ -120,6 +129,9 @@ class AppUseCases {
       getLessonsByModuleIdUseCase: GetLessonsByModuleIdUseCase(
         lessonService: services.lessonService,
       ),
+      getLessonByIdUseCase: GetLessonByIdUseCase(
+        lessonService: services.lessonService,
+      ),
       completeLessonUseCase: CompleteLessonUseCase(
         lessonService: services.lessonService,
         userStatisticsService: services.userStatisticsService,
@@ -134,7 +146,13 @@ class AppUseCases {
       getModulesByCourseIdUseCase: GetModulesByCourseIdUseCase(
         moduleService: services.moduleService,
       ),
+      getTaskByIdUseCase: GetTaskByIdUseCase(
+        taskService: services.taskService,
+      ),
       getTasksByLessonIdUseCase: GetTasksByLessonIdUseCase(
+        taskService: services.taskService,
+      ),
+      taskAnswerUseCase: TaskAnswerUseCase(
         taskService: services.taskService,
       ),
       getUserStatisticsUseCase: GetUserStatisticsUseCase(

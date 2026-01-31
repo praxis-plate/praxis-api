@@ -1,7 +1,6 @@
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:serverpod/serverpod.dart';
 
 class WalletValidator {
@@ -60,8 +59,7 @@ class WalletValidator {
     required String? expectedRelatedEntityId,
     required int? expectedReversalOfTransactionId,
   }) {
-    final existingType = CoinTransactionType.fromString(existing.type);
-    if (existingType != expectedType) {
+    if (existing.type != expectedType) {
       throw ValidationException(
         message: 'Transaction key already used with different type',
         field: 'transactionKey',
@@ -115,7 +113,13 @@ class WalletValidator {
 
   /// Validates amount for transaction type
   static void validateAmount(CoinTransactionType type, int amount) {
-    if (type != CoinTransactionType.adjustment && amount <= 0) {
+    if (amount == 0) {
+      throw ValidationException(
+        message: 'Amount must be non-zero',
+        field: 'amount',
+      );
+    }
+    if (type != CoinTransactionType.adjustment && amount < 0) {
       throw ValidationException(
         message: 'Amount is required and must be positive',
         field: 'amount',
@@ -191,9 +195,8 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.fromString(reversalTarget.type);
-    if (targetType != CoinTransactionType.buy &&
-        targetType != CoinTransactionType.capture) {
+    if (reversalTarget.type != CoinTransactionType.buy &&
+        reversalTarget.type != CoinTransactionType.capture) {
       throw ValidationException(
         message: 'Refund allowed only for buy or capture',
         field: 'reversalOfTransactionId',
@@ -204,7 +207,7 @@ class WalletValidator {
         .listByReversalIdAndType(
           session,
           reversalOfTransactionId: reversalTarget.id!,
-          type: CoinTransactionType.refund.value,
+          type: CoinTransactionType.refund,
           transaction: transaction,
         );
     final refundedTotal = previousRefunds.fold<int>(
@@ -231,21 +234,13 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.fromString(target.type);
-    if (targetType == null) {
-      throw ValidationException(
-        message: 'Unsupported reversal target type',
-        field: 'reversalOfTransactionId',
-      );
-    }
-
-    if (targetType == CoinTransactionType.reversal) {
+    if (target.type == CoinTransactionType.reversal) {
       throw ValidationException(
         message: 'Reversal of reversal is not allowed',
         field: 'reversalOfTransactionId',
       );
     }
 
-    return targetType;
+    return target.type;
   }
 }

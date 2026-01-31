@@ -4,7 +4,6 @@ import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/wallet/wallet_calculator.dart';
 import 'package:praxis_server/src/services/wallet/wallet_manager.dart';
 import 'package:praxis_server/src/services/wallet/wallet_transaction_processor.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
 import 'package:praxis_server/src/shared/mappers/wallet_balance_mapper.dart';

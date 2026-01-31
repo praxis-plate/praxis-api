@@ -3,7 +3,7 @@ fields:
   transactionKey: String
   amount: int
   currency: String?
-  type: String
+  type: CoinTransactionType
   relatedEntityId: String?
   reversalOfTransactionId: int?
   reason: String?

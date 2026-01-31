@@ -1,0 +1,10 @@
+enum: CoinTransactionType
+values:
+  - buy
+  - topUp
+  - hold
+  - capture
+  - release
+  - refund
+  - adjustment
+  - reversal

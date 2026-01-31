@@ -578,6 +578,24 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['moduleId'],
                   ),
         ),
+        'getById': _i1.MethodConnector(
+          name: 'getById',
+          params: {
+            'lessonId': _i1.ParameterDescription(
+              name: 'lessonId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['lesson'] as _i8.LessonEndpoint).getById(
+                session,
+                params['lessonId'],
+              ),
+        ),
         'markComplete': _i1.MethodConnector(
           name: 'markComplete',
           params: {
@@ -651,6 +669,24 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'task',
       endpoint: endpoints['task']!,
       methodConnectors: {
+        'getById': _i1.MethodConnector(
+          name: 'getById',
+          params: {
+            'taskId': _i1.ParameterDescription(
+              name: 'taskId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['task'] as _i10.TaskEndpoint).getById(
+                session,
+                params['taskId'],
+              ),
+        ),
         'getByLessonId': _i1.MethodConnector(
           name: 'getByLessonId',
           params: {
@@ -667,6 +703,30 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async => (endpoints['task'] as _i10.TaskEndpoint).getByLessonId(
                 session,
                 params['lessonId'],
+              ),
+        ),
+        'answer': _i1.MethodConnector(
+          name: 'answer',
+          params: {
+            'taskId': _i1.ParameterDescription(
+              name: 'taskId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'userAnswer': _i1.ParameterDescription(
+              name: 'userAnswer',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['task'] as _i10.TaskEndpoint).answer(
+                session,
+                params['taskId'],
+                params['userAnswer'],
               ),
         ),
       },

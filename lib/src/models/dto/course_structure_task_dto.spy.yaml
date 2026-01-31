@@ -1,6 +1,6 @@
 class: CourseStructureTaskDto
 fields:
   id: int
-  taskType: String
+  taskType: TaskType
   questionText: String
   orderIndex: int

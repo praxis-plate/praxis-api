@@ -1,0 +1,6 @@
+enum: TaskType
+values:
+  - multipleChoice
+  - codeCompletion
+  - matching
+  - textInput
