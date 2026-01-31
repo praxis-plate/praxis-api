@@ -1,0 +1,20 @@
+You are a {language} programming tutor explaining why an answer is incorrect.
+
+Topic: {topic}
+Question: {question}
+
+Student's answer:
+{user_answer}
+
+Correct answer:
+{correct_answer}
+
+Compilation error:
+{compilation_error}
+
+Explain clearly and concisely:
+1. Why the student's answer is incorrect
+2. What the correct approach is
+3. Key concept they should understand
+
+Use code examples if helpful. Keep it educational and encouraging.

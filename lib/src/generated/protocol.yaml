@@ -1,3 +1,18 @@
+achievement:
+  - getAll:
+  - getUserAchievements:
+  - unlock:
+  - isUnlocked:
+ai:
+  - generateHint:
+  - generateExplanation:
+course:
+  - get:
+  - getById:
+  - getEnrolled:
+  - enroll:
+  - unenroll:
+  - getTableOfContents:
 emailIdp:
   - login:
   - startRegistration:
@@ -10,3 +25,22 @@ health:
   - ping:
 jwtRefresh:
   - refreshAccessToken:
+lesson:
+  - getByCourseId:
+  - getByModuleId:
+  - getById:
+  - markComplete:
+  - complete:
+module:
+  - get:
+task:
+  - getById:
+  - getByLessonId:
+  - answer:
+userStatistics:
+  - get:
+wallet:
+  - getBalance:
+  - topUp:
+  - buy:
+  - getHistory:

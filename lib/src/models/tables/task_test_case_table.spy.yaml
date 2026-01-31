@@ -1,0 +1,16 @@
+class: TaskTestCase
+serverOnly: true
+table: task_test_case
+fields:
+  taskId: int
+  input: String
+  expectedOutput: String
+  isHidden: bool
+  orderIndex: int
+indexes:
+  task_test_case_task_id_idx:
+    fields: taskId
+    unique: false
+  task_test_case_task_id_order_idx:
+    fields: taskId, orderIndex
+    unique: false

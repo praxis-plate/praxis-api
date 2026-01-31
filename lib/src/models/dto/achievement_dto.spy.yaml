@@ -1,0 +1,7 @@
+class: AchievementDto
+fields:
+  id: int
+  title: String
+  description: String
+  iconUrl: String?
+  unlockedAt: DateTime?

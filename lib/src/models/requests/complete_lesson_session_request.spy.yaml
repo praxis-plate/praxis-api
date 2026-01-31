@@ -1,0 +1,8 @@
+class: CompleteLessonSessionRequest
+fields:
+  lessonId: int
+  totalXpEarned: int
+  bonusXp: int
+  timeSpentSeconds: int
+  totalTasks: int
+  correctTasks: int

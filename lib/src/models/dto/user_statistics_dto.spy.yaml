@@ -1,0 +1,8 @@
+class: UserStatisticsDto
+fields:
+  id: int
+  authUserId: String
+  currentStreak: int
+  maxStreak: int
+  experiencePoints: int
+  lastActiveDate: DateTime

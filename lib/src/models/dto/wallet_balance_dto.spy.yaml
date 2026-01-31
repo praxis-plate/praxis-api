@@ -1,0 +1,6 @@
+class: WalletBalanceDto
+fields:
+  balance: int
+  available: int
+  held: int
+  currency: String

@@ -1,0 +1,7 @@
+class: CourseStructureModuleDto
+fields:
+  id: int
+  title: String
+  description: String
+  orderIndex: int
+  lessons: List<CourseStructureLessonDto>

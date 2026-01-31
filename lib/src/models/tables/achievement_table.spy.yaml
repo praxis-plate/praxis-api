@@ -1,0 +1,15 @@
+class: Achievement
+serverOnly: true
+table: achievement
+fields:
+  title: String
+  description: String
+  iconUrl: String?
+  pointsReward: int
+  relatedCourseId: int?
+  conditionType: String
+  conditionValue: String?
+indexes:
+  achievement_condition_idx:
+    fields: conditionType
+    unique: false

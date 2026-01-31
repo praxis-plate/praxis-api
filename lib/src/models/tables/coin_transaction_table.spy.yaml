@@ -1,0 +1,22 @@
+class: CoinTransaction
+serverOnly: true
+table: coin_transaction
+fields:
+  authUserId: UuidValue
+  transactionKey: String
+  type: CoinTransactionType
+  status: String
+  amount: int
+  currency: String
+  relatedEntityId: String?
+  reversalOfTransactionId: int?
+  reason: String?
+  metadata: String?
+  createdAt: DateTime
+indexes:
+  coin_transaction_transaction_key_unique:
+    fields: transactionKey
+    unique: true
+  coin_transaction_auth_user_id_created_at_idx:
+    fields: authUserId, createdAt
+    unique: false

@@ -1,0 +1,21 @@
+class: Course
+serverOnly: true
+table: course
+fields:
+  title: String
+  description: String
+  author: String
+  category: String
+  priceInCoins: int
+  durationMinutes: int
+  rating: double
+  thumbnailUrl: String?
+  coverImage: String?
+  createdAt: DateTime
+indexes:
+  course_category_idx:
+    fields: category
+    unique: false
+  course_rating_idx:
+    fields: rating
+    unique: false

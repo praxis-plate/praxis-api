@@ -1,0 +1,19 @@
+class: Lesson
+serverOnly: true
+table: lesson
+fields:
+  moduleId: int
+  title: String
+  contentText: String
+  videoUrl: String?
+  imageUrls: String?
+  orderIndex: int
+  durationMinutes: int
+  createdAt: DateTime
+indexes:
+  lesson_module_id_idx:
+    fields: moduleId
+    unique: false
+  lesson_module_id_order_idx:
+    fields: moduleId, orderIndex
+    unique: false

@@ -16,10 +16,10 @@ Create Serverpod model files using the `.spy.yaml` extension (Serverpod-recommen
 
 ## Models structure
 
-- `shared/`
-  Reusable DTOs and common API types shared across endpoints.
+- `dto/`
+  Public DTOs shared across endpoints and clients.
 
-- `shared/exceptions/`
+- `exceptions/`
   Serializable exceptions used by services and endpoints.
 
 - `requests/`
@@ -40,5 +40,5 @@ Create Serverpod model files using the `.spy.yaml` extension (Serverpod-recommen
 
 - New models follow the correct folder and naming conventions.
 - Models intended for client use are not placed under `serverOnly`/tables.
-- Exceptions that must cross the wire are serializable and placed under `shared/exceptions/`.
+- Exceptions that must cross the wire are serializable and placed under `exceptions/`.
 - No manual edits to generated code; changes are made in `.spy.yaml` sources only.

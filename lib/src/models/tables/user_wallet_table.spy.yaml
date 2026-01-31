@@ -1,0 +1,15 @@
+class: UserWallet
+table: user_wallet
+fields:
+  authUserId: UuidValue
+  balance: int
+  available: int
+  held: int
+  currency: String
+  version: int
+  createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  user_wallet_auth_user_id_unique:
+    fields: authUserId
+    unique: true
