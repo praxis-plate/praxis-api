@@ -33,6 +33,7 @@ lesson:
 module:
   - get:
 task:
+  - getById:
   - getByLessonId:
 userStatistics:
   - get:
