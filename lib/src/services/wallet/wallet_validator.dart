@@ -60,7 +60,7 @@ class WalletValidator {
     required String? expectedRelatedEntityId,
     required int? expectedReversalOfTransactionId,
   }) {
-    final existingType = CoinTransactionType.fromString(existing.type);
+    final existingType = CoinTransactionType.values.byName(existing.type);
     if (existingType != expectedType) {
       throw ValidationException(
         message: 'Transaction key already used with different type',
@@ -191,7 +191,7 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.fromString(reversalTarget.type);
+    final targetType = CoinTransactionType.values.byName(reversalTarget.type);
     if (targetType != CoinTransactionType.buy &&
         targetType != CoinTransactionType.capture) {
       throw ValidationException(
@@ -231,13 +231,7 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.fromString(target.type);
-    if (targetType == null) {
-      throw ValidationException(
-        message: 'Unsupported reversal target type',
-        field: 'reversalOfTransactionId',
-      );
-    }
+    final targetType = CoinTransactionType.values.byName(target.type);
 
     if (targetType == CoinTransactionType.reversal) {
       throw ValidationException(

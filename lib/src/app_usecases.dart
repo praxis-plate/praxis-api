@@ -18,6 +18,7 @@ import 'package:praxis_server/src/usecases/lesson/mark_lesson_complete_use_case.
 import 'package:praxis_server/src/usecases/module/get_modules_by_course_id_use_case.dart';
 import 'package:praxis_server/src/usecases/task/get_task_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/task/get_tasks_by_lesson_id_use_case.dart';
+import 'package:praxis_server/src/usecases/task/task_answer_use_case.dart';
 import 'package:praxis_server/src/usecases/user_statistics/get_user_statistics_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/buy_with_wallet_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/get_wallet_balance_use_case.dart';
@@ -45,6 +46,7 @@ class AppUseCases {
   final GetModulesByCourseIdUseCase getModulesByCourseIdUseCase;
   final GetTaskByIdUseCase getTaskByIdUseCase;
   final GetTasksByLessonIdUseCase getTasksByLessonIdUseCase;
+  final TaskAnswerUseCase taskAnswerUseCase;
   final GetUserStatisticsUseCase getUserStatisticsUseCase;
   final GetWalletBalanceUseCase getWalletBalanceUseCase;
   final TopUpWalletUseCase topUpWalletUseCase;
@@ -71,6 +73,7 @@ class AppUseCases {
     required this.getModulesByCourseIdUseCase,
     required this.getTaskByIdUseCase,
     required this.getTasksByLessonIdUseCase,
+    required this.taskAnswerUseCase,
     required this.getUserStatisticsUseCase,
     required this.getWalletBalanceUseCase,
     required this.topUpWalletUseCase,
@@ -141,6 +144,9 @@ class AppUseCases {
         taskService: services.taskService,
       ),
       getTasksByLessonIdUseCase: GetTasksByLessonIdUseCase(
+        taskService: services.taskService,
+      ),
+      taskAnswerUseCase: TaskAnswerUseCase(
         taskService: services.taskService,
       ),
       getUserStatisticsUseCase: GetUserStatisticsUseCase(

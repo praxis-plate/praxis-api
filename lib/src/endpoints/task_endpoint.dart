@@ -16,4 +16,17 @@ class TaskEndpoint extends Endpoint {
       lessonId,
     );
   }
+
+  Future<Map<String, dynamic>> answer(
+    Session session,
+    int taskId,
+    String userAnswer,
+  ) async {
+    final result = await session.server.useCases.taskAnswerUseCase.execute(
+      session,
+      taskId,
+      userAnswer,
+    );
+    return result.toJson();
+  }
 }

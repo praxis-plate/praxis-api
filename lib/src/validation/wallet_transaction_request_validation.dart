@@ -45,6 +45,6 @@ extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
 
   String get normalizedTransactionKey => transactionKey.trim();
 
-  CoinTransactionType? get normalizedType =>
-      CoinTransactionType.fromString(type);
+  CoinTransactionType get normalizedType =>
+      CoinTransactionType.values.byName(type);
 }

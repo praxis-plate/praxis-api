@@ -20,6 +20,7 @@ import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
+import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
@@ -65,6 +66,7 @@ class AppServices {
     const taskDataSource = TaskDataSource();
     const taskOptionDataSource = TaskOptionDataSource();
     const taskTestCaseDataSource = TaskTestCaseDataSource();
+    const taskAnswerValidationService = TaskAnswerValidationService();
     const userAchievementDataSource = UserAchievementDataSource();
     const userCourseDataSource = UserCourseDataSource();
     const userStatisticsDataSource = UserStatisticsDataSource();
@@ -74,6 +76,7 @@ class AppServices {
       taskDataSource: taskDataSource,
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
+      validationService: taskAnswerValidationService,
     );
     final userStatisticsService = UserStatisticsService(
       dataSource: userStatisticsDataSource,
