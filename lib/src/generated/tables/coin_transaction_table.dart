@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/coin_transaction_type.dart' as _i2;
 
 abstract class CoinTransaction
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -33,7 +34,7 @@ abstract class CoinTransaction
     int? id,
     required _i1.UuidValue authUserId,
     required String transactionKey,
-    required String type,
+    required _i2.CoinTransactionType type,
     required String status,
     required int amount,
     required String currency,
@@ -51,7 +52,9 @@ abstract class CoinTransaction
         jsonSerialization['authUserId'],
       ),
       transactionKey: jsonSerialization['transactionKey'] as String,
-      type: jsonSerialization['type'] as String,
+      type: _i2.CoinTransactionType.fromJson(
+        (jsonSerialization['type'] as String),
+      ),
       status: jsonSerialization['status'] as String,
       amount: jsonSerialization['amount'] as int,
       currency: jsonSerialization['currency'] as String,
@@ -77,7 +80,7 @@ abstract class CoinTransaction
 
   String transactionKey;
 
-  String type;
+  _i2.CoinTransactionType type;
 
   String status;
 
@@ -105,7 +108,7 @@ abstract class CoinTransaction
     int? id,
     _i1.UuidValue? authUserId,
     String? transactionKey,
-    String? type,
+    _i2.CoinTransactionType? type,
     String? status,
     int? amount,
     String? currency,
@@ -122,7 +125,7 @@ abstract class CoinTransaction
       if (id != null) 'id': id,
       'authUserId': authUserId.toJson(),
       'transactionKey': transactionKey,
-      'type': type,
+      'type': type.toJson(),
       'status': status,
       'amount': amount,
       'currency': currency,
@@ -177,7 +180,7 @@ class _CoinTransactionImpl extends CoinTransaction {
     int? id,
     required _i1.UuidValue authUserId,
     required String transactionKey,
-    required String type,
+    required _i2.CoinTransactionType type,
     required String status,
     required int amount,
     required String currency,
@@ -209,7 +212,7 @@ class _CoinTransactionImpl extends CoinTransaction {
     Object? id = _Undefined,
     _i1.UuidValue? authUserId,
     String? transactionKey,
-    String? type,
+    _i2.CoinTransactionType? type,
     String? status,
     int? amount,
     String? currency,
@@ -256,7 +259,9 @@ class CoinTransactionUpdateTable extends _i1.UpdateTable<CoinTransactionTable> {
         value,
       );
 
-  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
+  _i1.ColumnValue<_i2.CoinTransactionType, _i2.CoinTransactionType> type(
+    _i2.CoinTransactionType value,
+  ) => _i1.ColumnValue(
     table.type,
     value,
   );
@@ -317,9 +322,10 @@ class CoinTransactionTable extends _i1.Table<int?> {
       'transactionKey',
       this,
     );
-    type = _i1.ColumnString(
+    type = _i1.ColumnEnum(
       'type',
       this,
+      _i1.EnumSerialization.byName,
     );
     status = _i1.ColumnString(
       'status',
@@ -361,7 +367,7 @@ class CoinTransactionTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString transactionKey;
 
-  late final _i1.ColumnString type;
+  late final _i1.ColumnEnum<_i2.CoinTransactionType> type;
 
   late final _i1.ColumnString status;
 

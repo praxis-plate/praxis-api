@@ -156,7 +156,7 @@ class WalletTransactionProcessor {
       session,
       authUserId: authUserId,
       transactionKey: transactionKey,
-      type: type.name,
+      type: type,
       status: CoinTransactionStatus.posted.value,
       amount: walletUpdate.amountForLedger,
       currency: currency,

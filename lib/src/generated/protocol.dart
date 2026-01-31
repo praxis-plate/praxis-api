@@ -224,7 +224,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'type',
           columnType: _i2.ColumnType.text,
           isNullable: false,
-          dartType: 'String',
+          dartType: 'protocol:CoinTransactionType',
         ),
         _i2.ColumnDefinition(
           name: 'status',

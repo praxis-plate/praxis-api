@@ -59,8 +59,7 @@ class WalletValidator {
     required String? expectedRelatedEntityId,
     required int? expectedReversalOfTransactionId,
   }) {
-    final existingType = CoinTransactionType.values.byName(existing.type);
-    if (existingType != expectedType) {
+    if (existing.type != expectedType) {
       throw ValidationException(
         message: 'Transaction key already used with different type',
         field: 'transactionKey',
@@ -196,9 +195,8 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.values.byName(reversalTarget.type);
-    if (targetType != CoinTransactionType.buy &&
-        targetType != CoinTransactionType.capture) {
+    if (reversalTarget.type != CoinTransactionType.buy &&
+        reversalTarget.type != CoinTransactionType.capture) {
       throw ValidationException(
         message: 'Refund allowed only for buy or capture',
         field: 'reversalOfTransactionId',
@@ -209,7 +207,7 @@ class WalletValidator {
         .listByReversalIdAndType(
           session,
           reversalOfTransactionId: reversalTarget.id!,
-          type: CoinTransactionType.refund.name,
+          type: CoinTransactionType.refund,
           transaction: transaction,
         );
     final refundedTotal = previousRefunds.fold<int>(
@@ -236,15 +234,13 @@ class WalletValidator {
       );
     }
 
-    final targetType = CoinTransactionType.values.byName(target.type);
-
-    if (targetType == CoinTransactionType.reversal) {
+    if (target.type == CoinTransactionType.reversal) {
       throw ValidationException(
         message: 'Reversal of reversal is not allowed',
         field: 'reversalOfTransactionId',
       );
     }
 
-    return targetType;
+    return target.type;
   }
 }

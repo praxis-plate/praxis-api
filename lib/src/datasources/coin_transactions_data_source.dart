@@ -8,7 +8,7 @@ class CoinTransactionsDataSource {
     Session session, {
     required UuidValue authUserId,
     required String transactionKey,
-    required String type,
+    required CoinTransactionType type,
     required String status,
     required int amount,
     required String currency,
@@ -83,7 +83,7 @@ class CoinTransactionsDataSource {
   Future<List<CoinTransaction>> listByReversalIdAndType(
     Session session, {
     required int reversalOfTransactionId,
-    required String type,
+    required CoinTransactionType type,
     Transaction? transaction,
   }) {
     return CoinTransaction.db.find(
