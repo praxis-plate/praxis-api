@@ -5,6 +5,7 @@ import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
+import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_data.dart';
 import 'package:praxis_server/src/services/course_seed/course_seed_models.dart';
 import 'package:praxis_server/src/services/course_seed/lesson_seed_data.dart';
@@ -108,9 +109,7 @@ class CourseSeedService {
     final tasks = TaskSeedData.getTasksForLesson(lessonTitle, moduleTitle);
 
     for (final taskSeed in tasks) {
-      final optionsJson = taskSeed.options == null
-          ? null
-          : jsonEncode(taskSeed.options);
+      final optionsJson = _buildOptionsJson(taskSeed);
 
       final task = await _taskDataSource.insert(
         session,
@@ -164,5 +163,47 @@ class CourseSeedService {
   bool _shouldSeedForRunMode(String runMode) {
     return runMode == ServerpodRunMode.test ||
         runMode == ServerpodRunMode.development;
+  }
+
+  String? _buildOptionsJson(TaskSeed taskSeed) {
+    if (taskSeed.taskType == TaskType.matching) {
+      final matchingOptions = _buildMatchingOptionsJson(
+        taskSeed.correctAnswer,
+      );
+      if (matchingOptions != null) {
+        return matchingOptions;
+      }
+    }
+
+    if (taskSeed.options == null) {
+      return null;
+    }
+
+    return jsonEncode(taskSeed.options);
+  }
+
+  String? _buildMatchingOptionsJson(String correctAnswer) {
+    try {
+      final decoded = jsonDecode(correctAnswer);
+      if (decoded is! Map) {
+        return null;
+      }
+
+      final pairs = <Map<String, String>>[];
+      decoded.forEach((key, value) {
+        pairs.add({
+          'left': key.toString(),
+          'right': value.toString(),
+        });
+      });
+
+      if (pairs.isEmpty) {
+        return null;
+      }
+
+      return jsonEncode({'pairs': pairs});
+    } catch (_) {
+      return null;
+    }
   }
 }
