@@ -98,6 +98,7 @@ class AppServices {
       transactionRunner: transactionRunner,
     );
     final courseService = CourseService(
+      coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
       moduleDataSource: moduleDataSource,
       lessonDataSource: lessonDataSource,

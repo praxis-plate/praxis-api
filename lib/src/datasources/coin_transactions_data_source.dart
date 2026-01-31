@@ -1,4 +1,5 @@
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CoinTransactionsDataSource {
@@ -93,5 +94,23 @@ class CoinTransactionsDataSource {
           t.type.equals(type),
       transaction: transaction,
     );
+  }
+
+  Future<bool> hasPostedBuyForCourse(
+    Session session, {
+    required UuidValue authUserId,
+    required int courseId,
+    Transaction? transaction,
+  }) async {
+    final existing = await CoinTransaction.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.authUserId.equals(authUserId) &
+          t.type.equals(CoinTransactionType.buy) &
+          t.status.equals(CoinTransactionStatus.posted.value) &
+          t.relatedEntityId.equals(courseId.toString()),
+      transaction: transaction,
+    );
+    return existing != null;
   }
 }
