@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/task_type.dart' as _i2;
 
 abstract class CourseStructureTaskDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -23,7 +24,7 @@ abstract class CourseStructureTaskDto
 
   factory CourseStructureTaskDto({
     required int id,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required int orderIndex,
   }) = _CourseStructureTaskDtoImpl;
@@ -33,7 +34,9 @@ abstract class CourseStructureTaskDto
   ) {
     return CourseStructureTaskDto(
       id: jsonSerialization['id'] as int,
-      taskType: jsonSerialization['taskType'] as String,
+      taskType: _i2.TaskType.fromJson(
+        (jsonSerialization['taskType'] as String),
+      ),
       questionText: jsonSerialization['questionText'] as String,
       orderIndex: jsonSerialization['orderIndex'] as int,
     );
@@ -41,7 +44,7 @@ abstract class CourseStructureTaskDto
 
   int id;
 
-  String taskType;
+  _i2.TaskType taskType;
 
   String questionText;
 
@@ -52,7 +55,7 @@ abstract class CourseStructureTaskDto
   @_i1.useResult
   CourseStructureTaskDto copyWith({
     int? id,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     int? orderIndex,
   });
@@ -61,7 +64,7 @@ abstract class CourseStructureTaskDto
     return {
       '__className__': 'CourseStructureTaskDto',
       'id': id,
-      'taskType': taskType,
+      'taskType': taskType.toJson(),
       'questionText': questionText,
       'orderIndex': orderIndex,
     };
@@ -72,7 +75,7 @@ abstract class CourseStructureTaskDto
     return {
       '__className__': 'CourseStructureTaskDto',
       'id': id,
-      'taskType': taskType,
+      'taskType': taskType.toJson(),
       'questionText': questionText,
       'orderIndex': orderIndex,
     };
@@ -87,7 +90,7 @@ abstract class CourseStructureTaskDto
 class _CourseStructureTaskDtoImpl extends CourseStructureTaskDto {
   _CourseStructureTaskDtoImpl({
     required int id,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required int orderIndex,
   }) : super._(
@@ -103,7 +106,7 @@ class _CourseStructureTaskDtoImpl extends CourseStructureTaskDto {
   @override
   CourseStructureTaskDto copyWith({
     int? id,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     int? orderIndex,
   }) {

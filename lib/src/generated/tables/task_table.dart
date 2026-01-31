@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/task_type.dart' as _i2;
 
 abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Task._({
@@ -35,7 +36,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Task({
     int? id,
     required int lessonId,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
     String? optionsJson,
@@ -55,7 +56,9 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return Task(
       id: jsonSerialization['id'] as int?,
       lessonId: jsonSerialization['lessonId'] as int,
-      taskType: jsonSerialization['taskType'] as String,
+      taskType: _i2.TaskType.fromJson(
+        (jsonSerialization['taskType'] as String),
+      ),
       questionText: jsonSerialization['questionText'] as String,
       correctAnswer: jsonSerialization['correctAnswer'] as String,
       optionsJson: jsonSerialization['optionsJson'] as String?,
@@ -83,7 +86,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int lessonId;
 
-  String taskType;
+  _i2.TaskType taskType;
 
   String questionText;
 
@@ -120,7 +123,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Task copyWith({
     int? id,
     int? lessonId,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
     String? optionsJson,
@@ -141,7 +144,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       '__className__': 'Task',
       if (id != null) 'id': id,
       'lessonId': lessonId,
-      'taskType': taskType,
+      'taskType': taskType.toJson(),
       'questionText': questionText,
       'correctAnswer': correctAnswer,
       if (optionsJson != null) 'optionsJson': optionsJson,
@@ -201,7 +204,7 @@ class _TaskImpl extends Task {
   _TaskImpl({
     int? id,
     required int lessonId,
-    required String taskType,
+    required _i2.TaskType taskType,
     required String questionText,
     required String correctAnswer,
     String? optionsJson,
@@ -241,7 +244,7 @@ class _TaskImpl extends Task {
   Task copyWith({
     Object? id = _Undefined,
     int? lessonId,
-    String? taskType,
+    _i2.TaskType? taskType,
     String? questionText,
     String? correctAnswer,
     Object? optionsJson = _Undefined,
@@ -291,10 +294,11 @@ class TaskUpdateTable extends _i1.UpdateTable<TaskTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> taskType(String value) => _i1.ColumnValue(
-    table.taskType,
-    value,
-  );
+  _i1.ColumnValue<_i2.TaskType, _i2.TaskType> taskType(_i2.TaskType value) =>
+      _i1.ColumnValue(
+        table.taskType,
+        value,
+      );
 
   _i1.ColumnValue<String, String> questionText(String value) => _i1.ColumnValue(
     table.questionText,
@@ -376,9 +380,10 @@ class TaskTable extends _i1.Table<int?> {
       'lessonId',
       this,
     );
-    taskType = _i1.ColumnString(
+    taskType = _i1.ColumnEnum(
       'taskType',
       this,
+      _i1.EnumSerialization.byName,
     );
     questionText = _i1.ColumnString(
       'questionText',
@@ -438,7 +443,7 @@ class TaskTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt lessonId;
 
-  late final _i1.ColumnString taskType;
+  late final _i1.ColumnEnum<_i2.TaskType> taskType;
 
   late final _i1.ColumnString questionText;
 

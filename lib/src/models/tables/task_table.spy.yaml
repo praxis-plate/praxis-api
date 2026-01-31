@@ -3,7 +3,7 @@ serverOnly: true
 table: task
 fields:
   lessonId: int
-  taskType: String
+  taskType: TaskType
   questionText: String
   correctAnswer: String
   optionsJson: String?

@@ -1,3 +1,5 @@
+import 'package:praxis_server/src/generated/protocol.dart';
+
 class CourseSeed {
   final String title;
   final String description;
@@ -53,7 +55,7 @@ class LessonSeed {
 }
 
 class TaskSeed {
-  final String taskType;
+  final TaskType taskType;
   final String questionText;
   final String correctAnswer;
   final List<String>? options;

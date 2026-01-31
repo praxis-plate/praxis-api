@@ -1,4 +1,4 @@
-import 'package:praxis_server/src/services/task/task_type.dart';
+import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/task/validators/code_completion_validator.dart';
 import 'package:praxis_server/src/services/task/validators/matching_validator.dart';
 import 'package:praxis_server/src/services/task/validators/multiple_choice_validator.dart';
@@ -17,7 +17,7 @@ class TaskValidatorFactory {
     final validator = _validators[taskType];
     if (validator == null) {
       throw ArgumentError(
-        'No validator found for task type: ${taskType.value}',
+        'No validator found for task type: ${taskType.name}',
       );
     }
     return validator;
