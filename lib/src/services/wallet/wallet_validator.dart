@@ -1,7 +1,6 @@
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:serverpod/serverpod.dart';
 
 class WalletValidator {
@@ -115,7 +114,13 @@ class WalletValidator {
 
   /// Validates amount for transaction type
   static void validateAmount(CoinTransactionType type, int amount) {
-    if (type != CoinTransactionType.adjustment && amount <= 0) {
+    if (amount == 0) {
+      throw ValidationException(
+        message: 'Amount must be non-zero',
+        field: 'amount',
+      );
+    }
+    if (type != CoinTransactionType.adjustment && amount < 0) {
       throw ValidationException(
         message: 'Amount is required and must be positive',
         field: 'amount',
@@ -204,7 +209,7 @@ class WalletValidator {
         .listByReversalIdAndType(
           session,
           reversalOfTransactionId: reversalTarget.id!,
-          type: CoinTransactionType.refund.value,
+          type: CoinTransactionType.refund.name,
           transaction: transaction,
         );
     final refundedTotal = previousRefunds.fold<int>(

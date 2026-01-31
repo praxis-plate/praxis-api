@@ -35,6 +35,7 @@ module:
 task:
   - getById:
   - getByLessonId:
+  - answer:
 userStatistics:
   - get:
 wallet:

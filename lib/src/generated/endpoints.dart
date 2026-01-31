@@ -687,6 +687,30 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['lessonId'],
               ),
         ),
+        'answer': _i1.MethodConnector(
+          name: 'answer',
+          params: {
+            'taskId': _i1.ParameterDescription(
+              name: 'taskId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'userAnswer': _i1.ParameterDescription(
+              name: 'userAnswer',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['task'] as _i10.TaskEndpoint).answer(
+                session,
+                params['taskId'],
+                params['userAnswer'],
+              ),
+        ),
       },
     );
     connectors['userStatistics'] = _i1.EndpointConnector(

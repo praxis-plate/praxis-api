@@ -1,5 +1,4 @@
 import 'package:praxis_server/src/generated/protocol.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/constants/wallet_constants.dart';
 
 extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
@@ -7,7 +6,7 @@ extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
     _validateBase();
     if (normalizedType != CoinTransactionType.buy) {
       throw ValidationException(
-        message: 'Type must be "${CoinTransactionType.buy.value}"',
+        message: 'Type must be "${CoinTransactionType.buy.name}"',
         field: 'type',
       );
     }
@@ -17,7 +16,7 @@ extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
     _validateBase();
     if (normalizedType != CoinTransactionType.topUp) {
       throw ValidationException(
-        message: 'Type must be "${CoinTransactionType.topUp.value}"',
+        message: 'Type must be "${CoinTransactionType.topUp.name}"',
         field: 'type',
       );
     }
@@ -45,6 +44,5 @@ extension WalletTransactionRequestValidation on CreateCoinTransactionRequest {
 
   String get normalizedTransactionKey => transactionKey.trim();
 
-  CoinTransactionType get normalizedType =>
-      CoinTransactionType.values.byName(type);
+  CoinTransactionType get normalizedType => type;
 }

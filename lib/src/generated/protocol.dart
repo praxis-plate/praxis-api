@@ -32,33 +32,34 @@ import 'dto/task_option_dto.dart' as _i17;
 import 'dto/task_test_case_dto.dart' as _i18;
 import 'dto/user_statistics_dto.dart' as _i19;
 import 'dto/wallet_balance_dto.dart' as _i20;
-import 'exceptions/not_found_exception.dart' as _i21;
-import 'exceptions/validation_exception.dart' as _i22;
-import 'requests/complete_lesson_session_request.dart' as _i23;
-import 'requests/create_coin_transaction_request.dart' as _i24;
-import 'requests/generate_explanation_request.dart' as _i25;
-import 'requests/generate_hint_request.dart' as _i26;
-import 'responses/ai_response.dart' as _i27;
-import 'tables/achievement_table.dart' as _i28;
-import 'tables/coin_transaction_table.dart' as _i29;
-import 'tables/course_table.dart' as _i30;
-import 'tables/lesson_progress_table.dart' as _i31;
-import 'tables/lesson_table.dart' as _i32;
-import 'tables/module_table.dart' as _i33;
-import 'tables/task_option_table.dart' as _i34;
-import 'tables/task_table.dart' as _i35;
-import 'tables/task_test_case_table.dart' as _i36;
-import 'tables/user_achievement_table.dart' as _i37;
-import 'tables/user_course_table.dart' as _i38;
-import 'tables/user_statistics_table.dart' as _i39;
-import 'tables/user_wallet_table.dart' as _i40;
-import 'package:praxis_server/src/generated/dto/achievement_dto.dart' as _i41;
-import 'package:praxis_server/src/generated/dto/course_dto.dart' as _i42;
-import 'package:praxis_server/src/generated/dto/lesson_dto.dart' as _i43;
-import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i44;
-import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i45;
+import 'enums/coin_transaction_type.dart' as _i21;
+import 'exceptions/not_found_exception.dart' as _i22;
+import 'exceptions/validation_exception.dart' as _i23;
+import 'requests/complete_lesson_session_request.dart' as _i24;
+import 'requests/create_coin_transaction_request.dart' as _i25;
+import 'requests/generate_explanation_request.dart' as _i26;
+import 'requests/generate_hint_request.dart' as _i27;
+import 'responses/ai_response.dart' as _i28;
+import 'tables/achievement_table.dart' as _i29;
+import 'tables/coin_transaction_table.dart' as _i30;
+import 'tables/course_table.dart' as _i31;
+import 'tables/lesson_progress_table.dart' as _i32;
+import 'tables/lesson_table.dart' as _i33;
+import 'tables/module_table.dart' as _i34;
+import 'tables/task_option_table.dart' as _i35;
+import 'tables/task_table.dart' as _i36;
+import 'tables/task_test_case_table.dart' as _i37;
+import 'tables/user_achievement_table.dart' as _i38;
+import 'tables/user_course_table.dart' as _i39;
+import 'tables/user_statistics_table.dart' as _i40;
+import 'tables/user_wallet_table.dart' as _i41;
+import 'package:praxis_server/src/generated/dto/achievement_dto.dart' as _i42;
+import 'package:praxis_server/src/generated/dto/course_dto.dart' as _i43;
+import 'package:praxis_server/src/generated/dto/lesson_dto.dart' as _i44;
+import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i45;
+import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i46;
 import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
-    as _i46;
+    as _i47;
 export 'dto/achievement_dto.dart';
 export 'dto/coin_transaction_dto.dart';
 export 'dto/course_detail_dto.dart';
@@ -75,6 +76,7 @@ export 'dto/task_option_dto.dart';
 export 'dto/task_test_case_dto.dart';
 export 'dto/user_statistics_dto.dart';
 export 'dto/wallet_balance_dto.dart';
+export 'enums/coin_transaction_type.dart';
 export 'exceptions/not_found_exception.dart';
 export 'exceptions/validation_exception.dart';
 export 'requests/complete_lesson_session_request.dart';
@@ -1481,65 +1483,68 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i20.WalletBalanceDto) {
       return _i20.WalletBalanceDto.fromJson(data) as T;
     }
-    if (t == _i21.NotFoundException) {
-      return _i21.NotFoundException.fromJson(data) as T;
+    if (t == _i21.CoinTransactionType) {
+      return _i21.CoinTransactionType.fromJson(data) as T;
     }
-    if (t == _i22.ValidationException) {
-      return _i22.ValidationException.fromJson(data) as T;
+    if (t == _i22.NotFoundException) {
+      return _i22.NotFoundException.fromJson(data) as T;
     }
-    if (t == _i23.CompleteLessonSessionRequest) {
-      return _i23.CompleteLessonSessionRequest.fromJson(data) as T;
+    if (t == _i23.ValidationException) {
+      return _i23.ValidationException.fromJson(data) as T;
     }
-    if (t == _i24.CreateCoinTransactionRequest) {
-      return _i24.CreateCoinTransactionRequest.fromJson(data) as T;
+    if (t == _i24.CompleteLessonSessionRequest) {
+      return _i24.CompleteLessonSessionRequest.fromJson(data) as T;
     }
-    if (t == _i25.GenerateExplanationRequest) {
-      return _i25.GenerateExplanationRequest.fromJson(data) as T;
+    if (t == _i25.CreateCoinTransactionRequest) {
+      return _i25.CreateCoinTransactionRequest.fromJson(data) as T;
     }
-    if (t == _i26.GenerateHintRequest) {
-      return _i26.GenerateHintRequest.fromJson(data) as T;
+    if (t == _i26.GenerateExplanationRequest) {
+      return _i26.GenerateExplanationRequest.fromJson(data) as T;
     }
-    if (t == _i27.AiResponse) {
-      return _i27.AiResponse.fromJson(data) as T;
+    if (t == _i27.GenerateHintRequest) {
+      return _i27.GenerateHintRequest.fromJson(data) as T;
     }
-    if (t == _i28.Achievement) {
-      return _i28.Achievement.fromJson(data) as T;
+    if (t == _i28.AiResponse) {
+      return _i28.AiResponse.fromJson(data) as T;
     }
-    if (t == _i29.CoinTransaction) {
-      return _i29.CoinTransaction.fromJson(data) as T;
+    if (t == _i29.Achievement) {
+      return _i29.Achievement.fromJson(data) as T;
     }
-    if (t == _i30.Course) {
-      return _i30.Course.fromJson(data) as T;
+    if (t == _i30.CoinTransaction) {
+      return _i30.CoinTransaction.fromJson(data) as T;
     }
-    if (t == _i31.LessonProgress) {
-      return _i31.LessonProgress.fromJson(data) as T;
+    if (t == _i31.Course) {
+      return _i31.Course.fromJson(data) as T;
     }
-    if (t == _i32.Lesson) {
-      return _i32.Lesson.fromJson(data) as T;
+    if (t == _i32.LessonProgress) {
+      return _i32.LessonProgress.fromJson(data) as T;
     }
-    if (t == _i33.Module) {
-      return _i33.Module.fromJson(data) as T;
+    if (t == _i33.Lesson) {
+      return _i33.Lesson.fromJson(data) as T;
     }
-    if (t == _i34.TaskOption) {
-      return _i34.TaskOption.fromJson(data) as T;
+    if (t == _i34.Module) {
+      return _i34.Module.fromJson(data) as T;
     }
-    if (t == _i35.Task) {
-      return _i35.Task.fromJson(data) as T;
+    if (t == _i35.TaskOption) {
+      return _i35.TaskOption.fromJson(data) as T;
     }
-    if (t == _i36.TaskTestCase) {
-      return _i36.TaskTestCase.fromJson(data) as T;
+    if (t == _i36.Task) {
+      return _i36.Task.fromJson(data) as T;
     }
-    if (t == _i37.UserAchievement) {
-      return _i37.UserAchievement.fromJson(data) as T;
+    if (t == _i37.TaskTestCase) {
+      return _i37.TaskTestCase.fromJson(data) as T;
     }
-    if (t == _i38.UserCourse) {
-      return _i38.UserCourse.fromJson(data) as T;
+    if (t == _i38.UserAchievement) {
+      return _i38.UserAchievement.fromJson(data) as T;
     }
-    if (t == _i39.UserStatistics) {
-      return _i39.UserStatistics.fromJson(data) as T;
+    if (t == _i39.UserCourse) {
+      return _i39.UserCourse.fromJson(data) as T;
     }
-    if (t == _i40.UserWallet) {
-      return _i40.UserWallet.fromJson(data) as T;
+    if (t == _i40.UserStatistics) {
+      return _i40.UserStatistics.fromJson(data) as T;
+    }
+    if (t == _i41.UserWallet) {
+      return _i41.UserWallet.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.AchievementDto?>()) {
       return (data != null ? _i5.AchievementDto.fromJson(data) : null) as T;
@@ -1599,76 +1604,80 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i20.WalletBalanceDto?>()) {
       return (data != null ? _i20.WalletBalanceDto.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.NotFoundException?>()) {
-      return (data != null ? _i21.NotFoundException.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i22.ValidationException?>()) {
-      return (data != null ? _i22.ValidationException.fromJson(data) : null)
+    if (t == _i1.getType<_i21.CoinTransactionType?>()) {
+      return (data != null ? _i21.CoinTransactionType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i23.CompleteLessonSessionRequest?>()) {
+    if (t == _i1.getType<_i22.NotFoundException?>()) {
+      return (data != null ? _i22.NotFoundException.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.ValidationException?>()) {
+      return (data != null ? _i23.ValidationException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i24.CompleteLessonSessionRequest?>()) {
       return (data != null
-              ? _i23.CompleteLessonSessionRequest.fromJson(data)
+              ? _i24.CompleteLessonSessionRequest.fromJson(data)
               : null)
           as T;
     }
-    if (t == _i1.getType<_i24.CreateCoinTransactionRequest?>()) {
+    if (t == _i1.getType<_i25.CreateCoinTransactionRequest?>()) {
       return (data != null
-              ? _i24.CreateCoinTransactionRequest.fromJson(data)
+              ? _i25.CreateCoinTransactionRequest.fromJson(data)
               : null)
           as T;
     }
-    if (t == _i1.getType<_i25.GenerateExplanationRequest?>()) {
+    if (t == _i1.getType<_i26.GenerateExplanationRequest?>()) {
       return (data != null
-              ? _i25.GenerateExplanationRequest.fromJson(data)
+              ? _i26.GenerateExplanationRequest.fromJson(data)
               : null)
           as T;
     }
-    if (t == _i1.getType<_i26.GenerateHintRequest?>()) {
-      return (data != null ? _i26.GenerateHintRequest.fromJson(data) : null)
+    if (t == _i1.getType<_i27.GenerateHintRequest?>()) {
+      return (data != null ? _i27.GenerateHintRequest.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i27.AiResponse?>()) {
-      return (data != null ? _i27.AiResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.AiResponse?>()) {
+      return (data != null ? _i28.AiResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.Achievement?>()) {
-      return (data != null ? _i28.Achievement.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.Achievement?>()) {
+      return (data != null ? _i29.Achievement.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.CoinTransaction?>()) {
-      return (data != null ? _i29.CoinTransaction.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.CoinTransaction?>()) {
+      return (data != null ? _i30.CoinTransaction.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.Course?>()) {
-      return (data != null ? _i30.Course.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i31.Course?>()) {
+      return (data != null ? _i31.Course.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i31.LessonProgress?>()) {
-      return (data != null ? _i31.LessonProgress.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.LessonProgress?>()) {
+      return (data != null ? _i32.LessonProgress.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.Lesson?>()) {
-      return (data != null ? _i32.Lesson.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.Lesson?>()) {
+      return (data != null ? _i33.Lesson.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i33.Module?>()) {
-      return (data != null ? _i33.Module.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i34.Module?>()) {
+      return (data != null ? _i34.Module.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i34.TaskOption?>()) {
-      return (data != null ? _i34.TaskOption.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i35.TaskOption?>()) {
+      return (data != null ? _i35.TaskOption.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i35.Task?>()) {
-      return (data != null ? _i35.Task.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i36.Task?>()) {
+      return (data != null ? _i36.Task.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i36.TaskTestCase?>()) {
-      return (data != null ? _i36.TaskTestCase.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i37.TaskTestCase?>()) {
+      return (data != null ? _i37.TaskTestCase.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i37.UserAchievement?>()) {
-      return (data != null ? _i37.UserAchievement.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i38.UserAchievement?>()) {
+      return (data != null ? _i38.UserAchievement.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i38.UserCourse?>()) {
-      return (data != null ? _i38.UserCourse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i39.UserCourse?>()) {
+      return (data != null ? _i39.UserCourse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i39.UserStatistics?>()) {
-      return (data != null ? _i39.UserStatistics.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i40.UserStatistics?>()) {
+      return (data != null ? _i40.UserStatistics.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i40.UserWallet?>()) {
-      return (data != null ? _i40.UserWallet.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i41.UserWallet?>()) {
+      return (data != null ? _i41.UserWallet.fromJson(data) : null) as T;
     }
     if (t == List<_i15.ModuleDto>) {
       return (data as List).map((e) => deserialize<_i15.ModuleDto>(e)).toList()
@@ -1718,31 +1727,37 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           as T;
     }
-    if (t == List<_i41.AchievementDto>) {
+    if (t == List<_i42.AchievementDto>) {
       return (data as List)
-              .map((e) => deserialize<_i41.AchievementDto>(e))
+              .map((e) => deserialize<_i42.AchievementDto>(e))
               .toList()
           as T;
     }
-    if (t == List<_i42.CourseDto>) {
-      return (data as List).map((e) => deserialize<_i42.CourseDto>(e)).toList()
+    if (t == List<_i43.CourseDto>) {
+      return (data as List).map((e) => deserialize<_i43.CourseDto>(e)).toList()
           as T;
     }
-    if (t == List<_i43.LessonDto>) {
-      return (data as List).map((e) => deserialize<_i43.LessonDto>(e)).toList()
+    if (t == List<_i44.LessonDto>) {
+      return (data as List).map((e) => deserialize<_i44.LessonDto>(e)).toList()
           as T;
     }
-    if (t == List<_i44.ModuleDto>) {
-      return (data as List).map((e) => deserialize<_i44.ModuleDto>(e)).toList()
+    if (t == List<_i45.ModuleDto>) {
+      return (data as List).map((e) => deserialize<_i45.ModuleDto>(e)).toList()
           as T;
     }
-    if (t == List<_i45.TaskDto>) {
-      return (data as List).map((e) => deserialize<_i45.TaskDto>(e)).toList()
+    if (t == List<_i46.TaskDto>) {
+      return (data as List).map((e) => deserialize<_i46.TaskDto>(e)).toList()
           as T;
     }
-    if (t == List<_i46.CoinTransactionDto>) {
+    if (t == Map<String, dynamic>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<dynamic>(v)),
+          )
+          as T;
+    }
+    if (t == List<_i47.CoinTransactionDto>) {
       return (data as List)
-              .map((e) => deserialize<_i46.CoinTransactionDto>(e))
+              .map((e) => deserialize<_i47.CoinTransactionDto>(e))
               .toList()
           as T;
     }
@@ -1776,26 +1791,27 @@ class Protocol extends _i1.SerializationManagerServer {
       _i18.TaskTestCaseDto => 'TaskTestCaseDto',
       _i19.UserStatisticsDto => 'UserStatisticsDto',
       _i20.WalletBalanceDto => 'WalletBalanceDto',
-      _i21.NotFoundException => 'NotFoundException',
-      _i22.ValidationException => 'ValidationException',
-      _i23.CompleteLessonSessionRequest => 'CompleteLessonSessionRequest',
-      _i24.CreateCoinTransactionRequest => 'CreateCoinTransactionRequest',
-      _i25.GenerateExplanationRequest => 'GenerateExplanationRequest',
-      _i26.GenerateHintRequest => 'GenerateHintRequest',
-      _i27.AiResponse => 'AiResponse',
-      _i28.Achievement => 'Achievement',
-      _i29.CoinTransaction => 'CoinTransaction',
-      _i30.Course => 'Course',
-      _i31.LessonProgress => 'LessonProgress',
-      _i32.Lesson => 'Lesson',
-      _i33.Module => 'Module',
-      _i34.TaskOption => 'TaskOption',
-      _i35.Task => 'Task',
-      _i36.TaskTestCase => 'TaskTestCase',
-      _i37.UserAchievement => 'UserAchievement',
-      _i38.UserCourse => 'UserCourse',
-      _i39.UserStatistics => 'UserStatistics',
-      _i40.UserWallet => 'UserWallet',
+      _i21.CoinTransactionType => 'CoinTransactionType',
+      _i22.NotFoundException => 'NotFoundException',
+      _i23.ValidationException => 'ValidationException',
+      _i24.CompleteLessonSessionRequest => 'CompleteLessonSessionRequest',
+      _i25.CreateCoinTransactionRequest => 'CreateCoinTransactionRequest',
+      _i26.GenerateExplanationRequest => 'GenerateExplanationRequest',
+      _i27.GenerateHintRequest => 'GenerateHintRequest',
+      _i28.AiResponse => 'AiResponse',
+      _i29.Achievement => 'Achievement',
+      _i30.CoinTransaction => 'CoinTransaction',
+      _i31.Course => 'Course',
+      _i32.LessonProgress => 'LessonProgress',
+      _i33.Lesson => 'Lesson',
+      _i34.Module => 'Module',
+      _i35.TaskOption => 'TaskOption',
+      _i36.Task => 'Task',
+      _i37.TaskTestCase => 'TaskTestCase',
+      _i38.UserAchievement => 'UserAchievement',
+      _i39.UserCourse => 'UserCourse',
+      _i40.UserStatistics => 'UserStatistics',
+      _i41.UserWallet => 'UserWallet',
       _ => null,
     };
   }
@@ -1842,45 +1858,47 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'UserStatisticsDto';
       case _i20.WalletBalanceDto():
         return 'WalletBalanceDto';
-      case _i21.NotFoundException():
+      case _i21.CoinTransactionType():
+        return 'CoinTransactionType';
+      case _i22.NotFoundException():
         return 'NotFoundException';
-      case _i22.ValidationException():
+      case _i23.ValidationException():
         return 'ValidationException';
-      case _i23.CompleteLessonSessionRequest():
+      case _i24.CompleteLessonSessionRequest():
         return 'CompleteLessonSessionRequest';
-      case _i24.CreateCoinTransactionRequest():
+      case _i25.CreateCoinTransactionRequest():
         return 'CreateCoinTransactionRequest';
-      case _i25.GenerateExplanationRequest():
+      case _i26.GenerateExplanationRequest():
         return 'GenerateExplanationRequest';
-      case _i26.GenerateHintRequest():
+      case _i27.GenerateHintRequest():
         return 'GenerateHintRequest';
-      case _i27.AiResponse():
+      case _i28.AiResponse():
         return 'AiResponse';
-      case _i28.Achievement():
+      case _i29.Achievement():
         return 'Achievement';
-      case _i29.CoinTransaction():
+      case _i30.CoinTransaction():
         return 'CoinTransaction';
-      case _i30.Course():
+      case _i31.Course():
         return 'Course';
-      case _i31.LessonProgress():
+      case _i32.LessonProgress():
         return 'LessonProgress';
-      case _i32.Lesson():
+      case _i33.Lesson():
         return 'Lesson';
-      case _i33.Module():
+      case _i34.Module():
         return 'Module';
-      case _i34.TaskOption():
+      case _i35.TaskOption():
         return 'TaskOption';
-      case _i35.Task():
+      case _i36.Task():
         return 'Task';
-      case _i36.TaskTestCase():
+      case _i37.TaskTestCase():
         return 'TaskTestCase';
-      case _i37.UserAchievement():
+      case _i38.UserAchievement():
         return 'UserAchievement';
-      case _i38.UserCourse():
+      case _i39.UserCourse():
         return 'UserCourse';
-      case _i39.UserStatistics():
+      case _i40.UserStatistics():
         return 'UserStatistics';
-      case _i40.UserWallet():
+      case _i41.UserWallet():
         return 'UserWallet';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -1952,65 +1970,68 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'WalletBalanceDto') {
       return deserialize<_i20.WalletBalanceDto>(data['data']);
     }
+    if (dataClassName == 'CoinTransactionType') {
+      return deserialize<_i21.CoinTransactionType>(data['data']);
+    }
     if (dataClassName == 'NotFoundException') {
-      return deserialize<_i21.NotFoundException>(data['data']);
+      return deserialize<_i22.NotFoundException>(data['data']);
     }
     if (dataClassName == 'ValidationException') {
-      return deserialize<_i22.ValidationException>(data['data']);
+      return deserialize<_i23.ValidationException>(data['data']);
     }
     if (dataClassName == 'CompleteLessonSessionRequest') {
-      return deserialize<_i23.CompleteLessonSessionRequest>(data['data']);
+      return deserialize<_i24.CompleteLessonSessionRequest>(data['data']);
     }
     if (dataClassName == 'CreateCoinTransactionRequest') {
-      return deserialize<_i24.CreateCoinTransactionRequest>(data['data']);
+      return deserialize<_i25.CreateCoinTransactionRequest>(data['data']);
     }
     if (dataClassName == 'GenerateExplanationRequest') {
-      return deserialize<_i25.GenerateExplanationRequest>(data['data']);
+      return deserialize<_i26.GenerateExplanationRequest>(data['data']);
     }
     if (dataClassName == 'GenerateHintRequest') {
-      return deserialize<_i26.GenerateHintRequest>(data['data']);
+      return deserialize<_i27.GenerateHintRequest>(data['data']);
     }
     if (dataClassName == 'AiResponse') {
-      return deserialize<_i27.AiResponse>(data['data']);
+      return deserialize<_i28.AiResponse>(data['data']);
     }
     if (dataClassName == 'Achievement') {
-      return deserialize<_i28.Achievement>(data['data']);
+      return deserialize<_i29.Achievement>(data['data']);
     }
     if (dataClassName == 'CoinTransaction') {
-      return deserialize<_i29.CoinTransaction>(data['data']);
+      return deserialize<_i30.CoinTransaction>(data['data']);
     }
     if (dataClassName == 'Course') {
-      return deserialize<_i30.Course>(data['data']);
+      return deserialize<_i31.Course>(data['data']);
     }
     if (dataClassName == 'LessonProgress') {
-      return deserialize<_i31.LessonProgress>(data['data']);
+      return deserialize<_i32.LessonProgress>(data['data']);
     }
     if (dataClassName == 'Lesson') {
-      return deserialize<_i32.Lesson>(data['data']);
+      return deserialize<_i33.Lesson>(data['data']);
     }
     if (dataClassName == 'Module') {
-      return deserialize<_i33.Module>(data['data']);
+      return deserialize<_i34.Module>(data['data']);
     }
     if (dataClassName == 'TaskOption') {
-      return deserialize<_i34.TaskOption>(data['data']);
+      return deserialize<_i35.TaskOption>(data['data']);
     }
     if (dataClassName == 'Task') {
-      return deserialize<_i35.Task>(data['data']);
+      return deserialize<_i36.Task>(data['data']);
     }
     if (dataClassName == 'TaskTestCase') {
-      return deserialize<_i36.TaskTestCase>(data['data']);
+      return deserialize<_i37.TaskTestCase>(data['data']);
     }
     if (dataClassName == 'UserAchievement') {
-      return deserialize<_i37.UserAchievement>(data['data']);
+      return deserialize<_i38.UserAchievement>(data['data']);
     }
     if (dataClassName == 'UserCourse') {
-      return deserialize<_i38.UserCourse>(data['data']);
+      return deserialize<_i39.UserCourse>(data['data']);
     }
     if (dataClassName == 'UserStatistics') {
-      return deserialize<_i39.UserStatistics>(data['data']);
+      return deserialize<_i40.UserStatistics>(data['data']);
     }
     if (dataClassName == 'UserWallet') {
-      return deserialize<_i40.UserWallet>(data['data']);
+      return deserialize<_i41.UserWallet>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -2048,32 +2069,32 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i28.Achievement:
-        return _i28.Achievement.t;
-      case _i29.CoinTransaction:
-        return _i29.CoinTransaction.t;
-      case _i30.Course:
-        return _i30.Course.t;
-      case _i31.LessonProgress:
-        return _i31.LessonProgress.t;
-      case _i32.Lesson:
-        return _i32.Lesson.t;
-      case _i33.Module:
-        return _i33.Module.t;
-      case _i34.TaskOption:
-        return _i34.TaskOption.t;
-      case _i35.Task:
-        return _i35.Task.t;
-      case _i36.TaskTestCase:
-        return _i36.TaskTestCase.t;
-      case _i37.UserAchievement:
-        return _i37.UserAchievement.t;
-      case _i38.UserCourse:
-        return _i38.UserCourse.t;
-      case _i39.UserStatistics:
-        return _i39.UserStatistics.t;
-      case _i40.UserWallet:
-        return _i40.UserWallet.t;
+      case _i29.Achievement:
+        return _i29.Achievement.t;
+      case _i30.CoinTransaction:
+        return _i30.CoinTransaction.t;
+      case _i31.Course:
+        return _i31.Course.t;
+      case _i32.LessonProgress:
+        return _i32.LessonProgress.t;
+      case _i33.Lesson:
+        return _i33.Lesson.t;
+      case _i34.Module:
+        return _i34.Module.t;
+      case _i35.TaskOption:
+        return _i35.TaskOption.t;
+      case _i36.Task:
+        return _i36.Task.t;
+      case _i37.TaskTestCase:
+        return _i37.TaskTestCase.t;
+      case _i38.UserAchievement:
+        return _i38.UserAchievement.t;
+      case _i39.UserCourse:
+        return _i39.UserCourse.t;
+      case _i40.UserStatistics:
+        return _i40.UserStatistics.t;
+      case _i41.UserWallet:
+        return _i41.UserWallet.t;
     }
     return null;
   }

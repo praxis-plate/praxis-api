@@ -5,7 +5,6 @@ import 'package:praxis_server/src/services/wallet/wallet_calculator.dart';
 import 'package:praxis_server/src/services/wallet/wallet_manager.dart';
 import 'package:praxis_server/src/services/wallet/wallet_validator.dart';
 import 'package:praxis_server/src/shared/constants/coin_transaction_status.dart';
-import 'package:praxis_server/src/shared/constants/coin_transaction_type.dart';
 import 'package:praxis_server/src/shared/mappers/coin_transaction_mapper.dart';
 import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
@@ -157,7 +156,7 @@ class WalletTransactionProcessor {
       session,
       authUserId: authUserId,
       transactionKey: transactionKey,
-      type: type.value,
+      type: type.name,
       status: CoinTransactionStatus.posted.value,
       amount: walletUpdate.amountForLedger,
       currency: currency,
