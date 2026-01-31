@@ -18,6 +18,32 @@ class TaskService {
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource;
 
+  Future<TaskDto> getTaskById(
+    Session session,
+    int taskId,
+  ) async {
+    final task = await _taskDataSource.findById(session, taskId);
+    if (task == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+
+    final options = await _taskOptionDataSource.listByTaskId(
+      session,
+      taskId,
+    );
+    final testCases = await _taskTestCaseDataSource.listByTaskId(
+      session,
+      taskId,
+    );
+
+    return task.toTaskDto(
+      options: options.map((option) => option.toTaskOptionDto()).toList(),
+      testCases: testCases
+          .map((testCase) => testCase.toTaskTestCaseDto())
+          .toList(),
+    );
+  }
+
   Future<List<TaskDto>> getTasksByLessonId(
     Session session,
     int lessonId,
