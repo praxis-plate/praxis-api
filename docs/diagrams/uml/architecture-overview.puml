@@ -1,0 +1,89 @@
+@startuml Praxis API Architecture
+!theme plain
+skinparam backgroundColor white
+
+' Colors from praxis theme
+skinparam rectangle {
+  BackgroundColor<<api>> #10B981
+  BorderColor<<api>> #059669
+  FontColor<<api>> #FFFFFF
+  
+  BackgroundColor<<business>> #FED7AA
+  BorderColor<<business>> #F97316
+  FontColor<<business>> #7C2D12
+  
+  BackgroundColor<<data>> #FFEDD5
+  BorderColor<<data>> #FB923C
+  FontColor<<data>> #7C2D12
+}
+
+skinparam database {
+  BackgroundColor #EEEEEF
+  BorderColor #E0E0E0
+  FontColor #424242
+}
+
+skinparam arrow {
+  Color #424242
+  FontColor #424242
+}
+
+title Praxis API - Layered Architecture
+
+rectangle "API Layer" <<api>> {
+  [Endpoints]
+}
+
+rectangle "Business Layer" <<business>> {
+  [Use Cases]
+  [Services]
+  [Validation]
+}
+
+rectangle "Data Layer" <<data>> {
+  [Data Sources]
+}
+
+database "PostgreSQL" as DB
+database "Redis" as CACHE
+
+[Endpoints] -down-> [Use Cases] : delegate
+[Use Cases] -down-> [Services] : coordinate
+[Services] -down-> [Data Sources] : query
+[Services] -right-> [Validation] : validate
+[Data Sources] -down-> DB : SQL
+[Services] -down-> CACHE : cache
+
+note right of [Endpoints]
+  <b>API Layer</b>
+  
+  Handle RPC calls
+  Delegate to use cases
+  Return responses
+end note
+
+note right of [Use Cases]
+  <b>Business Orchestration</b>
+  
+  Coordinate workflows
+  Manage transactions
+  Enforce business rules
+end note
+
+note right of [Services]
+  <b>Domain Logic</b>
+  
+  Business operations
+  Aggregate data from multiple sources
+  External integrations (AI, etc.)
+end note
+
+note right of [Data Sources]
+  <b>Data Access</b>
+  
+  Query database via Serverpod ORM
+  CRUD operations
+  Return table rows
+end note
+
+@enduml
