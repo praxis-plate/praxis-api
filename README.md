@@ -1,9 +1,9 @@
-# praxis_server
+# Praxis API
 
 [![Dart](https://img.shields.io/badge/Dart-3.10-blue.svg)](https://dart.dev)
 [![Serverpod](https://img.shields.io/badge/Serverpod-2.x-orange.svg)](https://serverpod.dev)
 
-Backend server for the **Praxis** educational platform – an interactive learning system for programming courses with AI-powered assistance and progress tracking.
+Backend API server for the **Praxis** educational platform – an interactive learning system for programming courses with AI-powered assistance and progress tracking.
 
 **[Documentation](#documentation)** • **[Quick Start](#quick-start-local)** • **[API Reference](#api-overview-serverpod-endpoints)**
 
@@ -17,7 +17,7 @@ Praxis Server is built with [Serverpod](https://serverpod.dev) (Dart) and provid
 
 - **Course management** – courses, modules, lessons, and interactive tasks
 - **User progress tracking** – lesson completion, statistics, achievements
-- **Virtual wallet** – coins and transaction history
+- **Virtual wallet** – internal coins and transaction history (no real money integration)
 - **AI assistance** – hint generation and task explanations via LLM integration (optional)
 - **Authentication** – email-based identity provider with JWT tokens
 
@@ -53,7 +53,7 @@ This structure ensures testability, maintainability, and clear dependency flow.
 
 ## Quick start (local)
 
-From `praxis_server/`:
+From the project root:
 
 ```bash
 # 1. Start Postgres + Redis
