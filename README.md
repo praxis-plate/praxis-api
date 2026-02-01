@@ -25,6 +25,10 @@ Praxis Server is built with [Serverpod](https://serverpod.dev) (Dart) and provid
 
 The server follows a **layered architecture** with clear separation of concerns:
 
+![Architecture Diagram](docs/diagrams/images/architecture-overview.png)
+
+*[View PlantUML source](docs/diagrams/uml/architecture-overview.puml)*
+
 ```
 Endpoints (API layer)
     ↓
@@ -39,9 +43,9 @@ Data Sources (database access)
 
 - **Endpoints** expose the API surface via Serverpod RPC
 - **Use Cases** orchestrate business workflows by coordinating multiple services
-- **Services** encapsulate domain logic and aggregate data from multiple data sources
-- **Data Sources** interact directly with Postgres tables
-- **Validation** is applied at boundaries (input validation, business rules)
+- **Services** encapsulate domain logic and aggregate data from multiple data sources. Each service represents a specific domain area (like a feature) and may contain its own validation logic, helper entities, and business rules specific to that domain
+- **Data Sources** interact directly with Postgres tables via Serverpod ORM
+- **Validation** is applied at boundaries (input validation, business rules). Domain-specific validations and entities often live within services
 - **Utilities** provide cross-cutting concerns (transaction management, mappers, helpers)
 
 This structure ensures testability, maintainability, and clear dependency flow.
