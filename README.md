@@ -308,6 +308,6 @@ Examples:
 
 ## License
 
-This is an educational project. All rights reserved.
+This is an educational project developed for university purposes.
 
 ---
