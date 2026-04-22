@@ -41,6 +41,13 @@ void run(List<String> args) async {
           required emailAccountId,
           required transaction,
         }) async {
+          await pod.server.services.accessControlService
+              .initializeRolesForNewAccount(
+                session,
+                authUserId: authUserId,
+                email: email,
+                transaction: transaction,
+              );
           await pod.server.services.walletService.initializeBalance(
             session,
             authUserId: authUserId,

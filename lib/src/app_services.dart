@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:praxis_server/src/datasources/achievement_data_source.dart';
+import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
@@ -16,6 +17,7 @@ import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/services/achievement/achievement_service.dart';
+import 'package:praxis_server/src/services/access_control/access_control_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
@@ -29,6 +31,7 @@ import 'package:serverpod/serverpod.dart';
 
 class AppServices {
   final AchievementService achievementService;
+  final AccessControlService accessControlService;
   final AiService? aiService;
   final CourseService courseService;
   final TransactionRunner transactionRunner;
@@ -40,6 +43,7 @@ class AppServices {
 
   AppServices({
     required this.achievementService,
+    required this.accessControlService,
     required this.aiService,
     required this.courseService,
     required this.transactionRunner,
@@ -58,6 +62,7 @@ class AppServices {
     final proxyPass = pod.getPassword('proxyPass');
     final proxyPort = proxyPortRaw == null ? null : int.tryParse(proxyPortRaw);
     const achievementDataSource = AchievementDataSource();
+    const authUserDataSource = AuthUserDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
     const lessonDataSource = LessonDataSource();
@@ -91,6 +96,15 @@ class AppServices {
       achievementDataSource: achievementDataSource,
       userAchievementDataSource: userAchievementDataSource,
     );
+    final accessControlService = AccessControlService(
+      authUserDataSource: authUserDataSource,
+      bootstrapAuthorEmails: _parseBootstrapEmails(
+        pod.getPassword('bootstrapAuthorEmails'),
+      ),
+      bootstrapAdminEmails: _parseBootstrapEmails(
+        pod.getPassword('bootstrapAdminEmails'),
+      ),
+    );
     final lessonService = LessonService(
       lessonDataSource: lessonDataSource,
       moduleDataSource: moduleDataSource,
@@ -118,6 +132,7 @@ class AppServices {
 
     return AppServices(
       achievementService: achievementService,
+      accessControlService: accessControlService,
       aiService: aiService,
       courseService: courseService,
       transactionRunner: transactionRunner,
@@ -127,6 +142,18 @@ class AppServices {
       userStatisticsService: userStatisticsService,
       walletService: walletService,
     );
+  }
+
+  static Set<String> _parseBootstrapEmails(String? rawEmails) {
+    if (rawEmails == null || rawEmails.trim().isEmpty) {
+      return const {};
+    }
+
+    return rawEmails
+        .split(',')
+        .map((email) => email.trim().toLowerCase())
+        .where((email) => email.isNotEmpty)
+        .toSet();
   }
 
   static AiService? _buildAiService({

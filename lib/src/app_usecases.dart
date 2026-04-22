@@ -1,4 +1,7 @@
 import 'package:praxis_server/src/app_services.dart';
+import 'package:praxis_server/src/usecases/access_control/assign_user_role_use_case.dart';
+import 'package:praxis_server/src/usecases/access_control/get_access_profile_use_case.dart';
+import 'package:praxis_server/src/usecases/access_control/revoke_user_role_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/get_all_achievements_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/get_user_achievements_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/is_achievement_unlocked_use_case.dart';
@@ -28,6 +31,9 @@ import 'package:praxis_server/src/usecases/wallet/top_up_wallet_use_case.dart';
 import 'package:serverpod/serverpod.dart';
 
 class AppUseCases {
+  final GetAccessProfileUseCase getAccessProfileUseCase;
+  final AssignUserRoleUseCase assignUserRoleUseCase;
+  final RevokeUserRoleUseCase revokeUserRoleUseCase;
   final GenerateHintUseCase generateHintUseCase;
   final GenerateExplanationUseCase generateExplanationUseCase;
   final GetAllAchievementsUseCase getAllAchievementsUseCase;
@@ -56,6 +62,9 @@ class AppUseCases {
   final GetWalletHistoryUseCase getWalletHistoryUseCase;
 
   AppUseCases({
+    required this.getAccessProfileUseCase,
+    required this.assignUserRoleUseCase,
+    required this.revokeUserRoleUseCase,
     required this.generateHintUseCase,
     required this.generateExplanationUseCase,
     required this.getAllAchievementsUseCase,
@@ -89,6 +98,15 @@ class AppUseCases {
     AppServices services,
   ) {
     return AppUseCases(
+      getAccessProfileUseCase: GetAccessProfileUseCase(
+        accessControlService: services.accessControlService,
+      ),
+      assignUserRoleUseCase: AssignUserRoleUseCase(
+        accessControlService: services.accessControlService,
+      ),
+      revokeUserRoleUseCase: RevokeUserRoleUseCase(
+        accessControlService: services.accessControlService,
+      ),
       generateHintUseCase: GenerateHintUseCase(aiService: services.aiService),
       generateExplanationUseCase: GenerateExplanationUseCase(
         aiService: services.aiService,

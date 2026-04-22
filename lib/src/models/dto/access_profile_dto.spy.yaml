@@ -1,0 +1,9 @@
+class: AccessProfileDto
+fields:
+  authUserId: UuidValue
+  roles: List<UserRole>
+  scopes: List<String>
+  canAccessLearnerApi: bool
+  canAccessCms: bool
+  canManageContent: bool
+  canManageUsers: bool

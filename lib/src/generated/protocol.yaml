@@ -1,3 +1,10 @@
+accessControl:
+  - getMyAccess:
+  - getCmsAccess:
+  - getAdminAccess:
+  - getUserAccess:
+  - assignRole:
+  - revokeRole:
 achievement:
   - getAll:
   - getUserAchievements:
