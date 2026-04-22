@@ -1,0 +1,8 @@
+class: CreateLessonRequest
+fields:
+  moduleId: int
+  title: String
+  contentText: String
+  videoUrl: String?
+  imageUrls: String?
+  durationMinutes: int?

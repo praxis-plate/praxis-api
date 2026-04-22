@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/content_status.dart' as _i2;
 
 abstract class CourseDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -26,6 +27,9 @@ abstract class CourseDto
     this.thumbnailUrl,
     this.coverImage,
     required this.createdAt,
+    required this.updatedAt,
+    required this.contentStatus,
+    this.publishedAt,
     required this.totalLessons,
     required this.totalTasks,
   });
@@ -42,6 +46,9 @@ abstract class CourseDto
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
     required int totalLessons,
     required int totalTasks,
   }) = _CourseDtoImpl;
@@ -61,6 +68,17 @@ abstract class CourseDto
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
+      contentStatus: _i2.ContentStatus.fromJson(
+        (jsonSerialization['contentStatus'] as String),
+      ),
+      publishedAt: jsonSerialization['publishedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['publishedAt'],
+            ),
       totalLessons: jsonSerialization['totalLessons'] as int,
       totalTasks: jsonSerialization['totalTasks'] as int,
     );
@@ -88,6 +106,12 @@ abstract class CourseDto
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
+  _i2.ContentStatus contentStatus;
+
+  DateTime? publishedAt;
+
   int totalLessons;
 
   int totalTasks;
@@ -107,6 +131,9 @@ abstract class CourseDto
     String? thumbnailUrl,
     String? coverImage,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    DateTime? publishedAt,
     int? totalLessons,
     int? totalTasks,
   });
@@ -125,6 +152,9 @@ abstract class CourseDto
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+      'contentStatus': contentStatus.toJson(),
+      if (publishedAt != null) 'publishedAt': publishedAt?.toJson(),
       'totalLessons': totalLessons,
       'totalTasks': totalTasks,
     };
@@ -145,6 +175,9 @@ abstract class CourseDto
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+      'contentStatus': contentStatus.toJson(),
+      if (publishedAt != null) 'publishedAt': publishedAt?.toJson(),
       'totalLessons': totalLessons,
       'totalTasks': totalTasks,
     };
@@ -171,6 +204,9 @@ class _CourseDtoImpl extends CourseDto {
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
     required int totalLessons,
     required int totalTasks,
   }) : super._(
@@ -185,6 +221,9 @@ class _CourseDtoImpl extends CourseDto {
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
          createdAt: createdAt,
+         updatedAt: updatedAt,
+         contentStatus: contentStatus,
+         publishedAt: publishedAt,
          totalLessons: totalLessons,
          totalTasks: totalTasks,
        );
@@ -205,6 +244,9 @@ class _CourseDtoImpl extends CourseDto {
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    Object? publishedAt = _Undefined,
     int? totalLessons,
     int? totalTasks,
   }) {
@@ -220,6 +262,9 @@ class _CourseDtoImpl extends CourseDto {
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      contentStatus: contentStatus ?? this.contentStatus,
+      publishedAt: publishedAt is DateTime? ? publishedAt : this.publishedAt,
       totalLessons: totalLessons ?? this.totalLessons,
       totalTasks: totalTasks ?? this.totalTasks,
     );

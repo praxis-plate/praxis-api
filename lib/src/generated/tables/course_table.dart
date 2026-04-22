@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/content_status.dart' as _i2;
 
 abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Course._({
@@ -25,6 +26,9 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.thumbnailUrl,
     this.coverImage,
     required this.createdAt,
+    required this.updatedAt,
+    required this.contentStatus,
+    this.publishedAt,
   });
 
   factory Course({
@@ -39,6 +43,9 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
   }) = _CourseImpl;
 
   factory Course.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -56,6 +63,17 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
+      contentStatus: _i2.ContentStatus.fromJson(
+        (jsonSerialization['contentStatus'] as String),
+      ),
+      publishedAt: jsonSerialization['publishedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['publishedAt'],
+            ),
     );
   }
 
@@ -86,6 +104,12 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
+  _i2.ContentStatus contentStatus;
+
+  DateTime? publishedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -104,6 +128,9 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? thumbnailUrl,
     String? coverImage,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    DateTime? publishedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -120,6 +147,9 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+      'contentStatus': contentStatus.toJson(),
+      if (publishedAt != null) 'publishedAt': publishedAt?.toJson(),
     };
   }
 
@@ -173,6 +203,9 @@ class _CourseImpl extends Course {
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
   }) : super._(
          id: id,
          title: title,
@@ -185,6 +218,9 @@ class _CourseImpl extends Course {
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
          createdAt: createdAt,
+         updatedAt: updatedAt,
+         contentStatus: contentStatus,
+         publishedAt: publishedAt,
        );
 
   /// Returns a shallow copy of this [Course]
@@ -203,6 +239,9 @@ class _CourseImpl extends Course {
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    Object? publishedAt = _Undefined,
   }) {
     return Course(
       id: id is int? ? id : this.id,
@@ -216,6 +255,9 @@ class _CourseImpl extends Course {
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      contentStatus: contentStatus ?? this.contentStatus,
+      publishedAt: publishedAt is DateTime? ? publishedAt : this.publishedAt,
     );
   }
 }
@@ -274,6 +316,25 @@ class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+
+  _i1.ColumnValue<_i2.ContentStatus, _i2.ContentStatus> contentStatus(
+    _i2.ContentStatus value,
+  ) => _i1.ColumnValue(
+    table.contentStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> publishedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.publishedAt,
+        value,
+      );
 }
 
 class CourseTable extends _i1.Table<int?> {
@@ -319,6 +380,19 @@ class CourseTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
+    contentStatus = _i1.ColumnEnum(
+      'contentStatus',
+      this,
+      _i1.EnumSerialization.byName,
+    );
+    publishedAt = _i1.ColumnDateTime(
+      'publishedAt',
+      this,
+    );
   }
 
   late final CourseUpdateTable updateTable;
@@ -343,6 +417,12 @@ class CourseTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnDateTime updatedAt;
+
+  late final _i1.ColumnEnum<_i2.ContentStatus> contentStatus;
+
+  late final _i1.ColumnDateTime publishedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -356,6 +436,9 @@ class CourseTable extends _i1.Table<int?> {
     thumbnailUrl,
     coverImage,
     createdAt,
+    updatedAt,
+    contentStatus,
+    publishedAt,
   ];
 }
 

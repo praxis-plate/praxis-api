@@ -1,3 +1,6 @@
+import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/lesson_data_source.dart';
+import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
@@ -8,17 +11,26 @@ import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
 class TaskService {
+  final CourseDataSource _courseDataSource;
+  final LessonDataSource _lessonDataSource;
+  final ModuleDataSource _moduleDataSource;
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
   final TaskAnswerValidationService _validationService;
 
   TaskService({
+    required CourseDataSource courseDataSource,
+    required LessonDataSource lessonDataSource,
+    required ModuleDataSource moduleDataSource,
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
     required TaskAnswerValidationService validationService,
-  }) : _taskDataSource = taskDataSource,
+  }) : _courseDataSource = courseDataSource,
+       _lessonDataSource = lessonDataSource,
+       _moduleDataSource = moduleDataSource,
+       _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
        _validationService = validationService;
@@ -38,6 +50,7 @@ class TaskService {
     if (task == null) {
       throw NotFoundException(message: 'Task not found');
     }
+    await _ensurePublishedTask(session, task);
 
     final options = await _taskOptionDataSource.listByTaskId(
       session,
@@ -71,7 +84,32 @@ class TaskService {
       return [];
     }
 
-    final tasks = await _taskDataSource.listByLessonIds(session, lessonIds);
+    final publishedLessonIds = <int>[];
+    for (final lessonId in lessonIds) {
+      final lesson = await _lessonDataSource.findById(session, lessonId);
+      if (lesson == null) {
+        continue;
+      }
+      final module = await _moduleDataSource.findById(session, lesson.moduleId);
+      if (module == null) {
+        continue;
+      }
+      final course = await _courseDataSource.findPublishedById(
+        session,
+        module.courseId,
+      );
+      if (course != null) {
+        publishedLessonIds.add(lessonId);
+      }
+    }
+    if (publishedLessonIds.isEmpty) {
+      return [];
+    }
+
+    final tasks = await _taskDataSource.listByLessonIds(
+      session,
+      publishedLessonIds,
+    );
     if (tasks.isEmpty) {
       return [];
     }
@@ -115,5 +153,23 @@ class TaskService {
           ),
         )
         .toList();
+  }
+
+  Future<void> _ensurePublishedTask(Session session, Task task) async {
+    final lesson = await _lessonDataSource.findById(session, task.lessonId);
+    if (lesson == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+    final module = await _moduleDataSource.findById(session, lesson.moduleId);
+    if (module == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+    final course = await _courseDataSource.findPublishedById(
+      session,
+      module.courseId,
+    );
+    if (course == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
   }
 }

@@ -4,18 +4,24 @@ import 'package:serverpod/serverpod.dart';
 class TaskTestCaseDataSource {
   const TaskTestCaseDataSource();
 
-  Future<List<TaskTestCase>> listByTaskId(Session session, int taskId) {
+  Future<List<TaskTestCase>> listByTaskId(
+    Session session,
+    int taskId, {
+    Transaction? transaction,
+  }) {
     return TaskTestCase.db.find(
       session,
       where: (t) => t.taskId.equals(taskId),
       orderBy: (t) => t.orderIndex,
+      transaction: transaction,
     );
   }
 
   Future<List<TaskTestCase>> listByTaskIds(
     Session session,
-    List<int> taskIds,
-  ) {
+    List<int> taskIds, {
+    Transaction? transaction,
+  }) {
     if (taskIds.isEmpty) {
       return Future.value([]);
     }
@@ -23,7 +29,16 @@ class TaskTestCaseDataSource {
       session,
       where: (t) => t.taskId.inSet(taskIds.toSet()),
       orderBy: (t) => t.orderIndex,
+      transaction: transaction,
     );
+  }
+
+  Future<TaskTestCase?> findById(
+    Session session,
+    int id, {
+    Transaction? transaction,
+  }) {
+    return TaskTestCase.db.findById(session, id, transaction: transaction);
   }
 
   Future<TaskTestCase> insert(
@@ -33,6 +48,7 @@ class TaskTestCaseDataSource {
     required String expectedOutput,
     required bool isHidden,
     required int orderIndex,
+    required DateTime updatedAt,
     Transaction? transaction,
   }) {
     final row = TaskTestCase(
@@ -41,11 +57,40 @@ class TaskTestCaseDataSource {
       expectedOutput: expectedOutput,
       isHidden: isHidden,
       orderIndex: orderIndex,
+      updatedAt: updatedAt,
     );
 
     return TaskTestCase.db.insertRow(
       session,
       row,
+      transaction: transaction,
+    );
+  }
+
+  Future<TaskTestCase> updateRow(
+    Session session,
+    TaskTestCase row, {
+    Transaction? transaction,
+  }) {
+    return TaskTestCase.db.updateRow(
+      session,
+      row,
+      transaction: transaction,
+    );
+  }
+
+  Future<void> deleteByIds(
+    Session session,
+    Set<int> testCaseIds, {
+    Transaction? transaction,
+  }) async {
+    if (testCaseIds.isEmpty) {
+      return;
+    }
+
+    await TaskTestCase.db.deleteWhere(
+      session,
+      where: (t) => t.id.inSet(testCaseIds),
       transaction: transaction,
     );
   }

@@ -1,0 +1,4 @@
+class: UpsertTaskTestCasesRequest
+fields:
+  taskId: int
+  testCases: List<CmsTaskTestCaseInputDto>

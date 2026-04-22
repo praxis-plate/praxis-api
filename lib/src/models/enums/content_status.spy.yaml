@@ -1,0 +1,5 @@
+enum: ContentStatus
+serialized: byName
+values:
+  - draft
+  - published

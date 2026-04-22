@@ -1,3 +1,4 @@
+import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
@@ -7,17 +8,20 @@ import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
 class LessonService {
+  final CourseDataSource _courseDataSource;
   final LessonDataSource _lessonDataSource;
   final ModuleDataSource _moduleDataSource;
   final LessonProgressDataSource _lessonProgressDataSource;
   final TransactionRunner _transactionRunner;
 
   LessonService({
+    required CourseDataSource courseDataSource,
     required LessonDataSource lessonDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonProgressDataSource lessonProgressDataSource,
     required TransactionRunner transactionRunner,
-  }) : _lessonDataSource = lessonDataSource,
+  }) : _courseDataSource = courseDataSource,
+       _lessonDataSource = lessonDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonProgressDataSource = lessonProgressDataSource,
        _transactionRunner = transactionRunner;
@@ -26,6 +30,18 @@ class LessonService {
     Session session,
     int moduleId,
   ) async {
+    final module = await _moduleDataSource.findById(session, moduleId);
+    if (module == null) {
+      return [];
+    }
+    final course = await _courseDataSource.findPublishedById(
+      session,
+      module.courseId,
+    );
+    if (course == null) {
+      return [];
+    }
+
     final lessons = await _lessonDataSource.listByModuleId(
       session,
       moduleId,
@@ -37,6 +53,11 @@ class LessonService {
     Session session,
     int courseId,
   ) async {
+    final course = await _courseDataSource.findPublishedById(session, courseId);
+    if (course == null) {
+      return [];
+    }
+
     final modules = await _moduleDataSource.listByCourseId(
       session,
       courseId,
@@ -61,6 +82,17 @@ class LessonService {
     if (lesson == null) {
       throw NotFoundException(message: 'Lesson not found');
     }
+    final module = await _moduleDataSource.findById(session, lesson.moduleId);
+    if (module == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
+    final course = await _courseDataSource.findPublishedById(
+      session,
+      module.courseId,
+    );
+    if (course == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
 
     return lesson.toLessonDto();
   }
@@ -72,6 +104,22 @@ class LessonService {
     int timeSpentSeconds = 0,
     Transaction? transaction,
   }) async {
+    final lesson = await _lessonDataSource.findById(session, lessonId);
+    if (lesson == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
+    final module = await _moduleDataSource.findById(session, lesson.moduleId);
+    if (module == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
+    final course = await _courseDataSource.findPublishedById(
+      session,
+      module.courseId,
+    );
+    if (course == null) {
+      throw NotFoundException(message: 'Lesson not found');
+    }
+
     return _transactionRunner.run(
       session,
       (transaction) async {

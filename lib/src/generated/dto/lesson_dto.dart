@@ -24,6 +24,7 @@ abstract class LessonDto
     required this.orderIndex,
     required this.durationMinutes,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory LessonDto({
@@ -36,6 +37,7 @@ abstract class LessonDto
     required int orderIndex,
     required int durationMinutes,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _LessonDtoImpl;
 
   factory LessonDto.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -50,6 +52,9 @@ abstract class LessonDto
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -72,6 +77,8 @@ abstract class LessonDto
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   /// Returns a shallow copy of this [LessonDto]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -85,6 +92,7 @@ abstract class LessonDto
     int? orderIndex,
     int? durationMinutes,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -99,6 +107,7 @@ abstract class LessonDto
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -115,6 +124,7 @@ abstract class LessonDto
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -137,6 +147,7 @@ class _LessonDtoImpl extends LessonDto {
     required int orderIndex,
     required int durationMinutes,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          moduleId: moduleId,
@@ -147,6 +158,7 @@ class _LessonDtoImpl extends LessonDto {
          orderIndex: orderIndex,
          durationMinutes: durationMinutes,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [LessonDto]
@@ -163,6 +175,7 @@ class _LessonDtoImpl extends LessonDto {
     int? orderIndex,
     int? durationMinutes,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return LessonDto(
       id: id ?? this.id,
@@ -174,6 +187,7 @@ class _LessonDtoImpl extends LessonDto {
       orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

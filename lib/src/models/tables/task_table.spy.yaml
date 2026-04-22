@@ -17,6 +17,7 @@ fields:
   fallbackExplanation: String?
   topic: String
   createdAt: DateTime
+  updatedAt: DateTime
 indexes:
   task_lesson_id_idx:
     fields: lessonId

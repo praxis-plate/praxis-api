@@ -1,0 +1,12 @@
+class: UpdateCourseRequest
+fields:
+  id: int
+  title: String
+  description: String
+  author: String
+  category: String
+  priceInCoins: int
+  durationMinutes: int
+  rating: double
+  thumbnailUrl: String?
+  coverImage: String?

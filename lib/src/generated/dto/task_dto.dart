@@ -35,6 +35,7 @@ abstract class TaskDto
     this.fallbackExplanation,
     required this.topic,
     required this.createdAt,
+    required this.updatedAt,
     required this.options,
     required this.testCases,
   });
@@ -56,6 +57,7 @@ abstract class TaskDto
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
+    required DateTime updatedAt,
     required List<_i3.TaskOptionDto> options,
     required List<_i4.TaskTestCaseDto> testCases,
   }) = _TaskDtoImpl;
@@ -81,6 +83,9 @@ abstract class TaskDto
       topic: jsonSerialization['topic'] as String,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
       options: _i5.Protocol().deserialize<List<_i3.TaskOptionDto>>(
         jsonSerialization['options'],
@@ -123,6 +128,8 @@ abstract class TaskDto
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   List<_i3.TaskOptionDto> options;
 
   List<_i4.TaskTestCaseDto> testCases;
@@ -147,6 +154,7 @@ abstract class TaskDto
     String? fallbackExplanation,
     String? topic,
     DateTime? createdAt,
+    DateTime? updatedAt,
     List<_i3.TaskOptionDto>? options,
     List<_i4.TaskTestCaseDto>? testCases,
   });
@@ -172,6 +180,7 @@ abstract class TaskDto
         'fallbackExplanation': fallbackExplanation,
       'topic': topic,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
       'options': options.toJson(valueToJson: (v) => v.toJson()),
       'testCases': testCases.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -199,6 +208,7 @@ abstract class TaskDto
         'fallbackExplanation': fallbackExplanation,
       'topic': topic,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
       'options': options.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'testCases': testCases.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
@@ -230,6 +240,7 @@ class _TaskDtoImpl extends TaskDto {
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
+    required DateTime updatedAt,
     required List<_i3.TaskOptionDto> options,
     required List<_i4.TaskTestCaseDto> testCases,
   }) : super._(
@@ -249,6 +260,7 @@ class _TaskDtoImpl extends TaskDto {
          fallbackExplanation: fallbackExplanation,
          topic: topic,
          createdAt: createdAt,
+         updatedAt: updatedAt,
          options: options,
          testCases: testCases,
        );
@@ -274,6 +286,7 @@ class _TaskDtoImpl extends TaskDto {
     Object? fallbackExplanation = _Undefined,
     String? topic,
     DateTime? createdAt,
+    DateTime? updatedAt,
     List<_i3.TaskOptionDto>? options,
     List<_i4.TaskTestCaseDto>? testCases,
   }) {
@@ -300,6 +313,7 @@ class _TaskDtoImpl extends TaskDto {
           : this.fallbackExplanation,
       topic: topic ?? this.topic,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       options: options ?? this.options.map((e0) => e0.copyWith()).toList(),
       testCases:
           testCases ?? this.testCases.map((e0) => e0.copyWith()).toList(),

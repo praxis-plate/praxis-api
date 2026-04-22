@@ -3,7 +3,7 @@ BEGIN;
 --
 -- ACTION CREATE TABLE
 --
-CREATE TABLE "user_statistics" (
+CREATE TABLE IF NOT EXISTS "user_statistics" (
     "id" bigserial PRIMARY KEY,
     "authUserId" uuid NOT NULL,
     "currentStreak" bigint NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE "user_statistics" (
 );
 
 -- Indexes
-CREATE UNIQUE INDEX "user_statistics_auth_user_id_unique" ON "user_statistics" USING btree ("authUserId");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_statistics_auth_user_id_unique" ON "user_statistics" USING btree ("authUserId");
 
 
 --

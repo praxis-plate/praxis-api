@@ -1,0 +1,5 @@
+class: CreateModuleRequest
+fields:
+  courseId: int
+  title: String
+  description: String

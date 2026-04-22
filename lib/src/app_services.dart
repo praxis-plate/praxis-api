@@ -19,6 +19,7 @@ import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/services/achievement/achievement_service.dart';
 import 'package:praxis_server/src/services/access_control/access_control_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
+import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
@@ -33,6 +34,7 @@ class AppServices {
   final AchievementService achievementService;
   final AccessControlService accessControlService;
   final AiService? aiService;
+  final CmsContentService cmsContentService;
   final CourseService courseService;
   final TransactionRunner transactionRunner;
   final LessonService lessonService;
@@ -45,6 +47,7 @@ class AppServices {
     required this.achievementService,
     required this.accessControlService,
     required this.aiService,
+    required this.cmsContentService,
     required this.courseService,
     required this.transactionRunner,
     required this.lessonService,
@@ -78,6 +81,9 @@ class AppServices {
     const walletDataSource = WalletDataSource();
 
     final taskService = TaskService(
+      courseDataSource: courseDataSource,
+      lessonDataSource: lessonDataSource,
+      moduleDataSource: moduleDataSource,
       taskDataSource: taskDataSource,
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
@@ -106,10 +112,19 @@ class AppServices {
       ),
     );
     final lessonService = LessonService(
+      courseDataSource: courseDataSource,
       lessonDataSource: lessonDataSource,
       moduleDataSource: moduleDataSource,
       lessonProgressDataSource: lessonProgressDataSource,
       transactionRunner: transactionRunner,
+    );
+    final cmsContentService = CmsContentService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+      taskOptionDataSource: taskOptionDataSource,
+      taskTestCaseDataSource: taskTestCaseDataSource,
     );
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
@@ -121,7 +136,10 @@ class AppServices {
       taskTestCaseDataSource: taskTestCaseDataSource,
       userCourseDataSource: userCourseDataSource,
     );
-    final moduleService = ModuleService(moduleDataSource: moduleDataSource);
+    final moduleService = ModuleService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+    );
     final aiService = _buildAiService(
       geminiApiKey: geminiApiKey,
       proxyHost: proxyHost,
@@ -134,6 +152,7 @@ class AppServices {
       achievementService: achievementService,
       accessControlService: accessControlService,
       aiService: aiService,
+      cmsContentService: cmsContentService,
       courseService: courseService,
       transactionRunner: transactionRunner,
       lessonService: lessonService,

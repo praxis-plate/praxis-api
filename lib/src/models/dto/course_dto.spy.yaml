@@ -11,5 +11,8 @@ fields:
   thumbnailUrl: String?
   coverImage: String?
   createdAt: DateTime
+  updatedAt: DateTime
+  contentStatus: ContentStatus
+  publishedAt: DateTime?
   totalLessons: int
   totalTasks: int

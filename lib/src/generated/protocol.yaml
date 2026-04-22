@@ -13,6 +13,12 @@ achievement:
 ai:
   - generateHint:
   - generateExplanation:
+courseAdmin:
+  - list:
+  - create:
+  - update:
+  - publish:
+  - unpublish:
 course:
   - get:
   - getById:
@@ -32,14 +38,31 @@ health:
   - ping:
 jwtRefresh:
   - refreshAccessToken:
+lessonAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
 lesson:
   - getByCourseId:
   - getByModuleId:
   - getById:
   - markComplete:
   - complete:
+moduleAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
 module:
   - get:
+taskAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
+  - upsertOptions:
+  - upsertTestCases:
 task:
   - getById:
   - getByLessonId:

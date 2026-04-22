@@ -10,6 +10,7 @@ fields:
   orderIndex: int
   durationMinutes: int
   createdAt: DateTime
+  updatedAt: DateTime
 indexes:
   lesson_module_id_idx:
     fields: moduleId

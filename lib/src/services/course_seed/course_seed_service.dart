@@ -58,6 +58,9 @@ class CourseSeedService {
         thumbnailUrl: courseSeed.thumbnailUrl,
         coverImage: courseSeed.coverImage,
         createdAt: now,
+        updatedAt: now,
+        contentStatus: ContentStatus.published,
+        publishedAt: now,
       );
 
       final modules = ModuleSeedData.programmingFundamentals();
@@ -69,6 +72,7 @@ class CourseSeedService {
           description: moduleSeed.description,
           orderIndex: moduleSeed.orderIndex,
           createdAt: now,
+          updatedAt: now,
         );
 
         final lessons = LessonSeedData.getLessonsForModule(moduleSeed.title);
@@ -83,6 +87,7 @@ class CourseSeedService {
             orderIndex: lessonSeed.orderIndex,
             durationMinutes: lessonSeed.durationMinutes,
             createdAt: now,
+            updatedAt: now,
           );
 
           await _seedTasksForLesson(
@@ -128,6 +133,7 @@ class CourseSeedService {
         fallbackExplanation: taskSeed.fallbackExplanation,
         topic: taskSeed.topic,
         createdAt: now,
+        updatedAt: now,
       );
 
       await _seedTaskOptions(
@@ -156,6 +162,7 @@ class CourseSeedService {
         optionText: optionText,
         isCorrect: optionText == taskSeed.correctAnswer,
         orderIndex: i,
+        updatedAt: DateTime.now(),
       );
     }
   }

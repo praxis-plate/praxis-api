@@ -8,6 +8,10 @@ import 'package:praxis_server/src/usecases/achievement/is_achievement_unlocked_u
 import 'package:praxis_server/src/usecases/achievement/unlock_achievement_use_case.dart';
 import 'package:praxis_server/src/usecases/ai/generate_explanation_use_case.dart';
 import 'package:praxis_server/src/usecases/ai/generate_hint_use_case.dart';
+import 'package:praxis_server/src/usecases/cms_content/course_admin_use_cases.dart';
+import 'package:praxis_server/src/usecases/cms_content/lesson_admin_use_cases.dart';
+import 'package:praxis_server/src/usecases/cms_content/module_admin_use_cases.dart';
+import 'package:praxis_server/src/usecases/cms_content/task_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/course/enroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_course_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_course_table_of_contents_use_case.dart';
@@ -34,6 +38,25 @@ class AppUseCases {
   final GetAccessProfileUseCase getAccessProfileUseCase;
   final AssignUserRoleUseCase assignUserRoleUseCase;
   final RevokeUserRoleUseCase revokeUserRoleUseCase;
+  final ListAdminCoursesUseCase listAdminCoursesUseCase;
+  final CreateAdminCourseUseCase createAdminCourseUseCase;
+  final UpdateAdminCourseUseCase updateAdminCourseUseCase;
+  final PublishAdminCourseUseCase publishAdminCourseUseCase;
+  final UnpublishAdminCourseUseCase unpublishAdminCourseUseCase;
+  final ListAdminModulesUseCase listAdminModulesUseCase;
+  final CreateAdminModuleUseCase createAdminModuleUseCase;
+  final UpdateAdminModuleUseCase updateAdminModuleUseCase;
+  final ReorderAdminModulesUseCase reorderAdminModulesUseCase;
+  final ListAdminLessonsUseCase listAdminLessonsUseCase;
+  final CreateAdminLessonUseCase createAdminLessonUseCase;
+  final UpdateAdminLessonUseCase updateAdminLessonUseCase;
+  final ReorderAdminLessonsUseCase reorderAdminLessonsUseCase;
+  final ListAdminTasksUseCase listAdminTasksUseCase;
+  final CreateAdminTaskUseCase createAdminTaskUseCase;
+  final UpdateAdminTaskUseCase updateAdminTaskUseCase;
+  final ReorderAdminTasksUseCase reorderAdminTasksUseCase;
+  final UpsertAdminTaskOptionsUseCase upsertAdminTaskOptionsUseCase;
+  final UpsertAdminTaskTestCasesUseCase upsertAdminTaskTestCasesUseCase;
   final GenerateHintUseCase generateHintUseCase;
   final GenerateExplanationUseCase generateExplanationUseCase;
   final GetAllAchievementsUseCase getAllAchievementsUseCase;
@@ -65,6 +88,25 @@ class AppUseCases {
     required this.getAccessProfileUseCase,
     required this.assignUserRoleUseCase,
     required this.revokeUserRoleUseCase,
+    required this.listAdminCoursesUseCase,
+    required this.createAdminCourseUseCase,
+    required this.updateAdminCourseUseCase,
+    required this.publishAdminCourseUseCase,
+    required this.unpublishAdminCourseUseCase,
+    required this.listAdminModulesUseCase,
+    required this.createAdminModuleUseCase,
+    required this.updateAdminModuleUseCase,
+    required this.reorderAdminModulesUseCase,
+    required this.listAdminLessonsUseCase,
+    required this.createAdminLessonUseCase,
+    required this.updateAdminLessonUseCase,
+    required this.reorderAdminLessonsUseCase,
+    required this.listAdminTasksUseCase,
+    required this.createAdminTaskUseCase,
+    required this.updateAdminTaskUseCase,
+    required this.reorderAdminTasksUseCase,
+    required this.upsertAdminTaskOptionsUseCase,
+    required this.upsertAdminTaskTestCasesUseCase,
     required this.generateHintUseCase,
     required this.generateExplanationUseCase,
     required this.getAllAchievementsUseCase,
@@ -106,6 +148,78 @@ class AppUseCases {
       ),
       revokeUserRoleUseCase: RevokeUserRoleUseCase(
         accessControlService: services.accessControlService,
+      ),
+      listAdminCoursesUseCase: ListAdminCoursesUseCase(
+        cmsContentService: services.cmsContentService,
+      ),
+      createAdminCourseUseCase: CreateAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      updateAdminCourseUseCase: UpdateAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      publishAdminCourseUseCase: PublishAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      unpublishAdminCourseUseCase: UnpublishAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      listAdminModulesUseCase: ListAdminModulesUseCase(
+        cmsContentService: services.cmsContentService,
+      ),
+      createAdminModuleUseCase: CreateAdminModuleUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      updateAdminModuleUseCase: UpdateAdminModuleUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      reorderAdminModulesUseCase: ReorderAdminModulesUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      listAdminLessonsUseCase: ListAdminLessonsUseCase(
+        cmsContentService: services.cmsContentService,
+      ),
+      createAdminLessonUseCase: CreateAdminLessonUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      updateAdminLessonUseCase: UpdateAdminLessonUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      reorderAdminLessonsUseCase: ReorderAdminLessonsUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      listAdminTasksUseCase: ListAdminTasksUseCase(
+        cmsContentService: services.cmsContentService,
+      ),
+      createAdminTaskUseCase: CreateAdminTaskUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      updateAdminTaskUseCase: UpdateAdminTaskUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      reorderAdminTasksUseCase: ReorderAdminTasksUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      upsertAdminTaskOptionsUseCase: UpsertAdminTaskOptionsUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      upsertAdminTaskTestCasesUseCase: UpsertAdminTaskTestCasesUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
       ),
       generateHintUseCase: GenerateHintUseCase(aiService: services.aiService),
       generateExplanationUseCase: GenerateExplanationUseCase(

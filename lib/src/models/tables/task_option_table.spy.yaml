@@ -6,6 +6,7 @@ fields:
   optionText: String
   isCorrect: bool
   orderIndex: int
+  updatedAt: DateTime
 indexes:
   task_option_task_id_idx:
     fields: taskId

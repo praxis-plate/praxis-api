@@ -1,0 +1,4 @@
+class: UpsertTaskOptionsRequest
+fields:
+  taskId: int
+  options: List<CmsTaskOptionInputDto>

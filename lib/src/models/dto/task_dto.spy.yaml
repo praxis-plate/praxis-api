@@ -16,5 +16,6 @@ fields:
   fallbackExplanation: String?
   topic: String
   createdAt: DateTime
+  updatedAt: DateTime
   options: List<TaskOptionDto>
   testCases: List<TaskTestCaseDto>

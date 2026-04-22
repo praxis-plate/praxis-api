@@ -4,18 +4,24 @@ import 'package:serverpod/serverpod.dart';
 class ModuleDataSource {
   const ModuleDataSource();
 
-  Future<List<Module>> listByCourseId(Session session, int courseId) {
+  Future<List<Module>> listByCourseId(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) {
     return Module.db.find(
       session,
       where: (t) => t.courseId.equals(courseId),
       orderBy: (t) => t.orderIndex,
+      transaction: transaction,
     );
   }
 
   Future<List<Module>> listByCourseIds(
     Session session,
-    List<int> courseIds,
-  ) {
+    List<int> courseIds, {
+    Transaction? transaction,
+  }) {
     if (courseIds.isEmpty) {
       return Future.value([]);
     }
@@ -23,11 +29,33 @@ class ModuleDataSource {
       session,
       where: (t) => t.courseId.inSet(courseIds.toSet()),
       orderBy: (t) => t.orderIndex,
+      transaction: transaction,
     );
   }
 
-  Future<Module?> findById(Session session, int id) {
-    return Module.db.findById(session, id);
+  Future<Module?> findById(
+    Session session,
+    int id, {
+    Transaction? transaction,
+  }) {
+    return Module.db.findById(session, id, transaction: transaction);
+  }
+
+  Future<List<Module>> listByIds(
+    Session session,
+    List<int> moduleIds, {
+    Transaction? transaction,
+  }) {
+    if (moduleIds.isEmpty) {
+      return Future.value([]);
+    }
+
+    return Module.db.find(
+      session,
+      where: (t) => t.id.inSet(moduleIds.toSet()),
+      orderBy: (t) => t.orderIndex,
+      transaction: transaction,
+    );
   }
 
   Future<Module> insert(
@@ -37,6 +65,7 @@ class ModuleDataSource {
     required String description,
     required int orderIndex,
     required DateTime createdAt,
+    required DateTime updatedAt,
     Transaction? transaction,
   }) {
     final row = Module(
@@ -45,9 +74,22 @@ class ModuleDataSource {
       description: description,
       orderIndex: orderIndex,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
 
     return Module.db.insertRow(
+      session,
+      row,
+      transaction: transaction,
+    );
+  }
+
+  Future<Module> updateRow(
+    Session session,
+    Module row, {
+    Transaction? transaction,
+  }) {
+    return Module.db.updateRow(
       session,
       row,
       transaction: transaction,

@@ -44,7 +44,7 @@ class CourseService {
     required int limit,
     required int offset,
   }) async {
-    final courses = await _courseDataSource.list(
+    final courses = await _courseDataSource.listPublished(
       session,
       limit: limit,
       offset: offset,
@@ -73,7 +73,7 @@ class CourseService {
   }
 
   Future<CourseDetailDto> getCourseById(Session session, int courseId) async {
-    final course = await _courseDataSource.findById(session, courseId);
+    final course = await _courseDataSource.findPublishedById(session, courseId);
     if (course == null) {
       throw NotFoundException(message: 'Course not found');
     }
@@ -120,8 +120,11 @@ class CourseService {
         .map((enrollment) => enrollment.courseId)
         .toList();
     final courses = await _courseDataSource.listByIds(session, courseIds);
+    final publishedCourses = courses
+        .where((course) => course.contentStatus == ContentStatus.published)
+        .toList();
     final coursesById = <int, Course>{
-      for (final course in courses) course.id!: course,
+      for (final course in publishedCourses) course.id!: course,
     };
     final contentCounts = await _countContentForCourses(session, courseIds);
 
@@ -158,7 +161,7 @@ class CourseService {
       return;
     }
 
-    final course = await _courseDataSource.findById(session, courseId);
+    final course = await _courseDataSource.findPublishedById(session, courseId);
     if (course == null) {
       throw NotFoundException(message: 'Course not found');
     }
@@ -208,7 +211,7 @@ class CourseService {
     Session session,
     int courseId,
   ) async {
-    final course = await _courseDataSource.findById(session, courseId);
+    final course = await _courseDataSource.findPublishedById(session, courseId);
     if (course == null) {
       throw NotFoundException(message: 'Course not found');
     }

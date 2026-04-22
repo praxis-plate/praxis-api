@@ -18,6 +18,9 @@ extension CourseMapper on Course {
       thumbnailUrl: thumbnailUrl,
       coverImage: coverImage,
       createdAt: createdAt,
+      updatedAt: updatedAt,
+      contentStatus: contentStatus,
+      publishedAt: publishedAt,
       totalLessons: totalLessons,
       totalTasks: totalTasks,
     );
@@ -34,6 +37,7 @@ extension ModuleMapper on Module {
       description: description,
       orderIndex: orderIndex,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
@@ -51,6 +55,7 @@ extension LessonMapper on Lesson {
       orderIndex: orderIndex,
       durationMinutes: durationMinutes,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
@@ -105,6 +110,7 @@ extension TaskMapper on Task {
       fallbackExplanation: fallbackExplanation,
       topic: topic,
       createdAt: createdAt,
+      updatedAt: updatedAt,
       options: options,
       testCases: testCases,
     );

@@ -23,6 +23,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.orderIndex,
     required this.durationMinutes,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Lesson({
@@ -35,6 +36,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required int orderIndex,
     required int durationMinutes,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _LessonImpl;
 
   factory Lesson.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -49,6 +51,9 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -76,6 +81,8 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -92,6 +99,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     int? orderIndex,
     int? durationMinutes,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -106,6 +114,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -157,6 +166,7 @@ class _LessonImpl extends Lesson {
     required int orderIndex,
     required int durationMinutes,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          moduleId: moduleId,
@@ -167,6 +177,7 @@ class _LessonImpl extends Lesson {
          orderIndex: orderIndex,
          durationMinutes: durationMinutes,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Lesson]
@@ -183,6 +194,7 @@ class _LessonImpl extends Lesson {
     int? orderIndex,
     int? durationMinutes,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Lesson(
       id: id is int? ? id : this.id,
@@ -194,6 +206,7 @@ class _LessonImpl extends Lesson {
       orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -241,6 +254,12 @@ class LessonUpdateTable extends _i1.UpdateTable<LessonTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class LessonTable extends _i1.Table<int?> {
@@ -278,6 +297,10 @@ class LessonTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
 
   late final LessonUpdateTable updateTable;
@@ -298,6 +321,8 @@ class LessonTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -309,6 +334,7 @@ class LessonTable extends _i1.Table<int?> {
     orderIndex,
     durationMinutes,
     createdAt,
+    updatedAt,
   ];
 }
 

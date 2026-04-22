@@ -7,6 +7,7 @@ fields:
   description: String
   orderIndex: int
   createdAt: DateTime
+  updatedAt: DateTime
 indexes:
   module_course_id_idx:
     fields: courseId
