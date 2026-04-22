@@ -9,6 +9,7 @@ import 'package:praxis_server/src/usecases/achievement/unlock_achievement_use_ca
 import 'package:praxis_server/src/usecases/ai/generate_explanation_use_case.dart';
 import 'package:praxis_server/src/usecases/ai/generate_hint_use_case.dart';
 import 'package:praxis_server/src/usecases/cms_content/course_admin_use_cases.dart';
+import 'package:praxis_server/src/usecases/cms_analytics/course_analytics_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/lesson_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/module_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/task_admin_use_cases.dart';
@@ -39,6 +40,8 @@ class AppUseCases {
   final AssignUserRoleUseCase assignUserRoleUseCase;
   final RevokeUserRoleUseCase revokeUserRoleUseCase;
   final ListAdminCoursesUseCase listAdminCoursesUseCase;
+  final GetAdminCourseAnalyticsDashboardUseCase
+  getAdminCourseAnalyticsDashboardUseCase;
   final CreateAdminCourseUseCase createAdminCourseUseCase;
   final UpdateAdminCourseUseCase updateAdminCourseUseCase;
   final PublishAdminCourseUseCase publishAdminCourseUseCase;
@@ -89,6 +92,7 @@ class AppUseCases {
     required this.assignUserRoleUseCase,
     required this.revokeUserRoleUseCase,
     required this.listAdminCoursesUseCase,
+    required this.getAdminCourseAnalyticsDashboardUseCase,
     required this.createAdminCourseUseCase,
     required this.updateAdminCourseUseCase,
     required this.publishAdminCourseUseCase,
@@ -152,6 +156,10 @@ class AppUseCases {
       listAdminCoursesUseCase: ListAdminCoursesUseCase(
         cmsContentService: services.cmsContentService,
       ),
+      getAdminCourseAnalyticsDashboardUseCase:
+          GetAdminCourseAnalyticsDashboardUseCase(
+            cmsCourseAnalyticsService: services.cmsCourseAnalyticsService,
+          ),
       createAdminCourseUseCase: CreateAdminCourseUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,

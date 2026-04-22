@@ -19,6 +19,8 @@ courseAdmin:
   - update:
   - publish:
   - unpublish:
+courseAnalyticsAdmin:
+  - getDashboard:
 course:
   - get:
   - getById:

@@ -1,0 +1,9 @@
+class: CourseAnalyticsWrongAnswerDto
+fields:
+  taskId: int
+  lessonId: int
+  lessonTitle: String
+  questionText: String
+  answerText: String
+  occurrences: int
+  lastSubmittedAt: DateTime

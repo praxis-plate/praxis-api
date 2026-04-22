@@ -104,25 +104,34 @@ class LessonService {
     int timeSpentSeconds = 0,
     Transaction? transaction,
   }) async {
-    final lesson = await _lessonDataSource.findById(session, lessonId);
-    if (lesson == null) {
-      throw NotFoundException(message: 'Lesson not found');
-    }
-    final module = await _moduleDataSource.findById(session, lesson.moduleId);
-    if (module == null) {
-      throw NotFoundException(message: 'Lesson not found');
-    }
-    final course = await _courseDataSource.findPublishedById(
-      session,
-      module.courseId,
-    );
-    if (course == null) {
-      throw NotFoundException(message: 'Lesson not found');
-    }
-
     return _transactionRunner.run(
       session,
       (transaction) async {
+        final lesson = await _lessonDataSource.findById(
+          session,
+          lessonId,
+          transaction: transaction,
+        );
+        if (lesson == null) {
+          throw NotFoundException(message: 'Lesson not found');
+        }
+        final module = await _moduleDataSource.findById(
+          session,
+          lesson.moduleId,
+          transaction: transaction,
+        );
+        if (module == null) {
+          throw NotFoundException(message: 'Lesson not found');
+        }
+        final course = await _courseDataSource.findPublishedById(
+          session,
+          module.courseId,
+          transaction: transaction,
+        );
+        if (course == null) {
+          throw NotFoundException(message: 'Lesson not found');
+        }
+
         final existing = await _lessonProgressDataSource
             .findByAuthUserIdAndLessonId(
               session,

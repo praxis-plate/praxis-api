@@ -11,6 +11,7 @@ import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
+import 'package:praxis_server/src/datasources/task_answer_attempt_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/datasources/user_achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
@@ -20,6 +21,7 @@ import 'package:praxis_server/src/services/achievement/achievement_service.dart'
 import 'package:praxis_server/src/services/access_control/access_control_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
+import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
@@ -35,6 +37,7 @@ class AppServices {
   final AccessControlService accessControlService;
   final AiService? aiService;
   final CmsContentService cmsContentService;
+  final CmsCourseAnalyticsService cmsCourseAnalyticsService;
   final CourseService courseService;
   final TransactionRunner transactionRunner;
   final LessonService lessonService;
@@ -48,6 +51,7 @@ class AppServices {
     required this.accessControlService,
     required this.aiService,
     required this.cmsContentService,
+    required this.cmsCourseAnalyticsService,
     required this.courseService,
     required this.transactionRunner,
     required this.lessonService,
@@ -72,6 +76,7 @@ class AppServices {
     const lessonProgressDataSource = LessonProgressDataSource();
     const moduleDataSource = ModuleDataSource();
     const taskDataSource = TaskDataSource();
+    const taskAnswerAttemptDataSource = TaskAnswerAttemptDataSource();
     const taskOptionDataSource = TaskOptionDataSource();
     const taskTestCaseDataSource = TaskTestCaseDataSource();
     const taskAnswerValidationService = TaskAnswerValidationService();
@@ -84,6 +89,7 @@ class AppServices {
       courseDataSource: courseDataSource,
       lessonDataSource: lessonDataSource,
       moduleDataSource: moduleDataSource,
+      taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
       taskDataSource: taskDataSource,
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
@@ -126,6 +132,15 @@ class AppServices {
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
     );
+    final cmsCourseAnalyticsService = CmsCourseAnalyticsService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+      userCourseDataSource: userCourseDataSource,
+      lessonProgressDataSource: lessonProgressDataSource,
+      taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
+    );
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
@@ -153,6 +168,7 @@ class AppServices {
       accessControlService: accessControlService,
       aiService: aiService,
       cmsContentService: cmsContentService,
+      cmsCourseAnalyticsService: cmsCourseAnalyticsService,
       courseService: courseService,
       transactionRunner: transactionRunner,
       lessonService: lessonService,

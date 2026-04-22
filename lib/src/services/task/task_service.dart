@@ -1,6 +1,7 @@
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/task_answer_attempt_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
@@ -14,6 +15,7 @@ class TaskService {
   final CourseDataSource _courseDataSource;
   final LessonDataSource _lessonDataSource;
   final ModuleDataSource _moduleDataSource;
+  final TaskAnswerAttemptDataSource _taskAnswerAttemptDataSource;
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
@@ -23,6 +25,7 @@ class TaskService {
     required CourseDataSource courseDataSource,
     required LessonDataSource lessonDataSource,
     required ModuleDataSource moduleDataSource,
+    required TaskAnswerAttemptDataSource taskAnswerAttemptDataSource,
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
@@ -30,6 +33,7 @@ class TaskService {
   }) : _courseDataSource = courseDataSource,
        _lessonDataSource = lessonDataSource,
        _moduleDataSource = moduleDataSource,
+       _taskAnswerAttemptDataSource = taskAnswerAttemptDataSource,
        _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
@@ -40,6 +44,27 @@ class TaskService {
     String userAnswer,
   ) {
     return _validationService.validateAnswer(task, userAnswer);
+  }
+
+  Future<TaskAnswerResult> answerTask(
+    Session session,
+    int taskId,
+    String userAnswer,
+  ) async {
+    final task = await getTaskById(session, taskId);
+    final result = _validationService.validateAnswer(task, userAnswer);
+
+    await _taskAnswerAttemptDataSource.insert(
+      session,
+      authUserId: _extractAuthUserId(session),
+      taskId: task.id,
+      userAnswer: _normalizeUserAnswer(userAnswer),
+      isCorrect: result.isCorrect,
+      feedbackType: result.feedbackType.value,
+      submittedAt: DateTime.now(),
+    );
+
+    return result;
   }
 
   Future<TaskDto> getTaskById(
@@ -171,5 +196,31 @@ class TaskService {
     if (course == null) {
       throw NotFoundException(message: 'Task not found');
     }
+  }
+
+  UuidValue? _extractAuthUserId(Session session) {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      return null;
+    }
+
+    try {
+      return UuidValue.fromString(authInfo.userIdentifier);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _normalizeUserAnswer(String userAnswer) {
+    final normalized = userAnswer.trim();
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    if (normalized.length <= 500) {
+      return normalized;
+    }
+
+    return normalized.substring(0, 500);
   }
 }

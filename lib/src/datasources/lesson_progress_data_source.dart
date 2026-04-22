@@ -4,6 +4,22 @@ import 'package:serverpod/serverpod.dart';
 class LessonProgressDataSource {
   const LessonProgressDataSource();
 
+  Future<List<LessonProgress>> listByLessonIds(
+    Session session,
+    List<int> lessonIds, {
+    Transaction? transaction,
+  }) {
+    if (lessonIds.isEmpty) {
+      return Future.value([]);
+    }
+
+    return LessonProgress.db.find(
+      session,
+      where: (t) => t.lessonId.inSet(lessonIds.toSet()),
+      transaction: transaction,
+    );
+  }
+
   Future<LessonProgress?> findByAuthUserIdAndLessonId(
     Session session,
     UuidValue authUserId,

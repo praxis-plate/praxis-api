@@ -1,0 +1,11 @@
+class: CourseAnalyticsTaskDto
+fields:
+  taskId: int
+  lessonId: int
+  lessonTitle: String
+  questionText: String
+  taskType: TaskType
+  totalAttempts: int
+  correctAttempts: int
+  incorrectAttempts: int
+  accuracyRate: double
