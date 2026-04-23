@@ -25,6 +25,7 @@ import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_se
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
+import 'package:praxis_server/src/services/recommendation/course_recommendation_service.dart';
 import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
@@ -39,6 +40,7 @@ class AppServices {
   final CmsContentService cmsContentService;
   final CmsCourseAnalyticsService cmsCourseAnalyticsService;
   final CourseService courseService;
+  final CourseRecommendationService courseRecommendationService;
   final TransactionRunner transactionRunner;
   final LessonService lessonService;
   final ModuleService moduleService;
@@ -53,6 +55,7 @@ class AppServices {
     required this.cmsContentService,
     required this.cmsCourseAnalyticsService,
     required this.courseService,
+    required this.courseRecommendationService,
     required this.transactionRunner,
     required this.lessonService,
     required this.moduleService,
@@ -151,6 +154,14 @@ class AppServices {
       taskTestCaseDataSource: taskTestCaseDataSource,
       userCourseDataSource: userCourseDataSource,
     );
+    final courseRecommendationService = CourseRecommendationService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+      userCourseDataSource: userCourseDataSource,
+      lessonProgressDataSource: lessonProgressDataSource,
+    );
     final moduleService = ModuleService(
       courseDataSource: courseDataSource,
       moduleDataSource: moduleDataSource,
@@ -170,6 +181,7 @@ class AppServices {
       cmsContentService: cmsContentService,
       cmsCourseAnalyticsService: cmsCourseAnalyticsService,
       courseService: courseService,
+      courseRecommendationService: courseRecommendationService,
       transactionRunner: transactionRunner,
       lessonService: lessonService,
       moduleService: moduleService,

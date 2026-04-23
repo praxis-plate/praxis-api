@@ -18,6 +18,7 @@ import 'package:praxis_server/src/usecases/course/get_course_by_id_use_case.dart
 import 'package:praxis_server/src/usecases/course/get_course_table_of_contents_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_enrolled_courses_use_case.dart';
+import 'package:praxis_server/src/usecases/course/get_personalized_recommendations_use_case.dart';
 import 'package:praxis_server/src/usecases/course/unenroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/complete_lesson_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lesson_by_id_use_case.dart';
@@ -67,6 +68,8 @@ class AppUseCases {
   final UnlockAchievementUseCase unlockAchievementUseCase;
   final IsAchievementUnlockedUseCase isAchievementUnlockedUseCase;
   final GetCoursesUseCase getCoursesUseCase;
+  final GetPersonalizedRecommendationsUseCase
+  getPersonalizedRecommendationsUseCase;
   final GetCourseByIdUseCase getCourseByIdUseCase;
   final GetEnrolledCoursesUseCase getEnrolledCoursesUseCase;
   final EnrollCourseUseCase enrollCourseUseCase;
@@ -118,6 +121,7 @@ class AppUseCases {
     required this.unlockAchievementUseCase,
     required this.isAchievementUnlockedUseCase,
     required this.getCoursesUseCase,
+    required this.getPersonalizedRecommendationsUseCase,
     required this.getCourseByIdUseCase,
     required this.getEnrolledCoursesUseCase,
     required this.enrollCourseUseCase,
@@ -248,6 +252,10 @@ class AppUseCases {
       getCoursesUseCase: GetCoursesUseCase(
         courseService: services.courseService,
       ),
+      getPersonalizedRecommendationsUseCase:
+          GetPersonalizedRecommendationsUseCase(
+            courseRecommendationService: services.courseRecommendationService,
+          ),
       getCourseByIdUseCase: GetCourseByIdUseCase(
         courseService: services.courseService,
       ),

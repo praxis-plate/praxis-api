@@ -1,0 +1,5 @@
+class: CourseRecommendationDto
+fields:
+  course: CourseDto
+  score: double
+  reason: String

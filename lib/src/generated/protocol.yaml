@@ -27,6 +27,7 @@ course:
   - getEnrolled:
   - enroll:
   - unenroll:
+  - getRecommendations:
   - getTableOfContents:
 emailIdp:
   - login:

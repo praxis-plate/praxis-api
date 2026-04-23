@@ -639,6 +639,25 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['courseId'],
               ),
         ),
+        'getRecommendations': _i1.MethodConnector(
+          name: 'getRecommendations',
+          params: {
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['course'] as _i7.CourseEndpoint)
+                  .getRecommendations(
+                    session,
+                    limit: params['limit'],
+                  ),
+        ),
         'getTableOfContents': _i1.MethodConnector(
           name: 'getTableOfContents',
           params: {

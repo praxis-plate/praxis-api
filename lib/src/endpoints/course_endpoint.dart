@@ -49,6 +49,19 @@ class CourseEndpoint extends Endpoint {
     );
   }
 
+  Future<List<CourseRecommendationDto>> getRecommendations(
+    Session session, {
+    int limit = 5,
+  }) {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return session.server.useCases.getPersonalizedRecommendationsUseCase
+        .execute(
+          session,
+          authUserId: authUserId,
+          limit: limit,
+        );
+  }
+
   Future<CourseStructureDto> getTableOfContents(Session session, int courseId) {
     return session.server.useCases.getCourseTableOfContentsUseCase.execute(
       session,
