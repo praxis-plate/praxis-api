@@ -17,12 +17,6 @@ CREATE TABLE IF NOT EXISTS "achievement" (
 -- Indexes
 CREATE INDEX IF NOT EXISTS "achievement_condition_idx" ON "achievement" USING btree ("conditionType");
 
---
--- ACTION DROP TABLE
---
-DROP TABLE IF EXISTS "coin_transaction" CASCADE;
-
---
 -- ACTION CREATE TABLE
 --
 CREATE TABLE IF NOT EXISTS "coin_transaction" (
@@ -43,6 +37,12 @@ CREATE TABLE IF NOT EXISTS "coin_transaction" (
 -- Indexes
 CREATE UNIQUE INDEX IF NOT EXISTS "coin_transaction_transaction_key_unique" ON "coin_transaction" USING btree ("transactionKey");
 CREATE INDEX IF NOT EXISTS "coin_transaction_auth_user_id_created_at_idx" ON "coin_transaction" USING btree ("authUserId", "createdAt");
+
+ALTER TABLE "coin_transaction"
+    ADD COLUMN IF NOT EXISTS "relatedEntityId" text,
+    ADD COLUMN IF NOT EXISTS "reversalOfTransactionId" bigint,
+    ADD COLUMN IF NOT EXISTS "reason" text,
+    ADD COLUMN IF NOT EXISTS "metadata" text;
 
 --
 -- ACTION CREATE TABLE
@@ -68,6 +68,22 @@ CREATE TABLE IF NOT EXISTS "course" (
 CREATE INDEX IF NOT EXISTS "course_category_idx" ON "course" USING btree ("category");
 CREATE INDEX IF NOT EXISTS "course_rating_idx" ON "course" USING btree ("rating");
 
+ALTER TABLE "course"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone,
+    ADD COLUMN IF NOT EXISTS "contentStatus" text,
+    ADD COLUMN IF NOT EXISTS "publishedAt" timestamp without time zone;
+
+UPDATE "course"
+SET "updatedAt" = COALESCE("updatedAt", "createdAt"),
+    "contentStatus" = COALESCE("contentStatus", 'published'),
+    "publishedAt" = COALESCE("publishedAt", "createdAt")
+WHERE "updatedAt" IS NULL
+   OR "contentStatus" IS NULL;
+
+ALTER TABLE "course"
+    ALTER COLUMN "updatedAt" SET NOT NULL,
+    ALTER COLUMN "contentStatus" SET NOT NULL;
+
 --
 -- ACTION CREATE TABLE
 --
@@ -87,6 +103,16 @@ CREATE TABLE IF NOT EXISTS "lesson" (
 -- Indexes
 CREATE INDEX IF NOT EXISTS "lesson_module_id_idx" ON "lesson" USING btree ("moduleId");
 CREATE INDEX IF NOT EXISTS "lesson_module_id_order_idx" ON "lesson" USING btree ("moduleId", "orderIndex");
+
+ALTER TABLE "lesson"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone;
+
+UPDATE "lesson"
+SET "updatedAt" = COALESCE("updatedAt", "createdAt")
+WHERE "updatedAt" IS NULL;
+
+ALTER TABLE "lesson"
+    ALTER COLUMN "updatedAt" SET NOT NULL;
 
 --
 -- ACTION CREATE TABLE
@@ -121,6 +147,16 @@ CREATE TABLE IF NOT EXISTS "module" (
 CREATE INDEX IF NOT EXISTS "module_course_id_idx" ON "module" USING btree ("courseId");
 CREATE INDEX IF NOT EXISTS "module_course_id_order_idx" ON "module" USING btree ("courseId", "orderIndex");
 
+ALTER TABLE "module"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone;
+
+UPDATE "module"
+SET "updatedAt" = COALESCE("updatedAt", "createdAt")
+WHERE "updatedAt" IS NULL;
+
+ALTER TABLE "module"
+    ALTER COLUMN "updatedAt" SET NOT NULL;
+
 --
 -- ACTION CREATE TABLE
 --
@@ -148,6 +184,16 @@ CREATE TABLE IF NOT EXISTS "task" (
 CREATE INDEX IF NOT EXISTS "task_lesson_id_idx" ON "task" USING btree ("lessonId");
 CREATE INDEX IF NOT EXISTS "task_lesson_id_order_idx" ON "task" USING btree ("lessonId", "orderIndex");
 
+ALTER TABLE "task"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone;
+
+UPDATE "task"
+SET "updatedAt" = COALESCE("updatedAt", "createdAt")
+WHERE "updatedAt" IS NULL;
+
+ALTER TABLE "task"
+    ALTER COLUMN "updatedAt" SET NOT NULL;
+
 --
 -- ACTION CREATE TABLE
 --
@@ -163,6 +209,16 @@ CREATE TABLE IF NOT EXISTS "task_option" (
 -- Indexes
 CREATE INDEX IF NOT EXISTS "task_option_task_id_idx" ON "task_option" USING btree ("taskId");
 CREATE INDEX IF NOT EXISTS "task_option_task_id_order_idx" ON "task_option" USING btree ("taskId", "orderIndex");
+
+ALTER TABLE "task_option"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone;
+
+UPDATE "task_option"
+SET "updatedAt" = COALESCE("updatedAt", NOW())
+WHERE "updatedAt" IS NULL;
+
+ALTER TABLE "task_option"
+    ALTER COLUMN "updatedAt" SET NOT NULL;
 
 --
 -- ACTION CREATE TABLE
@@ -180,6 +236,16 @@ CREATE TABLE IF NOT EXISTS "task_test_case" (
 -- Indexes
 CREATE INDEX IF NOT EXISTS "task_test_case_task_id_idx" ON "task_test_case" USING btree ("taskId");
 CREATE INDEX IF NOT EXISTS "task_test_case_task_id_order_idx" ON "task_test_case" USING btree ("taskId", "orderIndex");
+
+ALTER TABLE "task_test_case"
+    ADD COLUMN IF NOT EXISTS "updatedAt" timestamp without time zone;
+
+UPDATE "task_test_case"
+SET "updatedAt" = COALESCE("updatedAt", NOW())
+WHERE "updatedAt" IS NULL;
+
+ALTER TABLE "task_test_case"
+    ALTER COLUMN "updatedAt" SET NOT NULL;
 
 --
 -- ACTION CREATE TABLE

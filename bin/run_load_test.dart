@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:praxis_client/praxis_client.dart';
 import 'package:praxis_server/src/services/load_testing/load_test_metrics.dart';
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart';
 
+// ignore: avoid_relative_lib_imports
+import '../../praxis_flutter/packages/praxis_client/lib/praxis_client.dart';
 import 'src/load_testing/in_memory_auth_success_storage.dart';
 import 'src/load_testing/load_test_config.dart';
 
@@ -131,9 +132,13 @@ Future<_LoadTestFixture> _loadFixture(
     limit: config.courseFetchLimit,
     offset: 0,
   );
-  final courses = publishedCourses
-      .where((course) => course.title.startsWith(config.seedPrefix))
-      .toList();
+  final courses = [
+    for (final course in publishedCourses)
+      if (course != null &&
+          course.id != null &&
+          (course.title?.startsWith(config.seedPrefix) ?? false))
+        course,
+  ];
 
   if (courses.isEmpty) {
     throw StateError(
@@ -141,9 +146,11 @@ Future<_LoadTestFixture> _loadFixture(
     );
   }
 
+  final courseIds = [for (final course in courses) course.id!];
+
   final structures = <CourseStructureDto>[];
   for (final course in courses) {
-    structures.add(await client.course.getTableOfContents(course.id));
+    structures.add(await client.course.getTableOfContents(course.id!));
   }
 
   final lessonIds = <int>[];
@@ -164,9 +171,12 @@ Future<_LoadTestFixture> _loadFixture(
   for (final lessonId in sampledLessonIds) {
     final tasks = await client.task.getByLessonId(lessonId);
     for (final task in tasks) {
+      if (task.id == null) {
+        continue;
+      }
       taskCandidates.add(
         _TaskCandidate(
-          taskId: task.id,
+          taskId: task.id!,
           lessonId: lessonId,
           correctAnswer: task.correctAnswer,
         ),
@@ -179,7 +189,7 @@ Future<_LoadTestFixture> _loadFixture(
   }
 
   return _LoadTestFixture(
-    courseIds: courses.map((course) => course.id).toList(),
+    courseIds: courseIds,
     lessonIds: lessonIds,
     taskCandidates: taskCandidates,
   );

@@ -8,16 +8,13 @@ RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
 # Final stage
-FROM alpine:latest
+FROM dart:3.8.0 AS runtime
 
 # Environment variables
 ENV runmode=production
 ENV serverid=default
 ENV logging=normal
 ENV role=monolith
-
-# Copy runtime dependencies
-COPY --from=build /runtime/ /
 
 # Copy compiled server executable
 COPY --from=build /app/bin/server server

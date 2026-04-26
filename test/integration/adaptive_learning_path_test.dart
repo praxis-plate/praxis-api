@@ -159,6 +159,119 @@ void main() {
         contains('High mastery in upcoming topics'),
       );
     });
+
+    test('keeps lesson order across module boundaries', () async {
+      final course = await endpoints.courseAdmin.create(
+        cmsSession,
+        CreateCourseRequest(
+          title: 'Module ordered adaptive path course',
+          description: 'Checks cross-module lesson ordering',
+          author: 'Author',
+          category: 'Dart',
+          rating: 4.8,
+        ),
+      );
+      final firstModule = await endpoints.moduleAdmin.create(
+        cmsSession,
+        CreateModuleRequest(
+          courseId: course.id,
+          title: 'Module 1',
+          description: 'Description',
+        ),
+      );
+      final secondModule = await endpoints.moduleAdmin.create(
+        cmsSession,
+        CreateModuleRequest(
+          courseId: course.id,
+          title: 'Module 2',
+          description: 'Description',
+        ),
+      );
+      final firstModuleLesson = await endpoints.lessonAdmin.create(
+        cmsSession,
+        CreateLessonRequest(
+          moduleId: firstModule.id,
+          title: 'Lesson 1.1',
+          contentText: 'Lesson content',
+          durationMinutes: 15,
+        ),
+      );
+      final secondModuleLesson = await endpoints.lessonAdmin.create(
+        cmsSession,
+        CreateLessonRequest(
+          moduleId: secondModule.id,
+          title: 'Lesson 2.1',
+          contentText: 'Lesson content',
+          durationMinutes: 15,
+        ),
+      );
+      final firstModuleSecondLesson = await endpoints.lessonAdmin.create(
+        cmsSession,
+        CreateLessonRequest(
+          moduleId: firstModule.id,
+          title: 'Lesson 1.2',
+          contentText: 'Lesson content',
+          durationMinutes: 15,
+        ),
+      );
+      await endpoints.taskAdmin.create(
+        cmsSession,
+        CreateTaskRequest(
+          lessonId: firstModuleLesson.id,
+          taskType: TaskType.textInput,
+          questionText: 'Question 1',
+          correctAnswer: 'correct-basics',
+          topic: 'basics',
+        ),
+      );
+      await endpoints.taskAdmin.create(
+        cmsSession,
+        CreateTaskRequest(
+          lessonId: firstModuleSecondLesson.id,
+          taskType: TaskType.textInput,
+          questionText: 'Question 2',
+          correctAnswer: 'correct-loops',
+          topic: 'loops',
+        ),
+      );
+      await endpoints.taskAdmin.create(
+        cmsSession,
+        CreateTaskRequest(
+          lessonId: secondModuleLesson.id,
+          taskType: TaskType.textInput,
+          questionText: 'Question 3',
+          correctAnswer: 'correct-collections',
+          topic: 'collections',
+        ),
+      );
+      final publishedCourse = await endpoints.courseAdmin.publish(
+        cmsSession,
+        course.id,
+      );
+
+      await endpoints.course.enroll(learnerSession, publishedCourse.id);
+      await endpoints.task.answer(
+        learnerSession,
+        (await endpoints.task.getByLessonId(
+          learnerSession,
+          firstModuleLesson.id,
+        )).single.id,
+        'correct-basics',
+      );
+      await endpoints.lesson.markComplete(
+        learnerSession,
+        firstModuleLesson.id,
+        timeSpentSeconds: 120,
+      );
+
+      final adaptivePath = await endpoints.course.getAdaptiveLearningPath(
+        learnerSession,
+        publishedCourse.id,
+      );
+
+      expect(adaptivePath.recommendedLessonId, firstModuleSecondLesson.id);
+      expect(adaptivePath.recommendedLessonId, isNot(secondModuleLesson.id));
+    });
   });
 }
 

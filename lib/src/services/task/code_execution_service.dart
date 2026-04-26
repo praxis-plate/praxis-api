@@ -198,7 +198,7 @@ class CodeExecutionService {
     try {
       await scriptFile.writeAsString(source);
       final process = await Process.start(
-        Platform.resolvedExecutable,
+        _resolveDartExecutable(),
         ['--disable-dart-dev', scriptFile.path],
         workingDirectory: tempDirectory.path,
         runInShell: false,
@@ -336,6 +336,16 @@ class CodeExecutionService {
       return normalized;
     }
     return '${normalized.substring(0, _maxOutputLength)}...';
+  }
+
+  String _resolveDartExecutable() {
+    final configuredExecutable = Platform.environment['PRAXIS_DART_EXECUTABLE']
+        ?.trim();
+    if (configuredExecutable != null && configuredExecutable.isNotEmpty) {
+      return configuredExecutable;
+    }
+
+    return 'dart';
   }
 }
 

@@ -45,6 +45,10 @@ class AdaptiveLearningPathService {
     }
 
     final modules = await _moduleDataSource.listByCourseId(session, courseId);
+    final moduleOrderById = {
+      for (final module in modules)
+        if (module.id != null) module.id!: module.orderIndex,
+    };
     final lessons = <Lesson>[];
     for (final module in modules) {
       final moduleLessons = await _lessonDataSource.listByModuleId(
@@ -53,7 +57,16 @@ class AdaptiveLearningPathService {
       );
       lessons.addAll(moduleLessons);
     }
-    lessons.sort((left, right) => left.orderIndex.compareTo(right.orderIndex));
+    lessons.sort((left, right) {
+      final leftModuleOrder = moduleOrderById[left.moduleId] ?? 0;
+      final rightModuleOrder = moduleOrderById[right.moduleId] ?? 0;
+      final moduleCompare = leftModuleOrder.compareTo(rightModuleOrder);
+      if (moduleCompare != 0) {
+        return moduleCompare;
+      }
+
+      return left.orderIndex.compareTo(right.orderIndex);
+    });
 
     if (lessons.isEmpty) {
       return AdaptiveLearningPathDto(
@@ -172,7 +185,9 @@ class AdaptiveLearningPathService {
       lessonId: canonicalNextLesson.id!,
       tasksByLessonId: tasksByLessonId,
     );
-    final weakestEncounteredTopic = _findWeakestEncounteredTopic(topicMasteries);
+    final weakestEncounteredTopic = _findWeakestEncounteredTopic(
+      topicMasteries,
+    );
     final nextLessonReadiness = _lessonReadiness(
       topics: nextLessonTopics,
       topicMasteries: topicMasteries,

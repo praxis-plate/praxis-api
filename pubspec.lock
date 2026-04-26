@@ -561,13 +561,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.9"
-  praxis_client:
-    dependency: "direct dev"
-    description:
-      path: "../praxis_flutter/packages/praxis_client"
-      relative: true
-    source: path
-    version: "0.0.0"
   pub_api_client:
     dependency: transitive
     description:
@@ -641,7 +634,7 @@ packages:
     source: hosted
     version: "3.2.0"
   serverpod_auth_core_client:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: serverpod_auth_core_client
       sha256: "956173ae1e8c4c88917c72df65e080db4d1e589fdcab70908fbc3fa0c30d684c"
@@ -653,14 +646,6 @@ packages:
     description:
       name: serverpod_auth_core_server
       sha256: f97276b13c8473a4c9837e8ffed99029dc0a7a76c1ef25d2d1216e7c87f599b1
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
-  serverpod_auth_idp_client:
-    dependency: transitive
-    description:
-      name: serverpod_auth_idp_client
-      sha256: "4e332732ea147626ad7ab67b4b82405109f5c45ee310b146230008fbb87375e6"
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
