@@ -38,6 +38,10 @@ emailIdp:
   - startPasswordReset:
   - verifyPasswordResetCode:
   - finishPasswordReset:
+externalIntegrationAdmin:
+  - listProviders:
+  - syncCourse:
+  - provisionLessonVideoSession:
 health:
   - ping:
 jwtRefresh:

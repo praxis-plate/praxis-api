@@ -1,0 +1,4 @@
+enum: ExternalIntegrationKind
+values:
+  - lms
+  - videoConferencing

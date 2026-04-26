@@ -21,6 +21,7 @@ import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_enrolled_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_personalized_recommendations_use_case.dart';
 import 'package:praxis_server/src/usecases/course/unenroll_course_use_case.dart';
+import 'package:praxis_server/src/usecases/external_integration/external_integration_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/lesson/complete_lesson_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lesson_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/lesson/get_lessons_by_course_id_use_case.dart';
@@ -72,6 +73,11 @@ class AppUseCases {
   final GetAdaptiveLearningPathUseCase getAdaptiveLearningPathUseCase;
   final GetPersonalizedRecommendationsUseCase
   getPersonalizedRecommendationsUseCase;
+  final ListExternalIntegrationProvidersUseCase
+  listExternalIntegrationProvidersUseCase;
+  final SyncCourseToExternalProviderUseCase syncCourseToExternalProviderUseCase;
+  final ProvisionExternalVideoSessionUseCase
+  provisionExternalVideoSessionUseCase;
   final GetCourseByIdUseCase getCourseByIdUseCase;
   final GetEnrolledCoursesUseCase getEnrolledCoursesUseCase;
   final EnrollCourseUseCase enrollCourseUseCase;
@@ -125,6 +131,9 @@ class AppUseCases {
     required this.getCoursesUseCase,
     required this.getAdaptiveLearningPathUseCase,
     required this.getPersonalizedRecommendationsUseCase,
+    required this.listExternalIntegrationProvidersUseCase,
+    required this.syncCourseToExternalProviderUseCase,
+    required this.provisionExternalVideoSessionUseCase,
     required this.getCourseByIdUseCase,
     required this.getEnrolledCoursesUseCase,
     required this.enrollCourseUseCase,
@@ -261,6 +270,17 @@ class AppUseCases {
       getPersonalizedRecommendationsUseCase:
           GetPersonalizedRecommendationsUseCase(
             courseRecommendationService: services.courseRecommendationService,
+          ),
+      listExternalIntegrationProvidersUseCase:
+          ListExternalIntegrationProvidersUseCase(
+            externalIntegrationService: services.externalIntegrationService,
+          ),
+      syncCourseToExternalProviderUseCase: SyncCourseToExternalProviderUseCase(
+        externalIntegrationService: services.externalIntegrationService,
+      ),
+      provisionExternalVideoSessionUseCase:
+          ProvisionExternalVideoSessionUseCase(
+            externalIntegrationService: services.externalIntegrationService,
           ),
       getCourseByIdUseCase: GetCourseByIdUseCase(
         courseService: services.courseService,

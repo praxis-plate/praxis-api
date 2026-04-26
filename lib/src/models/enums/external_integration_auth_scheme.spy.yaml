@@ -1,0 +1,4 @@
+enum: ExternalIntegrationAuthScheme
+values:
+  - apiToken
+  - oauth2

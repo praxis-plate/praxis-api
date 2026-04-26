@@ -24,6 +24,7 @@ import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
+import 'package:praxis_server/src/services/external_integration/external_integration_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
 import 'package:praxis_server/src/services/recommendation/course_recommendation_service.dart';
@@ -44,6 +45,7 @@ class AppServices {
   final CmsCourseAnalyticsService cmsCourseAnalyticsService;
   final CourseService courseService;
   final CourseRecommendationService courseRecommendationService;
+  final ExternalIntegrationService externalIntegrationService;
   final TransactionRunner transactionRunner;
   final LessonService lessonService;
   final ModuleService moduleService;
@@ -60,6 +62,7 @@ class AppServices {
     required this.cmsCourseAnalyticsService,
     required this.courseService,
     required this.courseRecommendationService,
+    required this.externalIntegrationService,
     required this.transactionRunner,
     required this.lessonService,
     required this.moduleService,
@@ -177,6 +180,12 @@ class AppServices {
       userCourseDataSource: userCourseDataSource,
       lessonProgressDataSource: lessonProgressDataSource,
     );
+    final externalIntegrationService = ExternalIntegrationService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+    );
     final moduleService = ModuleService(
       courseDataSource: courseDataSource,
       moduleDataSource: moduleDataSource,
@@ -198,6 +207,7 @@ class AppServices {
       cmsCourseAnalyticsService: cmsCourseAnalyticsService,
       courseService: courseService,
       courseRecommendationService: courseRecommendationService,
+      externalIntegrationService: externalIntegrationService,
       transactionRunner: transactionRunner,
       lessonService: lessonService,
       moduleService: moduleService,

@@ -18,56 +18,61 @@ import '../endpoints/course_admin_endpoint.dart' as _i5;
 import '../endpoints/course_analytics_admin_endpoint.dart' as _i6;
 import '../endpoints/course_endpoint.dart' as _i7;
 import '../endpoints/email_idp_endpoint.dart' as _i8;
-import '../endpoints/health_endpoint.dart' as _i9;
-import '../endpoints/jwt_refresh_endpoint.dart' as _i10;
-import '../endpoints/lesson_admin_endpoint.dart' as _i11;
-import '../endpoints/lesson_endpoint.dart' as _i12;
-import '../endpoints/module_admin_endpoint.dart' as _i13;
-import '../endpoints/module_endpoint.dart' as _i14;
-import '../endpoints/task_admin_endpoint.dart' as _i15;
-import '../endpoints/task_endpoint.dart' as _i16;
-import '../endpoints/user_statistics_endpoint.dart' as _i17;
-import '../endpoints/wallet_endpoint.dart' as _i18;
-import 'package:praxis_server/src/generated/enums/user_role.dart' as _i19;
+import '../endpoints/external_integration_admin_endpoint.dart' as _i9;
+import '../endpoints/health_endpoint.dart' as _i10;
+import '../endpoints/jwt_refresh_endpoint.dart' as _i11;
+import '../endpoints/lesson_admin_endpoint.dart' as _i12;
+import '../endpoints/lesson_endpoint.dart' as _i13;
+import '../endpoints/module_admin_endpoint.dart' as _i14;
+import '../endpoints/module_endpoint.dart' as _i15;
+import '../endpoints/task_admin_endpoint.dart' as _i16;
+import '../endpoints/task_endpoint.dart' as _i17;
+import '../endpoints/user_statistics_endpoint.dart' as _i18;
+import '../endpoints/wallet_endpoint.dart' as _i19;
+import 'package:praxis_server/src/generated/enums/user_role.dart' as _i20;
 import 'package:praxis_server/src/generated/requests/generate_hint_request.dart'
-    as _i20;
-import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart'
     as _i21;
-import 'package:praxis_server/src/generated/enums/content_status.dart' as _i22;
+import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart'
+    as _i22;
+import 'package:praxis_server/src/generated/enums/content_status.dart' as _i23;
 import 'package:praxis_server/src/generated/requests/create_course_request.dart'
-    as _i23;
-import 'package:praxis_server/src/generated/requests/update_course_request.dart'
     as _i24;
-import 'package:praxis_server/src/generated/requests/create_lesson_request.dart'
+import 'package:praxis_server/src/generated/requests/update_course_request.dart'
     as _i25;
-import 'package:praxis_server/src/generated/requests/update_lesson_request.dart'
+import 'package:praxis_server/src/generated/requests/sync_course_to_external_provider_request.dart'
     as _i26;
-import 'package:praxis_server/src/generated/requests/reorder_lessons_request.dart'
+import 'package:praxis_server/src/generated/requests/provision_external_video_session_request.dart'
     as _i27;
-import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
+import 'package:praxis_server/src/generated/requests/create_lesson_request.dart'
     as _i28;
-import 'package:praxis_server/src/generated/requests/create_module_request.dart'
+import 'package:praxis_server/src/generated/requests/update_lesson_request.dart'
     as _i29;
-import 'package:praxis_server/src/generated/requests/update_module_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_lessons_request.dart'
     as _i30;
-import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
+import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
     as _i31;
-import 'package:praxis_server/src/generated/requests/create_task_request.dart'
+import 'package:praxis_server/src/generated/requests/create_module_request.dart'
     as _i32;
-import 'package:praxis_server/src/generated/requests/update_task_request.dart'
+import 'package:praxis_server/src/generated/requests/update_module_request.dart'
     as _i33;
-import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
     as _i34;
-import 'package:praxis_server/src/generated/requests/upsert_task_options_request.dart'
+import 'package:praxis_server/src/generated/requests/create_task_request.dart'
     as _i35;
-import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
+import 'package:praxis_server/src/generated/requests/update_task_request.dart'
     as _i36;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
     as _i37;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:praxis_server/src/generated/requests/upsert_task_options_request.dart'
     as _i38;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
     as _i39;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i40;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i41;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i42;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -115,61 +120,67 @@ class Endpoints extends _i1.EndpointDispatch {
           'emailIdp',
           null,
         ),
-      'health': _i9.HealthEndpoint()
+      'externalIntegrationAdmin': _i9.ExternalIntegrationAdminEndpoint()
+        ..initialize(
+          server,
+          'externalIntegrationAdmin',
+          null,
+        ),
+      'health': _i10.HealthEndpoint()
         ..initialize(
           server,
           'health',
           null,
         ),
-      'jwtRefresh': _i10.JwtRefreshEndpoint()
+      'jwtRefresh': _i11.JwtRefreshEndpoint()
         ..initialize(
           server,
           'jwtRefresh',
           null,
         ),
-      'lessonAdmin': _i11.LessonAdminEndpoint()
+      'lessonAdmin': _i12.LessonAdminEndpoint()
         ..initialize(
           server,
           'lessonAdmin',
           null,
         ),
-      'lesson': _i12.LessonEndpoint()
+      'lesson': _i13.LessonEndpoint()
         ..initialize(
           server,
           'lesson',
           null,
         ),
-      'moduleAdmin': _i13.ModuleAdminEndpoint()
+      'moduleAdmin': _i14.ModuleAdminEndpoint()
         ..initialize(
           server,
           'moduleAdmin',
           null,
         ),
-      'module': _i14.ModuleEndpoint()
+      'module': _i15.ModuleEndpoint()
         ..initialize(
           server,
           'module',
           null,
         ),
-      'taskAdmin': _i15.TaskAdminEndpoint()
+      'taskAdmin': _i16.TaskAdminEndpoint()
         ..initialize(
           server,
           'taskAdmin',
           null,
         ),
-      'task': _i16.TaskEndpoint()
+      'task': _i17.TaskEndpoint()
         ..initialize(
           server,
           'task',
           null,
         ),
-      'userStatistics': _i17.UserStatisticsEndpoint()
+      'userStatistics': _i18.UserStatisticsEndpoint()
         ..initialize(
           server,
           'userStatistics',
           null,
         ),
-      'wallet': _i18.WalletEndpoint()
+      'wallet': _i19.WalletEndpoint()
         ..initialize(
           server,
           'wallet',
@@ -243,7 +254,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i19.UserRole>(),
+              type: _i1.getType<_i20.UserRole>(),
               nullable: false,
             ),
           },
@@ -269,7 +280,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i19.UserRole>(),
+              type: _i1.getType<_i20.UserRole>(),
               nullable: false,
             ),
           },
@@ -360,7 +371,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i20.GenerateHintRequest>(),
+              type: _i1.getType<_i21.GenerateHintRequest>(),
               nullable: false,
             ),
           },
@@ -378,7 +389,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i21.GenerateExplanationRequest>(),
+              type: _i1.getType<_i22.GenerateExplanationRequest>(),
               nullable: false,
             ),
           },
@@ -403,7 +414,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'status': _i1.ParameterDescription(
               name: 'status',
-              type: _i1.getType<_i22.ContentStatus?>(),
+              type: _i1.getType<_i23.ContentStatus?>(),
               nullable: true,
             ),
             'query': _i1.ParameterDescription(
@@ -440,7 +451,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i23.CreateCourseRequest>(),
+              type: _i1.getType<_i24.CreateCourseRequest>(),
               nullable: false,
             ),
           },
@@ -459,7 +470,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i24.UpdateCourseRequest>(),
+              type: _i1.getType<_i25.UpdateCourseRequest>(),
               nullable: false,
             ),
           },
@@ -867,6 +878,66 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['externalIntegrationAdmin'] = _i1.EndpointConnector(
+      name: 'externalIntegrationAdmin',
+      endpoint: endpoints['externalIntegrationAdmin']!,
+      methodConnectors: {
+        'listProviders': _i1.MethodConnector(
+          name: 'listProviders',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['externalIntegrationAdmin']
+                          as _i9.ExternalIntegrationAdminEndpoint)
+                      .listProviders(session),
+        ),
+        'syncCourse': _i1.MethodConnector(
+          name: 'syncCourse',
+          params: {
+            'request': _i1.ParameterDescription(
+              name: 'request',
+              type: _i1.getType<_i26.SyncCourseToExternalProviderRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['externalIntegrationAdmin']
+                          as _i9.ExternalIntegrationAdminEndpoint)
+                      .syncCourse(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'provisionLessonVideoSession': _i1.MethodConnector(
+          name: 'provisionLessonVideoSession',
+          params: {
+            'request': _i1.ParameterDescription(
+              name: 'request',
+              type: _i1.getType<_i27.ProvisionExternalVideoSessionRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['externalIntegrationAdmin']
+                          as _i9.ExternalIntegrationAdminEndpoint)
+                      .provisionLessonVideoSession(
+                        session,
+                        params['request'],
+                      ),
+        ),
+      },
+    );
     connectors['health'] = _i1.EndpointConnector(
       name: 'health',
       endpoint: endpoints['health']!,
@@ -879,7 +950,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['health'] as _i9.HealthEndpoint).ping(session),
+                  (endpoints['health'] as _i10.HealthEndpoint).ping(session),
         ),
       },
     );
@@ -900,7 +971,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['jwtRefresh'] as _i10.JwtRefreshEndpoint)
+              ) async => (endpoints['jwtRefresh'] as _i11.JwtRefreshEndpoint)
                   .refreshAccessToken(
                     session,
                     refreshToken: params['refreshToken'],
@@ -926,7 +997,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lessonAdmin'] as _i11.LessonAdminEndpoint).list(
+                  (endpoints['lessonAdmin'] as _i12.LessonAdminEndpoint).list(
                     session,
                     params['moduleId'],
                   ),
@@ -936,7 +1007,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i25.CreateLessonRequest>(),
+              type: _i1.getType<_i28.CreateLessonRequest>(),
               nullable: false,
             ),
           },
@@ -945,7 +1016,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lessonAdmin'] as _i11.LessonAdminEndpoint).create(
+                  (endpoints['lessonAdmin'] as _i12.LessonAdminEndpoint).create(
                     session,
                     params['request'],
                   ),
@@ -955,7 +1026,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i26.UpdateLessonRequest>(),
+              type: _i1.getType<_i29.UpdateLessonRequest>(),
               nullable: false,
             ),
           },
@@ -964,7 +1035,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lessonAdmin'] as _i11.LessonAdminEndpoint).update(
+                  (endpoints['lessonAdmin'] as _i12.LessonAdminEndpoint).update(
                     session,
                     params['request'],
                   ),
@@ -974,7 +1045,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i27.ReorderLessonsRequest>(),
+              type: _i1.getType<_i30.ReorderLessonsRequest>(),
               nullable: false,
             ),
           },
@@ -982,7 +1053,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['lessonAdmin'] as _i11.LessonAdminEndpoint)
+              ) async => (endpoints['lessonAdmin'] as _i12.LessonAdminEndpoint)
                   .reorder(
                     session,
                     params['request'],
@@ -1008,7 +1079,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lesson'] as _i12.LessonEndpoint).getByCourseId(
+                  (endpoints['lesson'] as _i13.LessonEndpoint).getByCourseId(
                     session,
                     params['courseId'],
                   ),
@@ -1027,7 +1098,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lesson'] as _i12.LessonEndpoint).getByModuleId(
+                  (endpoints['lesson'] as _i13.LessonEndpoint).getByModuleId(
                     session,
                     params['moduleId'],
                   ),
@@ -1045,7 +1116,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['lesson'] as _i12.LessonEndpoint).getById(
+              ) async => (endpoints['lesson'] as _i13.LessonEndpoint).getById(
                 session,
                 params['lessonId'],
               ),
@@ -1069,7 +1140,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['lesson'] as _i12.LessonEndpoint).markComplete(
+                  (endpoints['lesson'] as _i13.LessonEndpoint).markComplete(
                     session,
                     params['lessonId'],
                     timeSpentSeconds: params['timeSpentSeconds'],
@@ -1080,7 +1151,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i28.CompleteLessonSessionRequest>(),
+              type: _i1.getType<_i31.CompleteLessonSessionRequest>(),
               nullable: false,
             ),
           },
@@ -1088,7 +1159,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['lesson'] as _i12.LessonEndpoint).complete(
+              ) async => (endpoints['lesson'] as _i13.LessonEndpoint).complete(
                 session,
                 params['request'],
               ),
@@ -1113,7 +1184,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['moduleAdmin'] as _i13.ModuleAdminEndpoint).list(
+                  (endpoints['moduleAdmin'] as _i14.ModuleAdminEndpoint).list(
                     session,
                     params['courseId'],
                   ),
@@ -1123,7 +1194,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i29.CreateModuleRequest>(),
+              type: _i1.getType<_i32.CreateModuleRequest>(),
               nullable: false,
             ),
           },
@@ -1132,7 +1203,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['moduleAdmin'] as _i13.ModuleAdminEndpoint).create(
+                  (endpoints['moduleAdmin'] as _i14.ModuleAdminEndpoint).create(
                     session,
                     params['request'],
                   ),
@@ -1142,7 +1213,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i30.UpdateModuleRequest>(),
+              type: _i1.getType<_i33.UpdateModuleRequest>(),
               nullable: false,
             ),
           },
@@ -1151,7 +1222,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['moduleAdmin'] as _i13.ModuleAdminEndpoint).update(
+                  (endpoints['moduleAdmin'] as _i14.ModuleAdminEndpoint).update(
                     session,
                     params['request'],
                   ),
@@ -1161,7 +1232,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i31.ReorderModulesRequest>(),
+              type: _i1.getType<_i34.ReorderModulesRequest>(),
               nullable: false,
             ),
           },
@@ -1169,7 +1240,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['moduleAdmin'] as _i13.ModuleAdminEndpoint)
+              ) async => (endpoints['moduleAdmin'] as _i14.ModuleAdminEndpoint)
                   .reorder(
                     session,
                     params['request'],
@@ -1194,7 +1265,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['module'] as _i14.ModuleEndpoint).get(
+              ) async => (endpoints['module'] as _i15.ModuleEndpoint).get(
                 session,
                 params['courseId'],
               ),
@@ -1219,7 +1290,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint).list(
+                  (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint).list(
                     session,
                     params['lessonId'],
                   ),
@@ -1229,7 +1300,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i32.CreateTaskRequest>(),
+              type: _i1.getType<_i35.CreateTaskRequest>(),
               nullable: false,
             ),
           },
@@ -1238,7 +1309,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint).create(
+                  (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint).create(
                     session,
                     params['request'],
                   ),
@@ -1248,7 +1319,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i33.UpdateTaskRequest>(),
+              type: _i1.getType<_i36.UpdateTaskRequest>(),
               nullable: false,
             ),
           },
@@ -1257,7 +1328,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint).update(
+                  (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint).update(
                     session,
                     params['request'],
                   ),
@@ -1267,7 +1338,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i34.ReorderTasksRequest>(),
+              type: _i1.getType<_i37.ReorderTasksRequest>(),
               nullable: false,
             ),
           },
@@ -1276,7 +1347,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint).reorder(
+                  (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint).reorder(
                     session,
                     params['request'],
                   ),
@@ -1286,7 +1357,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i35.UpsertTaskOptionsRequest>(),
+              type: _i1.getType<_i38.UpsertTaskOptionsRequest>(),
               nullable: false,
             ),
           },
@@ -1294,7 +1365,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint)
+              ) async => (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint)
                   .upsertOptions(
                     session,
                     params['request'],
@@ -1305,7 +1376,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i36.UpsertTaskTestCasesRequest>(),
+              type: _i1.getType<_i39.UpsertTaskTestCasesRequest>(),
               nullable: false,
             ),
           },
@@ -1313,7 +1384,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['taskAdmin'] as _i15.TaskAdminEndpoint)
+              ) async => (endpoints['taskAdmin'] as _i16.TaskAdminEndpoint)
                   .upsertTestCases(
                     session,
                     params['request'],
@@ -1338,7 +1409,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['task'] as _i16.TaskEndpoint).getById(
+              ) async => (endpoints['task'] as _i17.TaskEndpoint).getById(
                 session,
                 params['taskId'],
               ),
@@ -1356,7 +1427,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['task'] as _i16.TaskEndpoint).getByLessonId(
+              ) async => (endpoints['task'] as _i17.TaskEndpoint).getByLessonId(
                 session,
                 params['lessonId'],
               ),
@@ -1379,7 +1450,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['task'] as _i16.TaskEndpoint).answer(
+              ) async => (endpoints['task'] as _i17.TaskEndpoint).answer(
                 session,
                 params['taskId'],
                 params['userAnswer'],
@@ -1399,7 +1470,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['userStatistics'] as _i17.UserStatisticsEndpoint)
+                  (endpoints['userStatistics'] as _i18.UserStatisticsEndpoint)
                       .get(session),
         ),
       },
@@ -1415,7 +1486,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i18.WalletEndpoint)
+              ) async => (endpoints['wallet'] as _i19.WalletEndpoint)
                   .getBalance(session),
         ),
         'topUp': _i1.MethodConnector(
@@ -1423,7 +1494,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i37.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i40.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -1431,7 +1502,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i18.WalletEndpoint).topUp(
+              ) async => (endpoints['wallet'] as _i19.WalletEndpoint).topUp(
                 session,
                 params['request'],
               ),
@@ -1441,7 +1512,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i37.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i40.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -1449,7 +1520,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i18.WalletEndpoint).buy(
+              ) async => (endpoints['wallet'] as _i19.WalletEndpoint).buy(
                 session,
                 params['request'],
               ),
@@ -1473,7 +1544,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['wallet'] as _i18.WalletEndpoint).getHistory(
+                  (endpoints['wallet'] as _i19.WalletEndpoint).getHistory(
                     session,
                     limit: params['limit'],
                     offset: params['offset'],
@@ -1481,9 +1552,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_core'] = _i38.Endpoints()
+    modules['serverpod_auth_core'] = _i41.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_idp'] = _i39.Endpoints()
+    modules['serverpod_auth_idp'] = _i42.Endpoints()
       ..initializeEndpoints(server);
   }
 }
