@@ -157,6 +157,19 @@ class CourseDataSource {
     );
   }
 
+  Future<List<Course>> listByTitlePrefix(
+    Session session,
+    String prefix, {
+    Transaction? transaction,
+  }) {
+    return Course.db.find(
+      session,
+      where: (t) => t.title.ilike('${prefix.trim()}%'),
+      orderBy: (t) => t.title,
+      transaction: transaction,
+    );
+  }
+
   Future<bool> hasAny(Session session, {Transaction? transaction}) async {
     final existing = await Course.db.findFirstRow(
       session,
