@@ -631,9 +631,10 @@ class CmsContentService {
       request.taskId,
       transaction: transaction,
     );
-    if (task.taskType != TaskType.multipleChoice) {
+    if (!_supportsTaskOptions(task.taskType)) {
       throw ValidationException(
-        message: 'Task options are supported only for multipleChoice tasks',
+        message:
+            'Task options are supported only for multipleChoice and multipleAnswer tasks',
         field: 'taskId',
       );
     }
@@ -646,9 +647,20 @@ class CmsContentService {
 
     final now = DateTime.now();
     final correctOptions = request.options.where((option) => option.isCorrect);
-    if (correctOptions.length != 1) {
+    final minimumCorrectOptions = task.taskType == TaskType.multipleAnswer
+        ? 2
+        : 1;
+    if (task.taskType == TaskType.multipleChoice &&
+        correctOptions.length != 1) {
       throw ValidationException(
         message: 'Exactly one task option must be marked as correct',
+        field: 'options',
+      );
+    }
+    if (task.taskType == TaskType.multipleAnswer &&
+        correctOptions.length < minimumCorrectOptions) {
+      throw ValidationException(
+        message: 'Multiple-answer tasks must have at least two correct options',
         field: 'options',
       );
     }
@@ -681,6 +693,12 @@ class CmsContentService {
         input.optionText,
         'options[$index].optionText',
       );
+      if (optionTexts.contains(optionText)) {
+        throw ValidationException(
+          message: 'Task options must be unique',
+          field: 'options[$index].optionText',
+        );
+      }
       optionTexts.add(optionText);
 
       if (input.id == null) {
@@ -721,9 +739,9 @@ class CmsContentService {
       transaction: transaction,
     );
 
-    final correctAnswer = _requireText(
-      correctOptions.single.optionText,
-      'options.correctAnswer',
+    final correctAnswer = _buildCorrectAnswerForTask(
+      taskType: task.taskType,
+      correctOptions: correctOptions.toList(),
     );
     await _taskDataSource.updateRow(
       session,
@@ -742,6 +760,34 @@ class CmsContentService {
     );
 
     return result;
+  }
+
+  bool _supportsTaskOptions(TaskType taskType) {
+    return taskType == TaskType.multipleChoice ||
+        taskType == TaskType.multipleAnswer;
+  }
+
+  String _buildCorrectAnswerForTask({
+    required TaskType taskType,
+    required List<CmsTaskOptionInputDto> correctOptions,
+  }) {
+    if (taskType == TaskType.multipleChoice) {
+      return _requireText(
+        correctOptions.single.optionText,
+        'options.correctAnswer',
+      );
+    }
+
+    return jsonEncode(
+      correctOptions
+          .map(
+            (option) => _requireText(
+              option.optionText,
+              'options.correctAnswer',
+            ),
+          )
+          .toList(),
+    );
   }
 
   Future<List<TaskTestCaseDto>> upsertTaskTestCases(

@@ -1,6 +1,7 @@
 enum: TaskType
 values:
   - multipleChoice
+  - multipleAnswer
   - codeCompletion
   - matching
   - textInput

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:praxis_server/src/app_services.dart';
 import 'package:praxis_server/src/app_services_binding.dart';
 import 'package:praxis_server/src/app_usecases.dart';
@@ -262,6 +264,15 @@ void main() {
             topic: 'quiz',
           ),
         );
+        final multipleAnswerTask = await endpoints.taskAdmin.create(
+          cmsSession,
+          CreateTaskRequest(
+            lessonId: secondLesson.id,
+            taskType: TaskType.multipleAnswer,
+            questionText: 'Pick all correct answers',
+            topic: 'quiz-multi',
+          ),
+        );
         final codeTask = await endpoints.taskAdmin.create(
           cmsSession,
           CreateTaskRequest(
@@ -304,6 +315,34 @@ void main() {
         expect(replacedOptions.first.optionText, 'Correct updated');
         expect(replacedOptions.first.orderIndex, 0);
 
+        final multipleAnswerOptions = await endpoints.taskAdmin.upsertOptions(
+          cmsSession,
+          UpsertTaskOptionsRequest(
+            taskId: multipleAnswerTask.id,
+            options: [
+              CmsTaskOptionInputDto(optionText: 'Correct A', isCorrect: true),
+              CmsTaskOptionInputDto(optionText: 'Wrong', isCorrect: false),
+              CmsTaskOptionInputDto(optionText: 'Correct B', isCorrect: true),
+            ],
+          ),
+        );
+        expect(
+          multipleAnswerOptions.where((option) => option.isCorrect).length,
+          2,
+        );
+
+        final cmsTasks = await endpoints.taskAdmin.list(
+          cmsSession,
+          secondLesson.id,
+        );
+        final storedMultipleAnswerTask = cmsTasks.firstWhere(
+          (task) => task.id == multipleAnswerTask.id,
+        );
+        expect(
+          jsonDecode(storedMultipleAnswerTask.correctAnswer),
+          ['Correct A', 'Correct B'],
+        );
+
         final initialTestCases = await endpoints.taskAdmin.upsertTestCases(
           cmsSession,
           UpsertTaskTestCasesRequest(
@@ -344,14 +383,19 @@ void main() {
           cmsSession,
           ReorderTasksRequest(
             lessonId: secondLesson.id,
-            orderedTaskIds: [codeTask.id, multipleChoiceTask.id],
+            orderedTaskIds: [
+              codeTask.id,
+              multipleAnswerTask.id,
+              multipleChoiceTask.id,
+            ],
           ),
         );
         expect(reorderedTasks.map((item) => item.id), [
           codeTask.id,
+          multipleAnswerTask.id,
           multipleChoiceTask.id,
         ]);
-        expect(reorderedTasks.map((item) => item.orderIndex), [0, 1]);
+        expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2]);
 
         final cmsCourses = await endpoints.courseAdmin.list(
           cmsSession,

@@ -160,7 +160,7 @@ class CourseSeedService {
         session,
         taskId: taskId,
         optionText: optionText,
-        isCorrect: optionText == taskSeed.correctAnswer,
+        isCorrect: _isCorrectOption(taskSeed, optionText),
         orderIndex: i,
         updatedAt: DateTime.now(),
       );
@@ -211,6 +211,31 @@ class CourseSeedService {
       return jsonEncode({'pairs': pairs});
     } catch (_) {
       return null;
+    }
+  }
+
+  bool _isCorrectOption(TaskSeed taskSeed, String optionText) {
+    if (taskSeed.taskType == TaskType.multipleChoice) {
+      return optionText == taskSeed.correctAnswer;
+    }
+    if (taskSeed.taskType != TaskType.multipleAnswer) {
+      return false;
+    }
+
+    try {
+      final decoded = jsonDecode(taskSeed.correctAnswer);
+      if (decoded is! List) {
+        return false;
+      }
+
+      return decoded
+          .whereType<String>()
+          .map((item) => item.trim())
+          .contains(
+            optionText.trim(),
+          );
+    } catch (_) {
+      return false;
     }
   }
 }

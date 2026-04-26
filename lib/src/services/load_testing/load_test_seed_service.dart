@@ -262,7 +262,7 @@ class LoadTestSeedService {
         session,
         taskId: task.id!,
         optionText: option,
-        isCorrect: option == taskSeed.correctAnswer,
+        isCorrect: _isCorrectOption(taskType, taskSeed.correctAnswer, option),
         orderIndex: index,
         updatedAt: now,
         transaction: transaction,
@@ -315,6 +315,28 @@ class LoadTestSeedService {
           fallbackHint: 'Choose the option marked as the generated target.',
           fallbackExplanation:
               'Option B is the canonical answer for generated multiple-choice tasks.',
+        );
+      case TaskType.multipleAnswer:
+        return _GeneratedTaskSeed(
+          questionText: 'Select all generated answers that match topic $stem.',
+          correctAnswer: jsonEncode(const ['Option B', 'Option D']),
+          optionsJson: jsonEncode(const [
+            'Option A',
+            'Option B',
+            'Option C',
+            'Option D',
+          ]),
+          options: const ['Option A', 'Option B', 'Option C', 'Option D'],
+          codeTemplate: null,
+          testCasesJson: null,
+          testCases: const [],
+          programmingLanguage: null,
+          difficultyLevel: 2,
+          xpValue: 15,
+          fallbackHint:
+              'Choose every generated option that is marked as correct.',
+          fallbackExplanation:
+              'Options B and D are the canonical answers for generated multiple-answer tasks.',
         );
       case TaskType.codeCompletion:
         final expectedCode =
@@ -398,6 +420,30 @@ class LoadTestSeedService {
           fallbackExplanation:
               'The accepted answer is the generated token for this task identifier.',
         );
+    }
+  }
+
+  bool _isCorrectOption(
+    TaskType taskType,
+    String correctAnswer,
+    String optionText,
+  ) {
+    if (taskType == TaskType.multipleChoice) {
+      return optionText == correctAnswer;
+    }
+    if (taskType != TaskType.multipleAnswer) {
+      return false;
+    }
+
+    try {
+      final decoded = jsonDecode(correctAnswer);
+      if (decoded is! List) {
+        return false;
+      }
+
+      return decoded.whereType<String>().contains(optionText);
+    } catch (_) {
+      return false;
     }
   }
 
