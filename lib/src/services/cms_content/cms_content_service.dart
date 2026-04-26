@@ -812,6 +812,30 @@ class CmsContentService {
         field: 'testCases',
       );
     }
+    final programmingLanguage = (task.programmingLanguage ?? '')
+        .trim()
+        .toLowerCase();
+    if (programmingLanguage != 'dart') {
+      throw ValidationException(
+        message: 'Executable code tasks currently support only dart language',
+        field: 'taskId',
+      );
+    }
+    final codeTemplate = task.codeTemplate?.trim();
+    if (codeTemplate == null || codeTemplate.isEmpty) {
+      throw ValidationException(
+        message:
+            'Code completion task must have codeTemplate before test cases',
+        field: 'taskId',
+      );
+    }
+    if (!_supportsExecutableTemplate(codeTemplate)) {
+      throw ValidationException(
+        message:
+            'codeTemplate must contain {{INPUT}} and {{USER_CODE}} or ___ placeholders',
+        field: 'taskId',
+      );
+    }
 
     final now = DateTime.now();
     final existingTestCases = await _taskTestCaseDataSource.listByTaskId(
@@ -905,6 +929,13 @@ class CmsContentService {
     );
 
     return result;
+  }
+
+  bool _supportsExecutableTemplate(String codeTemplate) {
+    final hasInputPlaceholder = codeTemplate.contains('{{INPUT}}');
+    final hasUserCodePlaceholder =
+        codeTemplate.contains('{{USER_CODE}}') || codeTemplate.contains('___');
+    return hasInputPlaceholder && hasUserCodePlaceholder;
   }
 
   Future<CourseDto> _setCoursePublication(

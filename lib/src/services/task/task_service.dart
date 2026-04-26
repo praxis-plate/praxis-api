@@ -39,7 +39,7 @@ class TaskService {
        _taskTestCaseDataSource = taskTestCaseDataSource,
        _validationService = validationService;
 
-  TaskAnswerResult validateAnswer(
+  Future<TaskAnswerResult> validateAnswer(
     TaskDto task,
     String userAnswer,
   ) {
@@ -52,7 +52,7 @@ class TaskService {
     String userAnswer,
   ) async {
     final task = await getTaskById(session, taskId);
-    final result = _validationService.validateAnswer(task, userAnswer);
+    final result = await _validationService.validateAnswer(task, userAnswer);
 
     await _taskAnswerAttemptDataSource.insert(
       session,

@@ -1,0 +1,8 @@
+class: TaskAnswerTestCaseResultDto
+fields:
+  passed: bool
+  isHidden: bool
+  input: String?
+  expectedOutput: String?
+  actualOutput: String?
+  message: String?

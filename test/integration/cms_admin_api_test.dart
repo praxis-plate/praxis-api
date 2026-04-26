@@ -279,7 +279,15 @@ void main() {
             lessonId: secondLesson.id,
             taskType: TaskType.codeCompletion,
             questionText: 'Write code',
-            correctAnswer: 'return 42;',
+            correctAnswer: 'input + 1',
+            codeTemplate: '''
+void main() {
+  final input = {{INPUT}};
+  final result = ___;
+  print(result);
+}
+''',
+            programmingLanguage: 'dart',
             topic: 'code',
           ),
         );

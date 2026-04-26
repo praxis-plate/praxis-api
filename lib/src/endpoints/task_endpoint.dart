@@ -32,6 +32,20 @@ class TaskEndpoint extends Endpoint {
       feedbackType: result.feedbackType.value,
       feedbackMessage: result.feedbackMessage,
       xpEarned: result.xpEarned,
+      passedTestCases: result.passedTestCases,
+      totalTestCases: result.totalTestCases,
+      testCaseResults: result.testCaseResults
+          ?.map(
+            (testCase) => TaskAnswerTestCaseResultDto(
+              passed: testCase.passed,
+              isHidden: testCase.isHidden,
+              input: testCase.input,
+              expectedOutput: testCase.expectedOutput,
+              actualOutput: testCase.actualOutput,
+              message: testCase.message,
+            ),
+          )
+          .toList(),
     );
   }
 }

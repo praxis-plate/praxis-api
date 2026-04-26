@@ -339,35 +339,41 @@ class LoadTestSeedService {
               'Options B and D are the canonical answers for generated multiple-answer tasks.',
         );
       case TaskType.codeCompletion:
-        final expectedCode =
-            'var value$stem = ${courseIndex + moduleIndex + lessonIndex + taskIndex};';
+        final expectedCode = 'input + 1';
         return _GeneratedTaskSeed(
           questionText: 'Complete the generated Dart assignment for $stem.',
           correctAnswer: expectedCode,
           optionsJson: null,
           options: const [],
-          codeTemplate: 'var value$stem = ___;',
+          codeTemplate: '''
+void main() {
+  final input = {{INPUT}};
+  final result = ___;
+  print(result);
+}
+''',
           testCasesJson: jsonEncode([
-            {'input': stem, 'expectedOutput': expectedCode},
+            {'input': '1', 'expectedOutput': '2'},
           ]),
           testCases: [
             _GeneratedTestCase(
-              input: stem,
-              expectedOutput: expectedCode,
+              input: '1',
+              expectedOutput: '2',
               isHidden: false,
             ),
             _GeneratedTestCase(
-              input: '$stem-hidden',
-              expectedOutput: expectedCode,
+              input: '2',
+              expectedOutput: '3',
               isHidden: true,
             ),
           ],
           programmingLanguage: 'dart',
           difficultyLevel: 2 + ((lessonIndex + taskIndex) % 2),
           xpValue: 15 + (taskIndex % 2) * 5,
-          fallbackHint: 'Match the exact generated assignment structure.',
+          fallbackHint:
+              'Return a result based on the generated input variable.',
           fallbackExplanation:
-              'Whitespace is ignored, but the generated variable name and value must match.',
+              'Your code is executed against generated test cases and must produce the expected stdout.',
         );
       case TaskType.matching:
         final matches = {

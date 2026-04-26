@@ -2,7 +2,8 @@ enum TaskAnswerFeedbackType {
   correct('correct'),
   incorrect('incorrect'),
   invalidFormat('invalidFormat'),
-  partiallyCorrect('partiallyCorrect')
+  partiallyCorrect('partiallyCorrect'),
+  executionError('executionError')
   ;
 
   const TaskAnswerFeedbackType(this.value);
