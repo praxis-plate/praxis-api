@@ -19,6 +19,7 @@ import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/services/achievement/achievement_service.dart';
 import 'package:praxis_server/src/services/access_control/access_control_service.dart';
+import 'package:praxis_server/src/services/adaptive_learning/adaptive_learning_path_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_service.dart';
@@ -36,6 +37,7 @@ import 'package:serverpod/serverpod.dart';
 class AppServices {
   final AchievementService achievementService;
   final AccessControlService accessControlService;
+  final AdaptiveLearningPathService adaptiveLearningPathService;
   final AiService? aiService;
   final CmsContentService cmsContentService;
   final CmsCourseAnalyticsService cmsCourseAnalyticsService;
@@ -51,6 +53,7 @@ class AppServices {
   AppServices({
     required this.achievementService,
     required this.accessControlService,
+    required this.adaptiveLearningPathService,
     required this.aiService,
     required this.cmsContentService,
     required this.cmsCourseAnalyticsService,
@@ -120,6 +123,14 @@ class AppServices {
         pod.getPassword('bootstrapAdminEmails'),
       ),
     );
+    final adaptiveLearningPathService = AdaptiveLearningPathService(
+      courseDataSource: courseDataSource,
+      moduleDataSource: moduleDataSource,
+      lessonDataSource: lessonDataSource,
+      taskDataSource: taskDataSource,
+      lessonProgressDataSource: lessonProgressDataSource,
+      taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
+    );
     final lessonService = LessonService(
       courseDataSource: courseDataSource,
       lessonDataSource: lessonDataSource,
@@ -177,6 +188,7 @@ class AppServices {
     return AppServices(
       achievementService: achievementService,
       accessControlService: accessControlService,
+      adaptiveLearningPathService: adaptiveLearningPathService,
       aiService: aiService,
       cmsContentService: cmsContentService,
       cmsCourseAnalyticsService: cmsCourseAnalyticsService,

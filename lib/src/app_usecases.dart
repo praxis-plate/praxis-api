@@ -14,6 +14,7 @@ import 'package:praxis_server/src/usecases/cms_content/lesson_admin_use_cases.da
 import 'package:praxis_server/src/usecases/cms_content/module_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/task_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/course/enroll_course_use_case.dart';
+import 'package:praxis_server/src/usecases/course/get_adaptive_learning_path_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_course_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_course_table_of_contents_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
@@ -68,6 +69,7 @@ class AppUseCases {
   final UnlockAchievementUseCase unlockAchievementUseCase;
   final IsAchievementUnlockedUseCase isAchievementUnlockedUseCase;
   final GetCoursesUseCase getCoursesUseCase;
+  final GetAdaptiveLearningPathUseCase getAdaptiveLearningPathUseCase;
   final GetPersonalizedRecommendationsUseCase
   getPersonalizedRecommendationsUseCase;
   final GetCourseByIdUseCase getCourseByIdUseCase;
@@ -121,6 +123,7 @@ class AppUseCases {
     required this.unlockAchievementUseCase,
     required this.isAchievementUnlockedUseCase,
     required this.getCoursesUseCase,
+    required this.getAdaptiveLearningPathUseCase,
     required this.getPersonalizedRecommendationsUseCase,
     required this.getCourseByIdUseCase,
     required this.getEnrolledCoursesUseCase,
@@ -251,6 +254,9 @@ class AppUseCases {
       ),
       getCoursesUseCase: GetCoursesUseCase(
         courseService: services.courseService,
+      ),
+      getAdaptiveLearningPathUseCase: GetAdaptiveLearningPathUseCase(
+        adaptiveLearningPathService: services.adaptiveLearningPathService,
       ),
       getPersonalizedRecommendationsUseCase:
           GetPersonalizedRecommendationsUseCase(

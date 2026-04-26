@@ -22,6 +22,26 @@ class TaskAnswerAttemptDataSource {
     );
   }
 
+  Future<List<TaskAnswerAttempt>> listByAuthUserIdAndTaskIds(
+    Session session,
+    UuidValue authUserId,
+    List<int> taskIds, {
+    Transaction? transaction,
+  }) {
+    if (taskIds.isEmpty) {
+      return Future.value([]);
+    }
+
+    return TaskAnswerAttempt.db.find(
+      session,
+      where: (t) =>
+          t.authUserId.equals(authUserId) & t.taskId.inSet(taskIds.toSet()),
+      orderBy: (t) => t.submittedAt,
+      orderDescending: true,
+      transaction: transaction,
+    );
+  }
+
   Future<TaskAnswerAttempt> insert(
     Session session, {
     required UuidValue? authUserId,

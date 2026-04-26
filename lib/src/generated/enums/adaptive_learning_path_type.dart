@@ -12,21 +12,26 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-enum UserRole implements _i1.SerializableModel {
-  learner,
-  author,
-  admin;
+enum AdaptiveLearningPathType implements _i1.SerializableModel {
+  standard,
+  remedial,
+  accelerated,
+  completed;
 
-  static UserRole fromJson(String name) {
+  static AdaptiveLearningPathType fromJson(String name) {
     switch (name) {
-      case 'learner':
-        return UserRole.learner;
-      case 'author':
-        return UserRole.author;
-      case 'admin':
-        return UserRole.admin;
+      case 'standard':
+        return AdaptiveLearningPathType.standard;
+      case 'remedial':
+        return AdaptiveLearningPathType.remedial;
+      case 'accelerated':
+        return AdaptiveLearningPathType.accelerated;
+      case 'completed':
+        return AdaptiveLearningPathType.completed;
       default:
-        throw ArgumentError('Value "$name" cannot be converted to "UserRole"');
+        throw ArgumentError(
+          'Value "$name" cannot be converted to "AdaptiveLearningPathType"',
+        );
     }
   }
 

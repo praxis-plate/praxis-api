@@ -28,6 +28,7 @@ course:
   - enroll:
   - unenroll:
   - getRecommendations:
+  - getAdaptiveLearningPath:
   - getTableOfContents:
 emailIdp:
   - login:

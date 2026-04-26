@@ -1,0 +1,12 @@
+class: AdaptiveLearningPathDto
+fields:
+  courseId: int
+  pathType: AdaptiveLearningPathType
+  recommendedLessonId: int?
+  recommendedLessonTitle: String?
+  supportingLessonId: int?
+  supportingLessonTitle: String?
+  focusTopic: String?
+  overallMasteryScore: double
+  reason: String
+  topicMasteries: List<AdaptiveTopicMasteryDto>

@@ -62,6 +62,18 @@ class CourseEndpoint extends Endpoint {
         );
   }
 
+  Future<AdaptiveLearningPathDto> getAdaptiveLearningPath(
+    Session session,
+    int courseId,
+  ) {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return session.server.useCases.getAdaptiveLearningPathUseCase.execute(
+      session,
+      authUserId: authUserId,
+      courseId: courseId,
+    );
+  }
+
   Future<CourseStructureDto> getTableOfContents(Session session, int courseId) {
     return session.server.useCases.getCourseTableOfContentsUseCase.execute(
       session,

@@ -44,6 +44,24 @@ class LessonProgressDataSource {
     );
   }
 
+  Future<List<LessonProgress>> listByAuthUserIdAndLessonIds(
+    Session session,
+    UuidValue authUserId,
+    List<int> lessonIds, {
+    Transaction? transaction,
+  }) {
+    if (lessonIds.isEmpty) {
+      return Future.value([]);
+    }
+
+    return LessonProgress.db.find(
+      session,
+      where: (t) =>
+          t.authUserId.equals(authUserId) & t.lessonId.inSet(lessonIds.toSet()),
+      transaction: transaction,
+    );
+  }
+
   Future<LessonProgress> insert(
     Session session, {
     required UuidValue authUserId,
