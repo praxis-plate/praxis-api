@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:praxis_server/src/generated/protocol.dart' as protocol;
 import 'package:praxis_server/src/services/load_testing/load_test_metrics.dart';
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart';
 
-// ignore: avoid_relative_lib_imports
-import '../../praxis_flutter/packages/praxis_client/lib/praxis_client.dart';
 import 'src/load_testing/in_memory_auth_success_storage.dart';
 import 'src/load_testing/load_test_config.dart';
+import 'src/load_testing/praxis_load_test_client.dart';
 
 Future<void> main(List<String> args) async {
   late final LoadTestConfig config;
@@ -20,7 +20,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  final client = Client(config.host);
+  final client = LoadTestClient(config.host);
   final authSessionManager = ClientAuthSessionManager(
     storage: InMemoryAuthSuccessStorage(),
   );
@@ -125,7 +125,7 @@ Future<void> main(List<String> args) async {
 }
 
 Future<_LoadTestFixture> _loadFixture(
-  Client client,
+  LoadTestClient client,
   LoadTestConfig config,
 ) async {
   final publishedCourses = await client.course.get(
@@ -134,10 +134,7 @@ Future<_LoadTestFixture> _loadFixture(
   );
   final courses = [
     for (final course in publishedCourses)
-      if (course != null &&
-          course.id != null &&
-          (course.title?.startsWith(config.seedPrefix) ?? false))
-        course,
+      if (course.title.startsWith(config.seedPrefix)) course,
   ];
 
   if (courses.isEmpty) {
@@ -146,11 +143,11 @@ Future<_LoadTestFixture> _loadFixture(
     );
   }
 
-  final courseIds = [for (final course in courses) course.id!];
+  final courseIds = [for (final course in courses) course.id];
 
-  final structures = <CourseStructureDto>[];
+  final structures = <protocol.CourseStructureDto>[];
   for (final course in courses) {
-    structures.add(await client.course.getTableOfContents(course.id!));
+    structures.add(await client.course.getTableOfContents(course.id));
   }
 
   final lessonIds = <int>[];
@@ -171,12 +168,9 @@ Future<_LoadTestFixture> _loadFixture(
   for (final lessonId in sampledLessonIds) {
     final tasks = await client.task.getByLessonId(lessonId);
     for (final task in tasks) {
-      if (task.id == null) {
-        continue;
-      }
       taskCandidates.add(
         _TaskCandidate(
-          taskId: task.id!,
+          taskId: task.id,
           lessonId: lessonId,
           correctAnswer: task.correctAnswer,
         ),
@@ -196,7 +190,7 @@ Future<_LoadTestFixture> _loadFixture(
 }
 
 Future<void> _warmup(
-  Client client,
+  LoadTestClient client,
   LoadTestConfig config,
   _LoadTestFixture fixture,
 ) async {
@@ -213,7 +207,7 @@ Future<void> _warmup(
 }
 
 Map<String, Future<void> Function()> _buildScenarios(
-  Client client,
+  LoadTestClient client,
   LoadTestConfig config,
   _LoadTestFixture fixture,
 ) {
