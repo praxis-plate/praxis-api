@@ -6,6 +6,7 @@ import 'package:praxis_server/src/datasources/achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
@@ -82,6 +83,7 @@ class AppServices {
     const authUserDataSource = AuthUserDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
+    const emailAccountDataSource = EmailAccountDataSource();
     const lessonDataSource = LessonDataSource();
     const lessonProgressDataSource = LessonProgressDataSource();
     const moduleDataSource = ModuleDataSource();
@@ -123,6 +125,7 @@ class AppServices {
     );
     final accessControlService = AccessControlService(
       authUserDataSource: authUserDataSource,
+      emailAccountDataSource: emailAccountDataSource,
       bootstrapAuthorEmails: _parseBootstrapEmails(
         pod.getPassword('bootstrapAuthorEmails'),
       ),
@@ -147,6 +150,7 @@ class AppServices {
     );
     final cmsContentService = CmsContentService(
       courseDataSource: courseDataSource,
+      emailAccountDataSource: emailAccountDataSource,
       moduleDataSource: moduleDataSource,
       lessonDataSource: lessonDataSource,
       taskDataSource: taskDataSource,

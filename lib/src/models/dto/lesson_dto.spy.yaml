@@ -4,6 +4,7 @@ fields:
   moduleId: int
   title: String
   contentText: String
+  contentDocument: LessonContentDocumentDto?
   videoUrl: String?
   imageUrls: String?
   orderIndex: int

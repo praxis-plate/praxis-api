@@ -1,0 +1,4 @@
+class: LessonContentDocumentDto
+fields:
+  schemaVersion: int
+  blocks: List<LessonContentBlockDto>

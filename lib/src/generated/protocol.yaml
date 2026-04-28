@@ -10,6 +10,14 @@ achievement:
   - getUserAchievements:
   - unlock:
   - isUnlocked:
+adminGovernance:
+  - listUsers:
+  - assignRole:
+  - revokeRole:
+  - listPublicationQueue:
+  - listPublishedCourses:
+  - approvePublication:
+  - unpublishCourse:
 ai:
   - generateHint:
   - generateExplanation:

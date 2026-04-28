@@ -6,19 +6,29 @@ import 'package:praxis_server/src/app_usecases.dart';
 import 'package:praxis_server/src/app_usecases_binding.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
+import 'package:serverpod_auth_idp_server/providers/email.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
 
 void main() {
   withServerpod('CMS admin API', (sessionBuilder, endpoints) {
+    late EmailIdpConfig emailIdpConfig;
+
     setUpAll(() {
+      emailIdpConfig = EmailIdpConfigFromPasswords();
       Serverpod.instance.server.services = AppServices.build(
         Serverpod.instance,
       );
       Serverpod.instance.server.useCases = AppUseCases.build(
         Serverpod.instance,
         Serverpod.instance.server.services,
+      );
+      Serverpod.instance.initializeAuthServices(
+        tokenManagerBuilders: [JwtConfigFromPasswords()],
+        identityProviderBuilders: [emailIdpConfig],
       );
     });
 
@@ -422,6 +432,123 @@ void main() {
           ),
           throwsA(isA<ValidationException>()),
         );
+      },
+    );
+
+    test(
+      'uses profile author and calculated lesson content duration',
+      () async {
+        const email = 'cms-author-content@codium.app';
+        const password = 'Password123!';
+        final authUserId = const Uuid().v7obj();
+        final session = sessionBuilder.build();
+        try {
+          await AuthUser.db.insertRow(
+            session,
+            AuthUser(
+              id: authUserId,
+              scopeNames: {'learner.access', 'cms.access', 'content.manage'},
+              blocked: false,
+            ),
+          );
+          final admin = EmailIdpAdmin(
+            utils: EmailIdpUtils(config: emailIdpConfig),
+          );
+          await admin.createEmailAuthentication(
+            session,
+            authUserId: authUserId,
+            email: email,
+            password: password,
+            transaction: session.transaction,
+          );
+        } finally {
+          await session.close();
+        }
+
+        final authorSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            authUserId.toString(),
+            {
+              Scope('learner.access'),
+              Scope('cms.access'),
+              Scope('content.manage'),
+            },
+          ),
+        );
+        final longText = List.filled(410, 'word').join(' ');
+        final document = LessonContentDocumentDto(
+          schemaVersion: 1,
+          blocks: [
+            LessonContentBlockDto(
+              type: LessonContentBlockType.heading,
+              text: 'Intro',
+              level: 2,
+            ),
+            LessonContentBlockDto(
+              type: LessonContentBlockType.paragraph,
+              text: longText,
+            ),
+          ],
+        );
+
+        final course = await endpoints.courseAdmin.create(
+          authorSession,
+          CreateCourseRequest(
+            title: 'Rich content course',
+            description: 'Description',
+            author: 'User supplied author',
+            category: 'CMS',
+            durationMinutes: 999,
+          ),
+        );
+        expect(course.author, email);
+        expect(course.durationMinutes, 0);
+
+        final module = await endpoints.moduleAdmin.create(
+          authorSession,
+          CreateModuleRequest(
+            courseId: course.id,
+            title: 'Module',
+            description: 'Module description',
+          ),
+        );
+        final lesson = await endpoints.lessonAdmin.create(
+          authorSession,
+          CreateLessonRequest(
+            moduleId: module.id,
+            title: 'Rich lesson',
+            contentText: 'legacy fallback',
+            contentDocument: document,
+            durationMinutes: 999,
+          ),
+        );
+
+        expect(lesson.durationMinutes, 3);
+        expect(lesson.contentDocument?.blocks, hasLength(2));
+        expect(lesson.contentDocument?.blocks.last.text, longText);
+
+        final listedCourses = await endpoints.courseAdmin.list(authorSession);
+        final storedCourse = listedCourses.firstWhere(
+          (item) => item.id == course.id,
+        );
+        expect(storedCourse.author, email);
+        expect(storedCourse.durationMinutes, 3);
+
+        final updatedCourse = await endpoints.courseAdmin.update(
+          authorSession,
+          UpdateCourseRequest(
+            id: course.id,
+            title: 'Rich content course updated',
+            description: 'Updated',
+            author: 'Another supplied author',
+            category: 'CMS',
+            priceInCoins: 10,
+            durationMinutes: 999,
+            rating: 4,
+          ),
+        );
+        expect(updatedCourse.author, email);
+        expect(updatedCourse.durationMinutes, 3);
       },
     );
   });

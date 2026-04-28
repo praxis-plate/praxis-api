@@ -1,0 +1,7 @@
+enum: LessonContentBlockType
+values:
+  - heading
+  - paragraph
+  - quote
+  - code
+  - image

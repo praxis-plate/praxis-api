@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
@@ -8,29 +9,38 @@ import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
+import 'package:praxis_server/src/shared/utils/auth_utils.dart';
+import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CmsContentService {
   final CourseDataSource _courseDataSource;
+  final EmailAccountDataSource _emailAccountDataSource;
   final ModuleDataSource _moduleDataSource;
   final LessonDataSource _lessonDataSource;
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
+  final LessonContentDocumentCodec _lessonContentCodec;
 
   const CmsContentService({
     required CourseDataSource courseDataSource,
+    required EmailAccountDataSource emailAccountDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonDataSource lessonDataSource,
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
+    LessonContentDocumentCodec lessonContentCodec =
+        const LessonContentDocumentCodec(),
   }) : _courseDataSource = courseDataSource,
+       _emailAccountDataSource = emailAccountDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonDataSource = lessonDataSource,
        _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
-       _taskTestCaseDataSource = taskTestCaseDataSource;
+       _taskTestCaseDataSource = taskTestCaseDataSource,
+       _lessonContentCodec = lessonContentCodec;
 
   Future<List<CourseDto>> listCourses(
     Session session, {
@@ -91,7 +101,7 @@ class CmsContentService {
     final now = DateTime.now();
     final title = _requireText(request.title, 'title');
     final description = _requireText(request.description, 'description');
-    final author = _requireText(request.author, 'author');
+    final author = await _resolveCourseAuthor(session, transaction);
     final category = _requireText(request.category, 'category');
     final thumbnailUrl = _normalizeOptionalUrl(
       request.thumbnailUrl,
@@ -106,7 +116,7 @@ class CmsContentService {
       author: author,
       category: category,
       priceInCoins: request.priceInCoins ?? 0,
-      durationMinutes: request.durationMinutes ?? 0,
+      durationMinutes: 0,
       rating: request.rating ?? 0,
       thumbnailUrl: thumbnailUrl,
       coverImage: coverImage,
@@ -135,10 +145,14 @@ class CmsContentService {
       course.copyWith(
         title: _requireText(request.title, 'title'),
         description: _requireText(request.description, 'description'),
-        author: _requireText(request.author, 'author'),
+        author: course.author,
         category: _requireText(request.category, 'category'),
         priceInCoins: request.priceInCoins,
-        durationMinutes: request.durationMinutes,
+        durationMinutes: await _calculateCourseDuration(
+          session,
+          course.id!,
+          transaction: transaction,
+        ),
         rating: request.rating,
         thumbnailUrl: _normalizeOptionalUrl(
           request.thumbnailUrl,
@@ -332,16 +346,20 @@ class CmsContentService {
       module.id!,
       transaction: transaction,
     );
+    final contentText = _lessonContentCodec.encodeForStorage(
+      legacyContentText: request.contentText,
+      contentDocument: request.contentDocument,
+    );
 
     final lesson = await _lessonDataSource.insert(
       session,
       moduleId: module.id!,
       title: _requireText(request.title, 'title'),
-      contentText: _requireText(request.contentText, 'contentText'),
+      contentText: contentText,
       videoUrl: _normalizeOptionalUrl(request.videoUrl, 'videoUrl'),
       imageUrls: _normalizeImageUrls(request.imageUrls),
       orderIndex: lessons.length,
-      durationMinutes: request.durationMinutes ?? 0,
+      durationMinutes: _lessonContentCodec.estimateReadingMinutes(contentText),
       createdAt: now,
       updatedAt: now,
       transaction: transaction,
@@ -373,15 +391,21 @@ class CmsContentService {
       transaction: transaction,
     );
     final now = DateTime.now();
+    final contentText = _lessonContentCodec.encodeForStorage(
+      legacyContentText: request.contentText,
+      contentDocument: request.contentDocument,
+    );
 
     final updated = await _lessonDataSource.updateRow(
       session,
       lesson.copyWith(
         title: _requireText(request.title, 'title'),
-        contentText: _requireText(request.contentText, 'contentText'),
+        contentText: contentText,
         videoUrl: _normalizeOptionalUrl(request.videoUrl, 'videoUrl'),
         imageUrls: _normalizeImageUrls(request.imageUrls),
-        durationMinutes: request.durationMinutes,
+        durationMinutes: _lessonContentCodec.estimateReadingMinutes(
+          contentText,
+        ),
         updatedAt: now,
       ),
       transaction: transaction,
@@ -1151,9 +1175,14 @@ class CmsContentService {
       courseId,
       transaction: transaction,
     );
+    final durationMinutes = await _calculateCourseDuration(
+      session,
+      courseId,
+      transaction: transaction,
+    );
     await _courseDataSource.updateRow(
       session,
-      course.copyWith(updatedAt: timestamp),
+      course.copyWith(updatedAt: timestamp, durationMinutes: durationMinutes),
       transaction: transaction,
     );
   }
@@ -1320,6 +1349,40 @@ class CmsContentService {
     }
 
     return jsonEncode(normalizedUrls);
+  }
+
+  Future<String> _resolveCourseAuthor(
+    Session session,
+    Transaction? transaction,
+  ) async {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    final emailAccount = await _emailAccountDataSource.findByAuthUserId(
+      session,
+      authUserId: authUserId,
+      transaction: transaction,
+    );
+    return emailAccount?.email ?? authUserId.toString();
+  }
+
+  Future<int> _calculateCourseDuration(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    final modules = await _moduleDataSource.listByCourseId(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    final lessons = await _lessonDataSource.listByModuleIds(
+      session,
+      modules.map((module) => module.id!).toList(),
+      transaction: transaction,
+    );
+    return lessons.fold<int>(
+      0,
+      (total, lesson) => total + lesson.durationMinutes,
+    );
   }
 }
 

@@ -16,6 +16,13 @@ class AuthUserDataSource {
     );
   }
 
+  Future<List<AuthUserModel>> list(
+    Session session, {
+    Transaction? transaction,
+  }) {
+    return const AuthUsers().list(session, transaction: transaction);
+  }
+
   Future<AuthUserModel> updateScopes(
     Session session, {
     required UuidValue authUserId,

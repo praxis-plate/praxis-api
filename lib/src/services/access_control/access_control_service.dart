@@ -1,4 +1,5 @@
 import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
+import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/constants/auth_scopes.dart';
 import 'package:praxis_server/src/shared/utils/user_role_scope_resolver.dart';
@@ -6,14 +7,17 @@ import 'package:serverpod/serverpod.dart';
 
 class AccessControlService {
   final AuthUserDataSource _authUserDataSource;
+  final EmailAccountDataSource _emailAccountDataSource;
   final Set<String> _bootstrapAuthorEmails;
   final Set<String> _bootstrapAdminEmails;
 
   const AccessControlService({
     required AuthUserDataSource authUserDataSource,
+    required EmailAccountDataSource emailAccountDataSource,
     required Set<String> bootstrapAuthorEmails,
     required Set<String> bootstrapAdminEmails,
   }) : _authUserDataSource = authUserDataSource,
+       _emailAccountDataSource = emailAccountDataSource,
        _bootstrapAuthorEmails = bootstrapAuthorEmails,
        _bootstrapAdminEmails = bootstrapAdminEmails;
 
@@ -29,6 +33,48 @@ class AccessControlService {
     );
 
     return _toAccessProfile(authUserId, authUser.scopeNames);
+  }
+
+  Future<List<GovernanceUserDto>> listGovernanceUsers(
+    Session session, {
+    Transaction? transaction,
+  }) async {
+    final authUsers = await _authUserDataSource.list(
+      session,
+      transaction: transaction,
+    );
+    final emailAccounts = await _emailAccountDataSource.listByAuthUserIds(
+      session,
+      authUserIds: authUsers.map((user) => user.id).toSet(),
+      transaction: transaction,
+    );
+    final emailsByAuthUserId = <UuidValue, String>{};
+    for (final account in emailAccounts) {
+      emailsByAuthUserId.putIfAbsent(account.authUserId, () => account.email);
+    }
+
+    final users = authUsers.map((authUser) {
+      final profile = _toAccessProfile(authUser.id, authUser.scopeNames);
+      return GovernanceUserDto(
+        authUserId: profile.authUserId,
+        email: emailsByAuthUserId[authUser.id],
+        createdAt: authUser.createdAt,
+        blocked: authUser.blocked,
+        roles: profile.roles,
+        scopes: profile.scopes,
+        canAccessLearnerApi: profile.canAccessLearnerApi,
+        canAccessCms: profile.canAccessCms,
+        canManageContent: profile.canManageContent,
+        canManageUsers: profile.canManageUsers,
+      );
+    }).toList();
+
+    users.sort((a, b) {
+      final left = a.email ?? a.authUserId.toString();
+      final right = b.email ?? b.authUserId.toString();
+      return left.compareTo(right);
+    });
+    return users;
   }
 
   Future<AccessProfileDto> assignRole(

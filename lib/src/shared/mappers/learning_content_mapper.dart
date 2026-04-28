@@ -1,4 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
+
+const _lessonContentDocumentCodec = LessonContentDocumentCodec();
 
 extension CourseMapper on Course {
   CourseDto toCourseDto({
@@ -50,6 +53,9 @@ extension LessonMapper on Lesson {
       moduleId: moduleId,
       title: title,
       contentText: contentText,
+      contentDocument: _lessonContentDocumentCodec.decodeFromStorage(
+        contentText,
+      ),
       videoUrl: videoUrl,
       imageUrls: imageUrls,
       orderIndex: orderIndex,
