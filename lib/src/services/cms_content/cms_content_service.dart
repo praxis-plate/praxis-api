@@ -130,6 +130,164 @@ class CmsContentService {
     return course.toCourseDto(totalLessons: 0, totalTasks: 0);
   }
 
+  Future<CourseImportResultDto> importCourse(
+    Session session,
+    ImportCourseRequest request, {
+    Transaction? transaction,
+  }) async {
+    if (request.modules.isEmpty) {
+      throw ValidationException(
+        message: 'Imported course must contain at least one module',
+        field: 'modules',
+      );
+    }
+
+    final course = await createCourse(
+      session,
+      CreateCourseRequest(
+        title: request.title,
+        description: request.description,
+        author: '',
+        category: request.category,
+        priceInCoins: request.priceInCoins,
+        thumbnailUrl: request.thumbnailUrl,
+        coverImage: request.coverImage,
+      ),
+      transaction: transaction,
+    );
+
+    final importedModules = <ModuleDto>[];
+    final importedLessons = <LessonDto>[];
+    final importedTasks = <TaskDto>[];
+
+    for (
+      var moduleIndex = 0;
+      moduleIndex < request.modules.length;
+      moduleIndex++
+    ) {
+      final moduleInput = request.modules[moduleIndex];
+      final module = await createModule(
+        session,
+        CreateModuleRequest(
+          courseId: course.id,
+          title: moduleInput.title,
+          description: moduleInput.description ?? '',
+        ),
+        transaction: transaction,
+      );
+      importedModules.add(module);
+
+      for (
+        var lessonIndex = 0;
+        lessonIndex <
+            (moduleInput.lessons ?? const <CourseImportLessonDto>[]).length;
+        lessonIndex++
+      ) {
+        final lessonInput = moduleInput.lessons![lessonIndex];
+        final lesson = await createLesson(
+          session,
+          CreateLessonRequest(
+            moduleId: module.id,
+            title: lessonInput.title,
+            contentText: lessonInput.contentText ?? '',
+            contentDocument: lessonInput.contentDocument,
+            videoUrl: lessonInput.videoUrl,
+            imageUrls: _encodeImportImageUrls(lessonInput.imageUrls),
+          ),
+          transaction: transaction,
+        );
+        importedLessons.add(lesson);
+
+        for (
+          var taskIndex = 0;
+          taskIndex <
+              (lessonInput.tasks ?? const <CourseImportTaskDto>[]).length;
+          taskIndex++
+        ) {
+          final taskInput = lessonInput.tasks![taskIndex];
+          final task = await createTask(
+            session,
+            CreateTaskRequest(
+              lessonId: lesson.id,
+              taskType: taskInput.taskType,
+              questionText: taskInput.questionText,
+              correctAnswer: taskInput.correctAnswer,
+              codeTemplate: taskInput.codeTemplate,
+              programmingLanguage: taskInput.programmingLanguage,
+              difficultyLevel: taskInput.difficultyLevel,
+              xpValue: taskInput.xpValue,
+              fallbackHint: taskInput.fallbackHint,
+              fallbackExplanation: taskInput.fallbackExplanation,
+              topic: taskInput.topic,
+            ),
+            transaction: transaction,
+          );
+
+          if (taskInput.options != null && taskInput.options!.isNotEmpty) {
+            await upsertTaskOptions(
+              session,
+              UpsertTaskOptionsRequest(
+                taskId: task.id,
+                options: taskInput.options!,
+              ),
+              transaction: transaction,
+            );
+          }
+          if (taskInput.testCases != null && taskInput.testCases!.isNotEmpty) {
+            await upsertTaskTestCases(
+              session,
+              UpsertTaskTestCasesRequest(
+                taskId: task.id,
+                testCases: taskInput.testCases!,
+              ),
+              transaction: transaction,
+            );
+          }
+          importedTasks.add(
+            await _buildTaskDto(
+              session,
+              await _requireTask(session, task.id, transaction: transaction),
+              transaction: transaction,
+            ),
+          );
+        }
+      }
+    }
+
+    final storedCourse = await _requireCourse(
+      session,
+      course.id,
+      transaction: transaction,
+    );
+    final updatedCourse = await _courseDataSource.updateRow(
+      session,
+      storedCourse.copyWith(
+        durationMinutes: await _calculateCourseDuration(
+          session,
+          course.id,
+          transaction: transaction,
+        ),
+        updatedAt: DateTime.now(),
+      ),
+      transaction: transaction,
+    );
+    final counts = await _countCourseContent(
+      session,
+      course.id,
+      transaction: transaction,
+    );
+
+    return CourseImportResultDto(
+      course: updatedCourse.toCourseDto(
+        totalLessons: counts.totalLessons,
+        totalTasks: counts.totalTasks,
+      ),
+      modules: importedModules,
+      lessons: importedLessons,
+      tasks: importedTasks,
+    );
+  }
+
   Future<CourseDto> updateCourse(
     Session session,
     UpdateCourseRequest request, {
@@ -1349,6 +1507,13 @@ class CmsContentService {
     }
 
     return jsonEncode(normalizedUrls);
+  }
+
+  String? _encodeImportImageUrls(List<String>? imageUrls) {
+    if (imageUrls == null) {
+      return null;
+    }
+    return jsonEncode(imageUrls);
   }
 
   Future<String> _resolveCourseAuthor(

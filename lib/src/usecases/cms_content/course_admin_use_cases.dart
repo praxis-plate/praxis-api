@@ -52,6 +52,31 @@ class CreateAdminCourseUseCase {
   }
 }
 
+class ImportAdminCourseUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const ImportAdminCourseUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<CourseImportResultDto> execute(
+    Session session,
+    ImportCourseRequest request,
+  ) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.importCourse(
+        session,
+        request,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
 class UpdateAdminCourseUseCase {
   final CmsContentService _cmsContentService;
   final TransactionRunner _transactionRunner;

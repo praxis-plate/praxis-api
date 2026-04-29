@@ -551,5 +551,72 @@ void main() {
         expect(updatedCourse.durationMinutes, 3);
       },
     );
+
+    test('imports structured course content atomically', () async {
+      final longText = List.filled(410, 'word').join(' ');
+      final result = await endpoints.courseAdmin.importStructured(
+        cmsSession,
+        ImportCourseRequest(
+          title: 'Imported course',
+          description: 'Imported description',
+          category: 'CMS',
+          priceInCoins: 25,
+          modules: [
+            CourseImportModuleDto(
+              title: 'Imported module',
+              description: 'Imported module description',
+              lessons: [
+                CourseImportLessonDto(
+                  title: 'Imported lesson',
+                  contentDocument: LessonContentDocumentDto(
+                    schemaVersion: 1,
+                    blocks: [
+                      LessonContentBlockDto(
+                        type: LessonContentBlockType.heading,
+                        text: 'Imported heading',
+                        level: 2,
+                      ),
+                      LessonContentBlockDto(
+                        type: LessonContentBlockType.paragraph,
+                        text: longText,
+                      ),
+                    ],
+                  ),
+                  imageUrls: ['https://example.com/image.png'],
+                  tasks: [
+                    CourseImportTaskDto(
+                      taskType: TaskType.multipleChoice,
+                      questionText: 'Choose the correct answer',
+                      topic: 'Import',
+                      options: [
+                        CmsTaskOptionInputDto(
+                          optionText: 'Correct',
+                          isCorrect: true,
+                        ),
+                        CmsTaskOptionInputDto(
+                          optionText: 'Incorrect',
+                          isCorrect: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      expect(result.course.title, 'Imported course');
+      expect(result.course.contentStatus, ContentStatus.draft);
+      expect(result.course.totalLessons, 1);
+      expect(result.course.totalTasks, 1);
+      expect(result.course.durationMinutes, 3);
+      expect(result.modules.single.title, 'Imported module');
+      expect(result.lessons.single.contentDocument?.blocks, hasLength(2));
+      expect(result.lessons.single.durationMinutes, 3);
+      expect(result.tasks.single.options, hasLength(2));
+      expect(result.tasks.single.correctAnswer, 'Correct');
+    });
   });
 }

@@ -30,6 +30,17 @@ class CourseAdminEndpoint extends Endpoint {
     );
   }
 
+  Future<CourseImportResultDto> importStructured(
+    Session session,
+    ImportCourseRequest request,
+  ) {
+    AuthUtils.requireScope(session, AuthScopes.contentManage);
+    return session.server.useCases.importAdminCourseUseCase.execute(
+      session,
+      request,
+    );
+  }
+
   Future<CourseDto> update(Session session, UpdateCourseRequest request) {
     AuthUtils.requireScope(session, AuthScopes.contentManage);
     return session.server.useCases.updateAdminCourseUseCase.execute(

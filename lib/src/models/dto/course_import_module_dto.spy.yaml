@@ -1,0 +1,5 @@
+class: CourseImportModuleDto
+fields:
+  title: String
+  description: String?
+  lessons: List<CourseImportLessonDto>?

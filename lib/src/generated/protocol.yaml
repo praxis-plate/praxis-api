@@ -24,6 +24,7 @@ ai:
 courseAdmin:
   - list:
   - create:
+  - importStructured:
   - update:
   - publish:
   - unpublish:

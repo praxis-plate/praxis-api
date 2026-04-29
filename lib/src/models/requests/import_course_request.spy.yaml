@@ -1,0 +1,9 @@
+class: ImportCourseRequest
+fields:
+  title: String
+  description: String
+  category: String
+  priceInCoins: int?
+  thumbnailUrl: String?
+  coverImage: String?
+  modules: List<CourseImportModuleDto>

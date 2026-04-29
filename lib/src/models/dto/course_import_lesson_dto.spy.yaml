@@ -1,0 +1,8 @@
+class: CourseImportLessonDto
+fields:
+  title: String
+  contentText: String?
+  contentDocument: LessonContentDocumentDto?
+  videoUrl: String?
+  imageUrls: List<String>?
+  tasks: List<CourseImportTaskDto>?

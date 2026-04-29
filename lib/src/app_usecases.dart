@@ -48,6 +48,7 @@ class AppUseCases {
   final GetAdminCourseAnalyticsDashboardUseCase
   getAdminCourseAnalyticsDashboardUseCase;
   final CreateAdminCourseUseCase createAdminCourseUseCase;
+  final ImportAdminCourseUseCase importAdminCourseUseCase;
   final UpdateAdminCourseUseCase updateAdminCourseUseCase;
   final PublishAdminCourseUseCase publishAdminCourseUseCase;
   final UnpublishAdminCourseUseCase unpublishAdminCourseUseCase;
@@ -108,6 +109,7 @@ class AppUseCases {
     required this.listAdminCoursesUseCase,
     required this.getAdminCourseAnalyticsDashboardUseCase,
     required this.createAdminCourseUseCase,
+    required this.importAdminCourseUseCase,
     required this.updateAdminCourseUseCase,
     required this.publishAdminCourseUseCase,
     required this.unpublishAdminCourseUseCase,
@@ -183,6 +185,10 @@ class AppUseCases {
             cmsCourseAnalyticsService: services.cmsCourseAnalyticsService,
           ),
       createAdminCourseUseCase: CreateAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      importAdminCourseUseCase: ImportAdminCourseUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),
