@@ -94,4 +94,20 @@ class TaskTestCaseDataSource {
       transaction: transaction,
     );
   }
+
+  Future<void> deleteByTaskIds(
+    Session session,
+    Set<int> taskIds, {
+    Transaction? transaction,
+  }) async {
+    if (taskIds.isEmpty) {
+      return;
+    }
+
+    await TaskTestCase.db.deleteWhere(
+      session,
+      where: (t) => t.taskId.inSet(taskIds),
+      transaction: transaction,
+    );
+  }
 }

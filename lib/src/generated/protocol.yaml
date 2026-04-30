@@ -21,11 +21,14 @@ adminGovernance:
 ai:
   - generateHint:
   - generateExplanation:
+cmsMediaAdmin:
+  - uploadImage:
 courseAdmin:
   - list:
   - create:
   - importStructured:
   - update:
+  - delete:
   - publish:
   - unpublish:
 courseAnalyticsAdmin:

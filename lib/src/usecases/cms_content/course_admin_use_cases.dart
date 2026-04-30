@@ -102,6 +102,28 @@ class UpdateAdminCourseUseCase {
   }
 }
 
+class DeleteAdminCourseUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const DeleteAdminCourseUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<void> execute(Session session, int courseId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.deleteCourse(
+        session,
+        courseId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
 class PublishAdminCourseUseCase {
   final CmsContentService _cmsContentService;
   final TransactionRunner _transactionRunner;

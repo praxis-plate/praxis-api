@@ -101,4 +101,19 @@ class LessonDataSource {
       transaction: transaction,
     );
   }
+
+  Future<void> deleteByIds(
+    Session session,
+    Set<int> lessonIds, {
+    Transaction? transaction,
+  }) async {
+    if (lessonIds.isEmpty) {
+      return;
+    }
+    await Lesson.db.deleteWhere(
+      session,
+      where: (t) => t.id.inSet(lessonIds),
+      transaction: transaction,
+    );
+  }
 }

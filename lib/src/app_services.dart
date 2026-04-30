@@ -24,6 +24,7 @@ import 'package:praxis_server/src/services/adaptive_learning/adaptive_learning_p
 import 'package:praxis_server/src/services/ai/ai_service.dart';
 import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_service.dart';
+import 'package:praxis_server/src/services/cms_media/cms_media_storage_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/external_integration/external_integration_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
@@ -44,6 +45,7 @@ class AppServices {
   final AiService? aiService;
   final CmsContentService cmsContentService;
   final CmsCourseAnalyticsService cmsCourseAnalyticsService;
+  final CmsMediaStorageService cmsMediaStorageService;
   final CourseService courseService;
   final CourseRecommendationService courseRecommendationService;
   final ExternalIntegrationService externalIntegrationService;
@@ -61,6 +63,7 @@ class AppServices {
     required this.aiService,
     required this.cmsContentService,
     required this.cmsCourseAnalyticsService,
+    required this.cmsMediaStorageService,
     required this.courseService,
     required this.courseRecommendationService,
     required this.externalIntegrationService,
@@ -166,6 +169,7 @@ class AppServices {
       lessonProgressDataSource: lessonProgressDataSource,
       taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
     );
+    final cmsMediaStorageService = CmsMediaStorageService();
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
@@ -209,6 +213,7 @@ class AppServices {
       aiService: aiService,
       cmsContentService: cmsContentService,
       cmsCourseAnalyticsService: cmsCourseAnalyticsService,
+      cmsMediaStorageService: cmsMediaStorageService,
       courseService: courseService,
       courseRecommendationService: courseRecommendationService,
       externalIntegrationService: externalIntegrationService,

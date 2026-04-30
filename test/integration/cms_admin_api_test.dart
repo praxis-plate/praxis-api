@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:praxis_server/src/app_services.dart';
 import 'package:praxis_server/src/app_services_binding.dart';
@@ -62,6 +63,40 @@ void main() {
         endpoints.taskAdmin.list(learnerSession, 1),
         throwsA(isA<ServerpodInsufficientAccessException>()),
       );
+      await expectLater(
+        endpoints.cmsMediaAdmin.uploadImage(
+          learnerSession,
+          UploadCmsMediaRequest(
+            fileName: 'cover.png',
+            mimeType: 'image/png',
+            dataBase64: base64Encode([1, 2, 3]),
+          ),
+        ),
+        throwsA(isA<ServerpodInsufficientAccessException>()),
+      );
+    });
+
+    test('uploads cms images to static media storage', () async {
+      final media = await endpoints.cmsMediaAdmin.uploadImage(
+        cmsSession,
+        UploadCmsMediaRequest(
+          fileName: 'Course Cover.PNG',
+          mimeType: 'image/png',
+          dataBase64: base64Encode([1, 2, 3]),
+        ),
+      );
+      final storedFile = File('web/static/cms-media/${media.fileName}');
+      addTearDown(() async {
+        if (await storedFile.exists()) {
+          await storedFile.delete();
+        }
+      });
+
+      expect(media.mimeType, 'image/png');
+      expect(media.sizeBytes, 3);
+      expect(media.fileName, endsWith('-course-cover.png'));
+      expect(media.url, contains('/cms-media/${media.fileName}'));
+      expect(await storedFile.exists(), isTrue);
     });
 
     test(

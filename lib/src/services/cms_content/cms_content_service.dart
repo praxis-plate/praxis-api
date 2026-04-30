@@ -99,10 +99,10 @@ class CmsContentService {
     Transaction? transaction,
   }) async {
     final now = DateTime.now();
-    final title = _requireText(request.title, 'title');
-    final description = _requireText(request.description, 'description');
+    final title = request.title.trim();
+    final description = request.description.trim();
     final author = await _resolveCourseAuthor(session, transaction);
-    final category = _requireText(request.category, 'category');
+    final category = request.category.trim();
     final thumbnailUrl = _normalizeOptionalUrl(
       request.thumbnailUrl,
       'thumbnailUrl',
@@ -301,10 +301,10 @@ class CmsContentService {
     final updated = await _courseDataSource.updateRow(
       session,
       course.copyWith(
-        title: _requireText(request.title, 'title'),
-        description: _requireText(request.description, 'description'),
+        title: request.title.trim(),
+        description: request.description.trim(),
         author: course.author,
-        category: _requireText(request.category, 'category'),
+        category: request.category.trim(),
         priceInCoins: request.priceInCoins,
         durationMinutes: await _calculateCourseDuration(
           session,
@@ -333,11 +333,73 @@ class CmsContentService {
     );
   }
 
+  Future<void> deleteCourse(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    await _requireCourse(session, courseId, transaction: transaction);
+    final modules = await _moduleDataSource.listByCourseId(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    final moduleIds = modules.map((module) => module.id!).toList();
+    final lessons = await _lessonDataSource.listByModuleIds(
+      session,
+      moduleIds,
+      transaction: transaction,
+    );
+    final lessonIds = lessons.map((lesson) => lesson.id!).toList();
+    final tasks = await _taskDataSource.listByLessonIds(
+      session,
+      lessonIds,
+      transaction: transaction,
+    );
+    final taskIds = tasks.map((task) => task.id!).toSet();
+
+    await _taskOptionDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskTestCaseDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskDataSource.deleteByIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _lessonDataSource.deleteByIds(
+      session,
+      lessonIds.toSet(),
+      transaction: transaction,
+    );
+    await _moduleDataSource.deleteByIds(
+      session,
+      moduleIds.toSet(),
+      transaction: transaction,
+    );
+    await _courseDataSource.deleteById(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+  }
+
   Future<CourseDto> publishCourse(
     Session session,
     int courseId, {
     Transaction? transaction,
   }) async {
+    await _validateCourseReadyForPublication(
+      session,
+      courseId,
+      transaction: transaction,
+    );
     return _setCoursePublication(
       session,
       courseId,
@@ -395,8 +457,8 @@ class CmsContentService {
     final module = await _moduleDataSource.insert(
       session,
       courseId: course.id!,
-      title: _requireText(request.title, 'title'),
-      description: _requireText(request.description, 'description'),
+      title: request.title.trim(),
+      description: request.description.trim(),
       orderIndex: modules.length,
       createdAt: now,
       updatedAt: now,
@@ -422,8 +484,8 @@ class CmsContentService {
     final updated = await _moduleDataSource.updateRow(
       session,
       module.copyWith(
-        title: _requireText(request.title, 'title'),
-        description: _requireText(request.description, 'description'),
+        title: request.title.trim(),
+        description: request.description.trim(),
         updatedAt: now,
       ),
       transaction: transaction,
@@ -512,7 +574,7 @@ class CmsContentService {
     final lesson = await _lessonDataSource.insert(
       session,
       moduleId: module.id!,
-      title: _requireText(request.title, 'title'),
+      title: request.title.trim(),
       contentText: contentText,
       videoUrl: _normalizeOptionalUrl(request.videoUrl, 'videoUrl'),
       imageUrls: _normalizeImageUrls(request.imageUrls),
@@ -557,7 +619,7 @@ class CmsContentService {
     final updated = await _lessonDataSource.updateRow(
       session,
       lesson.copyWith(
-        title: _requireText(request.title, 'title'),
+        title: request.title.trim(),
         contentText: contentText,
         videoUrl: _normalizeOptionalUrl(request.videoUrl, 'videoUrl'),
         imageUrls: _normalizeImageUrls(request.imageUrls),
@@ -665,7 +727,7 @@ class CmsContentService {
       session,
       lessonId: lesson.id!,
       taskType: request.taskType,
-      questionText: _requireText(request.questionText, 'questionText'),
+      questionText: request.questionText.trim(),
       correctAnswer: (request.correctAnswer ?? '').trim(),
       optionsJson: null,
       codeTemplate: _normalizeOptionalText(request.codeTemplate),
@@ -720,7 +782,7 @@ class CmsContentService {
       session,
       task.copyWith(
         taskType: request.taskType,
-        questionText: _requireText(request.questionText, 'questionText'),
+        questionText: request.questionText.trim(),
         correctAnswer: request.correctAnswer.trim(),
         codeTemplate: _normalizeOptionalText(request.codeTemplate),
         programmingLanguage: _normalizeOptionalText(
@@ -732,7 +794,7 @@ class CmsContentService {
         fallbackExplanation: _normalizeOptionalText(
           request.fallbackExplanation,
         ),
-        topic: _requireText(request.topic, 'topic'),
+        topic: _normalizeOptionalText(request.topic) ?? 'general',
         updatedAt: now,
       ),
       transaction: transaction,
@@ -1118,6 +1180,120 @@ class CmsContentService {
     final hasUserCodePlaceholder =
         codeTemplate.contains('{{USER_CODE}}') || codeTemplate.contains('___');
     return hasInputPlaceholder && hasUserCodePlaceholder;
+  }
+
+  Future<void> _validateCourseReadyForPublication(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    final course = await _requireCourse(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    _requireText(course.title, 'title');
+    _requireText(course.description, 'description');
+    _requireText(course.category, 'category');
+
+    final modules = await _moduleDataSource.listByCourseId(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    if (modules.isEmpty) {
+      throw ValidationException(
+        message: 'Course must contain at least one module',
+        field: 'modules',
+      );
+    }
+
+    final moduleIds = modules.map((module) => module.id!).toList();
+    final lessons = await _lessonDataSource.listByModuleIds(
+      session,
+      moduleIds,
+      transaction: transaction,
+    );
+    final lessonsByModuleId = <int, List<Lesson>>{};
+    for (final lesson in lessons) {
+      lessonsByModuleId.putIfAbsent(lesson.moduleId, () => []).add(lesson);
+    }
+
+    for (final module in modules) {
+      _requireText(module.title, 'modules.title');
+      _requireText(module.description, 'modules.description');
+      if ((lessonsByModuleId[module.id!] ?? const []).isEmpty) {
+        throw ValidationException(
+          message: 'Each module must contain at least one lesson',
+          field: 'lessons',
+        );
+      }
+    }
+
+    final lessonIds = lessons.map((lesson) => lesson.id!).toList();
+    final tasks = await _taskDataSource.listByLessonIds(
+      session,
+      lessonIds,
+      transaction: transaction,
+    );
+    final tasksByLessonId = <int, List<Task>>{};
+    for (final task in tasks) {
+      tasksByLessonId.putIfAbsent(task.lessonId, () => []).add(task);
+    }
+
+    for (final lesson in lessons) {
+      _requireText(lesson.title, 'lessons.title');
+      _requireText(_plainTextForLesson(lesson.contentText), 'lessons.content');
+      if ((tasksByLessonId[lesson.id!] ?? const []).isEmpty) {
+        throw ValidationException(
+          message: 'Each lesson must contain at least one task',
+          field: 'tasks',
+        );
+      }
+    }
+
+    for (final task in tasks) {
+      _requireText(task.questionText, 'tasks.questionText');
+      if (task.taskType == TaskType.multipleChoice ||
+          task.taskType == TaskType.multipleAnswer) {
+        final options = await _taskOptionDataSource.listByTaskId(
+          session,
+          task.id!,
+          transaction: transaction,
+        );
+        if (options.isEmpty) {
+          throw ValidationException(
+            message: 'Choice tasks must contain options',
+            field: 'tasks.options',
+          );
+        }
+      }
+      if (task.taskType == TaskType.codeCompletion) {
+        final testCases = await _taskTestCaseDataSource.listByTaskId(
+          session,
+          task.id!,
+          transaction: transaction,
+        );
+        if (testCases.isEmpty) {
+          throw ValidationException(
+            message: 'Code tasks must contain test cases',
+            field: 'tasks.testCases',
+          );
+        }
+      }
+    }
+  }
+
+  String _plainTextForLesson(String contentText) {
+    final document = _lessonContentCodec.decodeFromStorage(contentText);
+    if (document == null) {
+      return contentText;
+    }
+
+    return document.blocks
+        .map((block) => block.text ?? block.caption ?? '')
+        .where((text) => text.trim().isNotEmpty)
+        .join('\n');
   }
 
   Future<CourseDto> _setCoursePublication(

@@ -49,6 +49,14 @@ class CourseAdminEndpoint extends Endpoint {
     );
   }
 
+  Future<void> delete(Session session, int courseId) {
+    AuthUtils.requireScope(session, AuthScopes.contentManage);
+    return session.server.useCases.deleteAdminCourseUseCase.execute(
+      session,
+      courseId,
+    );
+  }
+
   Future<CourseDto> publish(Session session, int courseId) {
     AuthUtils.requireScope(session, AuthScopes.contentManage);
     return session.server.useCases.publishAdminCourseUseCase.execute(

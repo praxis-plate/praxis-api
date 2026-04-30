@@ -14,6 +14,7 @@ import 'package:praxis_server/src/usecases/cms_analytics/course_analytics_admin_
 import 'package:praxis_server/src/usecases/cms_content/lesson_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/module_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/cms_content/task_admin_use_cases.dart';
+import 'package:praxis_server/src/usecases/cms_media/cms_media_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/course/enroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_adaptive_learning_path_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_course_by_id_use_case.dart';
@@ -50,6 +51,7 @@ class AppUseCases {
   final CreateAdminCourseUseCase createAdminCourseUseCase;
   final ImportAdminCourseUseCase importAdminCourseUseCase;
   final UpdateAdminCourseUseCase updateAdminCourseUseCase;
+  final DeleteAdminCourseUseCase deleteAdminCourseUseCase;
   final PublishAdminCourseUseCase publishAdminCourseUseCase;
   final UnpublishAdminCourseUseCase unpublishAdminCourseUseCase;
   final ListAdminModulesUseCase listAdminModulesUseCase;
@@ -66,6 +68,7 @@ class AppUseCases {
   final ReorderAdminTasksUseCase reorderAdminTasksUseCase;
   final UpsertAdminTaskOptionsUseCase upsertAdminTaskOptionsUseCase;
   final UpsertAdminTaskTestCasesUseCase upsertAdminTaskTestCasesUseCase;
+  final UploadCmsMediaUseCase uploadCmsMediaUseCase;
   final GenerateHintUseCase generateHintUseCase;
   final GenerateExplanationUseCase generateExplanationUseCase;
   final GetAllAchievementsUseCase getAllAchievementsUseCase;
@@ -111,6 +114,7 @@ class AppUseCases {
     required this.createAdminCourseUseCase,
     required this.importAdminCourseUseCase,
     required this.updateAdminCourseUseCase,
+    required this.deleteAdminCourseUseCase,
     required this.publishAdminCourseUseCase,
     required this.unpublishAdminCourseUseCase,
     required this.listAdminModulesUseCase,
@@ -127,6 +131,7 @@ class AppUseCases {
     required this.reorderAdminTasksUseCase,
     required this.upsertAdminTaskOptionsUseCase,
     required this.upsertAdminTaskTestCasesUseCase,
+    required this.uploadCmsMediaUseCase,
     required this.generateHintUseCase,
     required this.generateExplanationUseCase,
     required this.getAllAchievementsUseCase,
@@ -196,6 +201,10 @@ class AppUseCases {
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),
+      deleteAdminCourseUseCase: DeleteAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
       publishAdminCourseUseCase: PublishAdminCourseUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
@@ -256,6 +265,9 @@ class AppUseCases {
       upsertAdminTaskTestCasesUseCase: UpsertAdminTaskTestCasesUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
+      ),
+      uploadCmsMediaUseCase: UploadCmsMediaUseCase(
+        storageService: services.cmsMediaStorageService,
       ),
       generateHintUseCase: GenerateHintUseCase(aiService: services.aiService),
       generateExplanationUseCase: GenerateExplanationUseCase(

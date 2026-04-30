@@ -95,4 +95,19 @@ class ModuleDataSource {
       transaction: transaction,
     );
   }
+
+  Future<void> deleteByIds(
+    Session session,
+    Set<int> moduleIds, {
+    Transaction? transaction,
+  }) async {
+    if (moduleIds.isEmpty) {
+      return;
+    }
+    await Module.db.deleteWhere(
+      session,
+      where: (t) => t.id.inSet(moduleIds),
+      transaction: transaction,
+    );
+  }
 }

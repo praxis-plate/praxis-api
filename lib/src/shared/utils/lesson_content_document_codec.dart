@@ -14,7 +14,7 @@ class LessonContentDocumentCodec {
     LessonContentDocumentDto? contentDocument,
   }) {
     if (contentDocument == null) {
-      return _requireText(legacyContentText, 'contentText');
+      return legacyContentText.trim();
     }
 
     final normalized = _normalizeDocument(contentDocument);
@@ -89,37 +89,25 @@ class LessonContentDocumentCodec {
     return switch (block.type) {
       LessonContentBlockType.heading => LessonContentBlockDto(
         type: block.type,
-        text: _requireText(
-          block.text ?? '',
-          'contentDocument.blocks[$index].text',
-        ),
+        text: (block.text ?? '').trim(),
         level: (block.level ?? 2).clamp(1, 3),
       ),
       LessonContentBlockType.paragraph => LessonContentBlockDto(
         type: block.type,
-        text: _requireText(
-          block.text ?? '',
-          'contentDocument.blocks[$index].text',
-        ),
+        text: (block.text ?? '').trim(),
       ),
       LessonContentBlockType.quote => LessonContentBlockDto(
         type: block.type,
-        text: _requireText(
-          block.text ?? '',
-          'contentDocument.blocks[$index].text',
-        ),
+        text: (block.text ?? '').trim(),
       ),
       LessonContentBlockType.code => LessonContentBlockDto(
         type: block.type,
-        text: _requireText(
-          block.text ?? '',
-          'contentDocument.blocks[$index].text',
-        ),
+        text: (block.text ?? '').trim(),
         language: _normalizeOptionalText(block.language),
       ),
       LessonContentBlockType.image => LessonContentBlockDto(
         type: block.type,
-        url: _requireUrl(block.url, 'contentDocument.blocks[$index].url'),
+        url: _normalizeOptionalText(block.url),
         caption: _normalizeOptionalText(block.caption),
       ),
     };
@@ -182,32 +170,10 @@ class LessonContentDocumentCodec {
     }
   }
 
-  String _requireText(String value, String field) {
-    final normalized = value.trim();
-    if (normalized.isEmpty) {
-      throw ValidationException(message: 'Field is required', field: field);
-    }
-    return normalized;
-  }
-
   String? _normalizeOptionalText(String? value) {
     final normalized = value?.trim();
     if (normalized == null || normalized.isEmpty) {
       return null;
-    }
-    return normalized;
-  }
-
-  String _requireUrl(String? value, String field) {
-    final normalized = _requireText(value ?? '', field);
-    final uri = Uri.tryParse(normalized);
-    if (uri == null ||
-        !uri.hasScheme ||
-        !(uri.scheme == 'http' || uri.scheme == 'https')) {
-      throw ValidationException(
-        message: 'Field must contain a valid http or https URL',
-        field: field,
-      );
     }
     return normalized;
   }

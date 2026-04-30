@@ -157,6 +157,18 @@ class CourseDataSource {
     );
   }
 
+  Future<void> deleteById(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    await Course.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(courseId),
+      transaction: transaction,
+    );
+  }
+
   Future<List<Course>> listByTitlePrefix(
     Session session,
     String prefix, {

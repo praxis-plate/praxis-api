@@ -1,0 +1,6 @@
+class: CmsMediaDto
+fields:
+  fileName: String
+  mimeType: String
+  url: String
+  sizeBytes: int
