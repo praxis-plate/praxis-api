@@ -21,17 +21,23 @@ Future<void> main(List<String> args) async {
   }
 
   final client = LoadTestClient(config.host);
+  final authStorage = InMemoryAuthSuccessStorage();
   final authSessionManager = ClientAuthSessionManager(
-    storage: InMemoryAuthSuccessStorage(),
+    storage: authStorage,
   );
   client.authSessionManager = authSessionManager;
 
   if (config.authenticate) {
-    final authSuccess = await client.emailIdp.login(
-      email: config.learnerEmail,
-      password: config.learnerPassword,
-    );
-    await client.auth.updateSignedInUser(authSuccess);
+    try {
+      final authSuccess = await client.emailIdp.login(
+        email: config.learnerEmail,
+        password: config.learnerPassword,
+      );
+      await authStorage.set(authSuccess);
+    } catch (e) {
+      stderr.writeln('Authentication failed: $e');
+      exit(1);
+    }
   }
 
   final fixture = await _loadFixture(client, config);

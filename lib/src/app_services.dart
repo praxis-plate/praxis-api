@@ -10,28 +10,29 @@ import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/task_answer_attempt_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
-import 'package:praxis_server/src/datasources/task_answer_attempt_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/datasources/user_achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
-import 'package:praxis_server/src/services/achievement/achievement_service.dart';
 import 'package:praxis_server/src/services/access_control/access_control_service.dart';
+import 'package:praxis_server/src/services/achievement/achievement_service.dart';
 import 'package:praxis_server/src/services/adaptive_learning/adaptive_learning_path_service.dart';
 import 'package:praxis_server/src/services/ai/ai_service.dart';
-import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/cms_analytics/cms_course_analytics_service.dart';
+import 'package:praxis_server/src/services/cms_content/cms_content_service.dart';
 import 'package:praxis_server/src/services/cms_media/cms_media_storage_service.dart';
+import 'package:praxis_server/src/services/course/course_cache_service.dart';
 import 'package:praxis_server/src/services/course/course_service.dart';
 import 'package:praxis_server/src/services/external_integration/external_integration_service.dart';
 import 'package:praxis_server/src/services/lesson/lesson_service.dart';
 import 'package:praxis_server/src/services/module/module_service.dart';
 import 'package:praxis_server/src/services/recommendation/course_recommendation_service.dart';
-import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/services/task/code_execution_service.dart';
+import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
@@ -170,6 +171,7 @@ class AppServices {
       taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
     );
     final cmsMediaStorageService = CmsMediaStorageService();
+    final courseCacheService = CourseCacheService();
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
@@ -179,6 +181,7 @@ class AppServices {
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
       userCourseDataSource: userCourseDataSource,
+      cacheService: courseCacheService,
     );
     final courseRecommendationService = CourseRecommendationService(
       courseDataSource: courseDataSource,

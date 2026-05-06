@@ -7,6 +7,7 @@ import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/services/course/course_cache_service.dart';
 import 'package:praxis_server/src/services/course/entities/course_content_counts.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
@@ -20,6 +21,7 @@ class CourseService {
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
   final UserCourseDataSource _userCourseDataSource;
+  final CourseCacheService _cacheService;
 
   CourseService({
     required CoinTransactionsDataSource coinTransactionsDataSource,
@@ -30,6 +32,7 @@ class CourseService {
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
     required UserCourseDataSource userCourseDataSource,
+    required CourseCacheService cacheService,
   }) : _coinTransactionsDataSource = coinTransactionsDataSource,
        _courseDataSource = courseDataSource,
        _moduleDataSource = moduleDataSource,
@@ -37,13 +40,23 @@ class CourseService {
        _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
-       _userCourseDataSource = userCourseDataSource;
+       _userCourseDataSource = userCourseDataSource,
+       _cacheService = cacheService;
 
   Future<List<CourseDto>> getCourses(
     Session session, {
     required int limit,
     required int offset,
   }) async {
+    final cached = await _cacheService.getCourseList(
+      session,
+      limit: limit,
+      offset: offset,
+    );
+    if (cached != null) {
+      return cached;
+    }
+
     final courses = await _courseDataSource.listPublished(
       session,
       limit: limit,
@@ -69,10 +82,22 @@ class CourseService {
       );
     }
 
+    await _cacheService.setCourseList(
+      session,
+      limit: limit,
+      offset: offset,
+      courses: result,
+    );
+
     return result;
   }
 
   Future<CourseDetailDto> getCourseById(Session session, int courseId) async {
+    final cached = await _cacheService.getCourseDetail(session, courseId);
+    if (cached != null) {
+      return cached;
+    }
+
     final course = await _courseDataSource.findPublishedById(session, courseId);
     if (course == null) {
       throw NotFoundException(message: 'Course not found');
@@ -92,7 +117,7 @@ class CourseService {
     final totalLessons = lessonEntities.length;
     final totalTasks = tasks.length;
 
-    return CourseDetailDto(
+    final result = CourseDetailDto(
       course: course.toCourseDto(
         totalLessons: totalLessons,
         totalTasks: totalTasks,
@@ -101,6 +126,10 @@ class CourseService {
       lessons: lessons,
       tasks: tasks,
     );
+
+    await _cacheService.setCourseDetail(session, courseId, result);
+
+    return result;
   }
 
   Future<List<CourseDto>> getEnrolledCourses(
@@ -211,6 +240,11 @@ class CourseService {
     Session session,
     int courseId,
   ) async {
+    final cached = await _cacheService.getCourseStructure(session, courseId);
+    if (cached != null) {
+      return cached;
+    }
+
     final course = await _courseDataSource.findPublishedById(session, courseId);
     if (course == null) {
       throw NotFoundException(message: 'Course not found');
@@ -281,11 +315,15 @@ class CourseService {
       );
     }
 
-    return CourseStructureDto(
+    final result = CourseStructureDto(
       courseId: course.id!,
       title: course.title,
       modules: structureModules,
     );
+
+    await _cacheService.setCourseStructure(session, courseId, result);
+
+    return result;
   }
 
   Future<Map<int, CourseContentCounts>> _countContentForCourses(

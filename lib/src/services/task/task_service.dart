@@ -109,24 +109,41 @@ class TaskService {
       return [];
     }
 
-    final publishedLessonIds = <int>[];
-    for (final lessonId in lessonIds) {
-      final lesson = await _lessonDataSource.findById(session, lessonId);
-      if (lesson == null) {
-        continue;
-      }
-      final module = await _moduleDataSource.findById(session, lesson.moduleId);
-      if (module == null) {
-        continue;
-      }
-      final course = await _courseDataSource.findPublishedById(
-        session,
-        module.courseId,
-      );
-      if (course != null) {
-        publishedLessonIds.add(lessonId);
+    final lessons = await _lessonDataSource.listByIds(session, lessonIds);
+    if (lessons.isEmpty) {
+      return [];
+    }
+
+    final moduleIds = lessons.map((lesson) => lesson.moduleId).toSet().toList();
+    final modules = await _moduleDataSource.listByIds(session, moduleIds);
+    if (modules.isEmpty) {
+      return [];
+    }
+
+    final courseIds = modules.map((module) => module.courseId).toSet().toList();
+    final courses = await _courseDataSource.listPublishedByIds(
+      session,
+      courseIds,
+    );
+    if (courses.isEmpty) {
+      return [];
+    }
+
+    final publishedCourseIds = courses.map((course) => course.id!).toSet();
+    final moduleByCourseId = <int, Module>{};
+    for (final module in modules) {
+      if (publishedCourseIds.contains(module.courseId)) {
+        moduleByCourseId[module.id!] = module;
       }
     }
+
+    final publishedLessonIds = <int>[];
+    for (final lesson in lessons) {
+      if (moduleByCourseId.containsKey(lesson.moduleId)) {
+        publishedLessonIds.add(lesson.id!);
+      }
+    }
+
     if (publishedLessonIds.isEmpty) {
       return [];
     }

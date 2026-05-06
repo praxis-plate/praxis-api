@@ -62,16 +62,18 @@ class LessonService {
       session,
       courseId,
     );
-    final lessons = <LessonDto>[];
-    for (final module in modules) {
-      final moduleLessons = await _lessonDataSource.listByModuleId(
-        session,
-        module.id!,
-      );
-      lessons.addAll(moduleLessons.map((lesson) => lesson.toLessonDto()));
+
+    if (modules.isEmpty) {
+      return [];
     }
 
-    return lessons;
+    final moduleIds = modules.map((module) => module.id!).toList();
+    final lessons = await _lessonDataSource.listByModuleIds(
+      session,
+      moduleIds,
+    );
+
+    return lessons.map((lesson) => lesson.toLessonDto()).toList();
   }
 
   Future<LessonDto> getById(
