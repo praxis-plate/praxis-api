@@ -784,6 +784,7 @@ class CmsContentService {
         taskType: request.taskType,
         questionText: request.questionText.trim(),
         correctAnswer: request.correctAnswer.trim(),
+        optionsJson: _normalizeOptionalText(request.optionsJson),
         codeTemplate: _normalizeOptionalText(request.codeTemplate),
         programmingLanguage: _normalizeOptionalText(
           request.programmingLanguage,
@@ -1281,7 +1282,80 @@ class CmsContentService {
           );
         }
       }
+      if (task.taskType == TaskType.matching) {
+        _validateMatchingTaskContent(task);
+      }
     }
+  }
+
+  void _validateMatchingTaskContent(Task task) {
+    final correctPairs = _decodeMatchingAnswerPairs(task.correctAnswer);
+    final learnerPairs = _decodeMatchingOptionsPairs(task.optionsJson);
+    if (correctPairs.length < 2 || learnerPairs.length < 2) {
+      throw ValidationException(
+        message: 'Matching tasks must contain at least two complete pairs',
+        field: 'tasks.matchingPairs',
+      );
+    }
+    if (!_matchingPairsAreValid(correctPairs) ||
+        !_matchingPairsAreValid(learnerPairs)) {
+      throw ValidationException(
+        message: 'Matching task pairs must be complete and unique',
+        field: 'tasks.matchingPairs',
+      );
+    }
+  }
+
+  List<({String left, String right})> _decodeMatchingAnswerPairs(
+    String correctAnswer,
+  ) {
+    try {
+      final decoded = jsonDecode(correctAnswer);
+      if (decoded is! Map) {
+        return const [];
+      }
+      return decoded.entries
+          .map(
+            (entry) => (
+              left: entry.key.toString(),
+              right: entry.value?.toString() ?? '',
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  List<({String left, String right})> _decodeMatchingOptionsPairs(
+    String? optionsJson,
+  ) {
+    try {
+      final decoded = jsonDecode(optionsJson ?? '');
+      if (decoded is! Map || decoded['pairs'] is! List) {
+        return const [];
+      }
+      return (decoded['pairs'] as List)
+          .whereType<Map>()
+          .map(
+            (pair) => (
+              left: pair['left']?.toString() ?? '',
+              right: pair['right']?.toString() ?? '',
+            ),
+          )
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  bool _matchingPairsAreValid(List<({String left, String right})> pairs) {
+    final leftLabels = pairs.map((pair) => pair.left.trim()).toList();
+    final rightLabels = pairs.map((pair) => pair.right.trim()).toList();
+    return leftLabels.every((label) => label.isNotEmpty) &&
+        rightLabels.every((label) => label.isNotEmpty) &&
+        leftLabels.toSet().length == leftLabels.length &&
+        rightLabels.toSet().length == rightLabels.length;
   }
 
   String _plainTextForLesson(String contentText) {

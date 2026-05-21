@@ -4,6 +4,7 @@ fields:
   taskType: TaskType
   questionText: String
   correctAnswer: String
+  optionsJson: String?
   codeTemplate: String?
   programmingLanguage: String?
   difficultyLevel: int
