@@ -20,6 +20,7 @@ abstract class UpdateCourseRequest
     required this.description,
     required this.author,
     required this.category,
+    required this.difficultyLevel,
     required this.priceInCoins,
     required this.durationMinutes,
     required this.rating,
@@ -33,6 +34,7 @@ abstract class UpdateCourseRequest
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -47,6 +49,7 @@ abstract class UpdateCourseRequest
       description: jsonSerialization['description'] as String,
       author: jsonSerialization['author'] as String,
       category: jsonSerialization['category'] as String,
+      difficultyLevel: jsonSerialization['difficultyLevel'] as String,
       priceInCoins: jsonSerialization['priceInCoins'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       rating: (jsonSerialization['rating'] as num).toDouble(),
@@ -64,6 +67,8 @@ abstract class UpdateCourseRequest
   String author;
 
   String category;
+
+  String difficultyLevel;
 
   int priceInCoins;
 
@@ -84,6 +89,7 @@ abstract class UpdateCourseRequest
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -99,6 +105,7 @@ abstract class UpdateCourseRequest
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
@@ -116,6 +123,7 @@ abstract class UpdateCourseRequest
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
@@ -139,6 +147,7 @@ class _UpdateCourseRequestImpl extends UpdateCourseRequest {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -150,6 +159,7 @@ class _UpdateCourseRequestImpl extends UpdateCourseRequest {
          description: description,
          author: author,
          category: category,
+         difficultyLevel: difficultyLevel,
          priceInCoins: priceInCoins,
          durationMinutes: durationMinutes,
          rating: rating,
@@ -167,6 +177,7 @@ class _UpdateCourseRequestImpl extends UpdateCourseRequest {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -179,6 +190,7 @@ class _UpdateCourseRequestImpl extends UpdateCourseRequest {
       description: description ?? this.description,
       author: author ?? this.author,
       category: category ?? this.category,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
       priceInCoins: priceInCoins ?? this.priceInCoins,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       rating: rating ?? this.rating,

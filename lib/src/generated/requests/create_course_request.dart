@@ -19,6 +19,7 @@ abstract class CreateCourseRequest
     required this.description,
     required this.author,
     required this.category,
+    this.difficultyLevel,
     this.priceInCoins,
     this.durationMinutes,
     this.rating,
@@ -31,6 +32,7 @@ abstract class CreateCourseRequest
     required String description,
     required String author,
     required String category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -44,6 +46,7 @@ abstract class CreateCourseRequest
       description: jsonSerialization['description'] as String,
       author: jsonSerialization['author'] as String,
       category: jsonSerialization['category'] as String,
+      difficultyLevel: jsonSerialization['difficultyLevel'] as String?,
       priceInCoins: jsonSerialization['priceInCoins'] as int?,
       durationMinutes: jsonSerialization['durationMinutes'] as int?,
       rating: (jsonSerialization['rating'] as num?)?.toDouble(),
@@ -59,6 +62,8 @@ abstract class CreateCourseRequest
   String author;
 
   String category;
+
+  String? difficultyLevel;
 
   int? priceInCoins;
 
@@ -78,6 +83,7 @@ abstract class CreateCourseRequest
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -92,6 +98,7 @@ abstract class CreateCourseRequest
       'description': description,
       'author': author,
       'category': category,
+      if (difficultyLevel != null) 'difficultyLevel': difficultyLevel,
       if (priceInCoins != null) 'priceInCoins': priceInCoins,
       if (durationMinutes != null) 'durationMinutes': durationMinutes,
       if (rating != null) 'rating': rating,
@@ -108,6 +115,7 @@ abstract class CreateCourseRequest
       'description': description,
       'author': author,
       'category': category,
+      if (difficultyLevel != null) 'difficultyLevel': difficultyLevel,
       if (priceInCoins != null) 'priceInCoins': priceInCoins,
       if (durationMinutes != null) 'durationMinutes': durationMinutes,
       if (rating != null) 'rating': rating,
@@ -130,6 +138,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
     required String description,
     required String author,
     required String category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -140,6 +149,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
          description: description,
          author: author,
          category: category,
+         difficultyLevel: difficultyLevel,
          priceInCoins: priceInCoins,
          durationMinutes: durationMinutes,
          rating: rating,
@@ -156,6 +166,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
     String? description,
     String? author,
     String? category,
+    Object? difficultyLevel = _Undefined,
     Object? priceInCoins = _Undefined,
     Object? durationMinutes = _Undefined,
     Object? rating = _Undefined,
@@ -167,6 +178,9 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
       description: description ?? this.description,
       author: author ?? this.author,
       category: category ?? this.category,
+      difficultyLevel: difficultyLevel is String?
+          ? difficultyLevel
+          : this.difficultyLevel,
       priceInCoins: priceInCoins is int? ? priceInCoins : this.priceInCoins,
       durationMinutes: durationMinutes is int?
           ? durationMinutes

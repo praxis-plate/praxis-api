@@ -21,6 +21,7 @@ abstract class CourseDto
     required this.description,
     required this.author,
     required this.category,
+    required this.difficultyLevel,
     required this.priceInCoins,
     required this.durationMinutes,
     required this.rating,
@@ -40,6 +41,7 @@ abstract class CourseDto
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -60,6 +62,7 @@ abstract class CourseDto
       description: jsonSerialization['description'] as String,
       author: jsonSerialization['author'] as String,
       category: jsonSerialization['category'] as String,
+      difficultyLevel: jsonSerialization['difficultyLevel'] as String,
       priceInCoins: jsonSerialization['priceInCoins'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       rating: (jsonSerialization['rating'] as num).toDouble(),
@@ -94,6 +97,8 @@ abstract class CourseDto
 
   String category;
 
+  String difficultyLevel;
+
   int priceInCoins;
 
   int durationMinutes;
@@ -125,6 +130,7 @@ abstract class CourseDto
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -146,6 +152,7 @@ abstract class CourseDto
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
@@ -169,6 +176,7 @@ abstract class CourseDto
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
@@ -198,6 +206,7 @@ class _CourseDtoImpl extends CourseDto {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -215,6 +224,7 @@ class _CourseDtoImpl extends CourseDto {
          description: description,
          author: author,
          category: category,
+         difficultyLevel: difficultyLevel,
          priceInCoins: priceInCoins,
          durationMinutes: durationMinutes,
          rating: rating,
@@ -238,6 +248,7 @@ class _CourseDtoImpl extends CourseDto {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -256,6 +267,7 @@ class _CourseDtoImpl extends CourseDto {
       description: description ?? this.description,
       author: author ?? this.author,
       category: category ?? this.category,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
       priceInCoins: priceInCoins ?? this.priceInCoins,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       rating: rating ?? this.rating,

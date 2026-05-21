@@ -13,6 +13,13 @@ import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
 import 'package:serverpod/serverpod.dart';
 
+const _defaultCourseDifficultyLevel = 'beginner';
+const _courseDifficultyLevels = {
+  _defaultCourseDifficultyLevel,
+  'intermediate',
+  'advanced',
+};
+
 class CmsContentService {
   final CourseDataSource _courseDataSource;
   final EmailAccountDataSource _emailAccountDataSource;
@@ -115,6 +122,9 @@ class CmsContentService {
       description: description,
       author: author,
       category: category,
+      difficultyLevel: _normalizeCourseDifficultyLevel(
+        request.difficultyLevel ?? _defaultCourseDifficultyLevel,
+      ),
       priceInCoins: request.priceInCoins ?? 0,
       durationMinutes: 0,
       rating: request.rating ?? 0,
@@ -305,6 +315,9 @@ class CmsContentService {
         description: request.description.trim(),
         author: course.author,
         category: request.category.trim(),
+        difficultyLevel: _normalizeCourseDifficultyLevel(
+          request.difficultyLevel,
+        ),
         priceInCoins: request.priceInCoins,
         durationMinutes: await _calculateCourseDuration(
           session,
@@ -1698,6 +1711,18 @@ class CmsContentService {
       throw ValidationException(
         message: 'Field is required',
         field: field,
+      );
+    }
+    return normalized;
+  }
+
+  String _normalizeCourseDifficultyLevel(String value) {
+    final normalized = value.trim();
+    if (!_courseDifficultyLevels.contains(normalized)) {
+      throw ValidationException(
+        message:
+            'Course difficulty level must be beginner, intermediate, or advanced',
+        field: 'difficultyLevel',
       );
     }
     return normalized;

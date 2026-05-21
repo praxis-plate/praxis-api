@@ -219,6 +219,7 @@ void main() {
             thumbnailUrl: 'https://example.com/thumb.png',
           ),
         );
+        expect(createdCourse.difficultyLevel, 'beginner');
         final updatedCourse = await endpoints.courseAdmin.update(
           cmsSession,
           UpdateCourseRequest(
@@ -227,6 +228,7 @@ void main() {
             description: 'Updated description',
             author: 'Updated Author',
             category: 'API',
+            difficultyLevel: 'intermediate',
             priceInCoins: 25,
             durationMinutes: 120,
             rating: 4.8,
@@ -235,9 +237,33 @@ void main() {
           ),
         );
         expect(updatedCourse.title, 'CMS Course Updated');
+        expect(updatedCourse.difficultyLevel, 'intermediate');
+        expect(
+          (await endpoints.courseAdmin.list(cmsSession))
+              .firstWhere((course) => course.id == createdCourse.id)
+              .difficultyLevel,
+          'intermediate',
+        );
         expect(
           updatedCourse.updatedAt.isBefore(createdCourse.updatedAt),
           isFalse,
+        );
+        await expectLater(
+          endpoints.courseAdmin.update(
+            cmsSession,
+            UpdateCourseRequest(
+              id: createdCourse.id,
+              title: 'CMS Course Updated',
+              description: 'Updated description',
+              author: 'Updated Author',
+              category: 'API',
+              difficultyLevel: 'expert',
+              priceInCoins: 25,
+              durationMinutes: 120,
+              rating: 4.8,
+            ),
+          ),
+          throwsA(isA<ValidationException>()),
         );
 
         final firstModule = await endpoints.moduleAdmin.create(
@@ -577,6 +603,7 @@ void main() {
             description: 'Updated',
             author: 'Another supplied author',
             category: 'CMS',
+            difficultyLevel: storedCourse.difficultyLevel,
             priceInCoins: 10,
             durationMinutes: 999,
             rating: 4,

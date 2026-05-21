@@ -20,6 +20,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.description,
     required this.author,
     required this.category,
+    required this.difficultyLevel,
     required this.priceInCoins,
     required this.durationMinutes,
     required this.rating,
@@ -37,6 +38,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -55,6 +57,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       description: jsonSerialization['description'] as String,
       author: jsonSerialization['author'] as String,
       category: jsonSerialization['category'] as String,
+      difficultyLevel: jsonSerialization['difficultyLevel'] as String,
       priceInCoins: jsonSerialization['priceInCoins'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       rating: (jsonSerialization['rating'] as num).toDouble(),
@@ -92,6 +95,8 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String category;
 
+  String difficultyLevel;
+
   int priceInCoins;
 
   int durationMinutes;
@@ -122,6 +127,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -141,6 +147,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
@@ -197,6 +204,7 @@ class _CourseImpl extends Course {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
@@ -212,6 +220,7 @@ class _CourseImpl extends Course {
          description: description,
          author: author,
          category: category,
+         difficultyLevel: difficultyLevel,
          priceInCoins: priceInCoins,
          durationMinutes: durationMinutes,
          rating: rating,
@@ -233,6 +242,7 @@ class _CourseImpl extends Course {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
@@ -249,6 +259,7 @@ class _CourseImpl extends Course {
       description: description ?? this.description,
       author: author ?? this.author,
       category: category ?? this.category,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
       priceInCoins: priceInCoins ?? this.priceInCoins,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       rating: rating ?? this.rating,
@@ -284,6 +295,12 @@ class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
     table.category,
     value,
   );
+
+  _i1.ColumnValue<String, String> difficultyLevel(String value) =>
+      _i1.ColumnValue(
+        table.difficultyLevel,
+        value,
+      );
 
   _i1.ColumnValue<int, int> priceInCoins(int value) => _i1.ColumnValue(
     table.priceInCoins,
@@ -356,6 +373,10 @@ class CourseTable extends _i1.Table<int?> {
       'category',
       this,
     );
+    difficultyLevel = _i1.ColumnString(
+      'difficultyLevel',
+      this,
+    );
     priceInCoins = _i1.ColumnInt(
       'priceInCoins',
       this,
@@ -405,6 +426,8 @@ class CourseTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString category;
 
+  late final _i1.ColumnString difficultyLevel;
+
   late final _i1.ColumnInt priceInCoins;
 
   late final _i1.ColumnInt durationMinutes;
@@ -430,6 +453,7 @@ class CourseTable extends _i1.Table<int?> {
     description,
     author,
     category,
+    difficultyLevel,
     priceInCoins,
     durationMinutes,
     rating,

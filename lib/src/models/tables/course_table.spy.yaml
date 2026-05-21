@@ -6,6 +6,7 @@ fields:
   description: String
   author: String
   category: String
+  difficultyLevel: String
   priceInCoins: int
   durationMinutes: int
   rating: double

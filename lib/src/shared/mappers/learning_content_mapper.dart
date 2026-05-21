@@ -15,6 +15,7 @@ extension CourseMapper on Course {
       description: description,
       author: author,
       category: category,
+      difficultyLevel: difficultyLevel,
       priceInCoins: priceInCoins,
       durationMinutes: durationMinutes,
       rating: rating,

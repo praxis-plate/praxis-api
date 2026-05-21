@@ -11,3 +11,4 @@
 20260422183011851-cms-admin-api-and-persistent-course-publishing
 20260422190847674-cms-course-analytics-dashboard
 20260426162000000-repair-existing-cms-schema
+20260522233000000-add-course-difficulty
