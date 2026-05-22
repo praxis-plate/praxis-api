@@ -3,6 +3,7 @@ fields:
   lessonId: int
   totalXpEarned: int
   bonusXp: int
+  lessonCompletionXp: int
   totalXpWithBonus: int
   timeSpentSeconds: int
   totalTasks: int

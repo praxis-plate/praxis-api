@@ -9,5 +9,6 @@ fields:
   imageUrls: String?
   orderIndex: int
   durationMinutes: int
+  completionXp: int
   createdAt: DateTime
   updatedAt: DateTime

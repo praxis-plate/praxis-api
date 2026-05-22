@@ -203,6 +203,7 @@ class CmsContentService {
             contentDocument: lessonInput.contentDocument,
             videoUrl: lessonInput.videoUrl,
             imageUrls: _encodeImportImageUrls(lessonInput.imageUrls),
+            completionXp: lessonInput.completionXp,
           ),
           transaction: transaction,
         );
@@ -568,6 +569,7 @@ class CmsContentService {
     CreateLessonRequest request, {
     Transaction? transaction,
   }) async {
+    _validateLessonCompletionXp(request.completionXp ?? 0);
     final module = await _requireModule(
       session,
       request.moduleId,
@@ -593,6 +595,7 @@ class CmsContentService {
       imageUrls: _normalizeImageUrls(request.imageUrls),
       orderIndex: lessons.length,
       durationMinutes: _lessonContentCodec.estimateReadingMinutes(contentText),
+      completionXp: request.completionXp ?? 0,
       createdAt: now,
       updatedAt: now,
       transaction: transaction,
@@ -618,6 +621,7 @@ class CmsContentService {
       request.id,
       transaction: transaction,
     );
+    _validateLessonCompletionXp(request.completionXp ?? lesson.completionXp);
     final module = await _requireModule(
       session,
       lesson.moduleId,
@@ -639,6 +643,7 @@ class CmsContentService {
         durationMinutes: _lessonContentCodec.estimateReadingMinutes(
           contentText,
         ),
+        completionXp: request.completionXp ?? lesson.completionXp,
         updatedAt: now,
       ),
       transaction: transaction,
@@ -1704,6 +1709,15 @@ class CmsContentService {
       throw ValidationException(
         message: 'Reorder payload must contain the full set of child ids',
         field: field,
+      );
+    }
+  }
+
+  void _validateLessonCompletionXp(int completionXp) {
+    if (completionXp < 0) {
+      throw ValidationException(
+        message: 'Lesson completion XP must be non-negative',
+        field: 'completionXp',
       );
     }
   }

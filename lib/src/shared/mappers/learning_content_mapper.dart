@@ -61,6 +61,7 @@ extension LessonMapper on Lesson {
       imageUrls: imageUrls,
       orderIndex: orderIndex,
       durationMinutes: durationMinutes,
+      completionXp: completionXp,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );

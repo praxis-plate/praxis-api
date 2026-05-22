@@ -22,6 +22,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.imageUrls,
     required this.orderIndex,
     required this.durationMinutes,
+    required this.completionXp,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -35,6 +36,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _LessonImpl;
@@ -49,6 +51,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       imageUrls: jsonSerialization['imageUrls'] as String?,
       orderIndex: jsonSerialization['orderIndex'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
+      completionXp: jsonSerialization['completionXp'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -79,6 +82,8 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   int durationMinutes;
 
+  int completionXp;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -98,6 +103,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? imageUrls,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -113,6 +119,7 @@ abstract class Lesson implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (imageUrls != null) 'imageUrls': imageUrls,
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
+      'completionXp': completionXp,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -165,6 +172,7 @@ class _LessonImpl extends Lesson {
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -176,6 +184,7 @@ class _LessonImpl extends Lesson {
          imageUrls: imageUrls,
          orderIndex: orderIndex,
          durationMinutes: durationMinutes,
+         completionXp: completionXp,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -193,6 +202,7 @@ class _LessonImpl extends Lesson {
     Object? imageUrls = _Undefined,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -205,6 +215,7 @@ class _LessonImpl extends Lesson {
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
       orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
+      completionXp: completionXp ?? this.completionXp,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -246,6 +257,11 @@ class LessonUpdateTable extends _i1.UpdateTable<LessonTable> {
 
   _i1.ColumnValue<int, int> durationMinutes(int value) => _i1.ColumnValue(
     table.durationMinutes,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> completionXp(int value) => _i1.ColumnValue(
+    table.completionXp,
     value,
   );
 
@@ -293,6 +309,10 @@ class LessonTable extends _i1.Table<int?> {
       'durationMinutes',
       this,
     );
+    completionXp = _i1.ColumnInt(
+      'completionXp',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -319,6 +339,8 @@ class LessonTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt durationMinutes;
 
+  late final _i1.ColumnInt completionXp;
+
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -333,6 +355,7 @@ class LessonTable extends _i1.Table<int?> {
     imageUrls,
     orderIndex,
     durationMinutes,
+    completionXp,
     createdAt,
     updatedAt,
   ];

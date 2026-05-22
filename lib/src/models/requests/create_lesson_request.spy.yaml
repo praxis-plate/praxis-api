@@ -7,3 +7,4 @@ fields:
   videoUrl: String?
   imageUrls: String?
   durationMinutes: int?
+  completionXp: int?

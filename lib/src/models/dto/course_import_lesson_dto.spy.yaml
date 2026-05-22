@@ -5,4 +5,5 @@ fields:
   contentDocument: LessonContentDocumentDto?
   videoUrl: String?
   imageUrls: List<String>?
+  completionXp: int?
   tasks: List<CourseImportTaskDto>?

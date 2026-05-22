@@ -67,6 +67,7 @@ class LessonDataSource {
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
     required DateTime updatedAt,
     Transaction? transaction,
@@ -79,6 +80,7 @@ class LessonDataSource {
       imageUrls: imageUrls,
       orderIndex: orderIndex,
       durationMinutes: durationMinutes,
+      completionXp: completionXp,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );

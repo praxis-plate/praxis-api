@@ -7,6 +7,16 @@ import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
 import 'package:serverpod/serverpod.dart';
 
+class LessonCompletionMarkResult {
+  final Lesson lesson;
+  final bool isFirstCompletion;
+
+  const LessonCompletionMarkResult({
+    required this.lesson,
+    required this.isFirstCompletion,
+  });
+}
+
 class LessonService {
   final CourseDataSource _courseDataSource;
   final LessonDataSource _lessonDataSource;
@@ -99,7 +109,36 @@ class LessonService {
     return lesson.toLessonDto();
   }
 
-  Future<void> markComplete(
+  Future<List<LessonProgress>> getProgressByCourseId(
+    Session session, {
+    required UuidValue authUserId,
+    required int courseId,
+  }) async {
+    final course = await _courseDataSource.findPublishedById(session, courseId);
+    if (course == null) {
+      throw NotFoundException(message: 'Course not found');
+    }
+
+    final modules = await _moduleDataSource.listByCourseId(session, courseId);
+    if (modules.isEmpty) {
+      return [];
+    }
+
+    final moduleIds = modules.map((module) => module.id!).toList();
+    final lessons = await _lessonDataSource.listByModuleIds(session, moduleIds);
+    if (lessons.isEmpty) {
+      return [];
+    }
+
+    final lessonIds = lessons.map((lesson) => lesson.id!).toList();
+    return _lessonProgressDataSource.listByAuthUserIdAndLessonIds(
+      session,
+      authUserId,
+      lessonIds,
+    );
+  }
+
+  Future<LessonCompletionMarkResult> markComplete(
     Session session, {
     required UuidValue authUserId,
     required int lessonId,
@@ -151,7 +190,10 @@ class LessonService {
             timeSpentSeconds: timeSpentSeconds,
             transaction: transaction,
           );
-          return;
+          return LessonCompletionMarkResult(
+            lesson: lesson,
+            isFirstCompletion: !existing.isCompleted,
+          );
         }
 
         await _lessonProgressDataSource.insert(
@@ -162,6 +204,10 @@ class LessonService {
           completedAt: DateTime.now(),
           timeSpentSeconds: timeSpentSeconds,
           transaction: transaction,
+        );
+        return LessonCompletionMarkResult(
+          lesson: lesson,
+          isFirstCompletion: true,
         );
       },
       transaction: transaction,

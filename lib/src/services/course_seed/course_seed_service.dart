@@ -86,6 +86,7 @@ class CourseSeedService {
             imageUrls: lessonSeed.imageUrls,
             orderIndex: lessonSeed.orderIndex,
             durationMinutes: lessonSeed.durationMinutes,
+            completionXp: 0,
             createdAt: now,
             updatedAt: now,
           );

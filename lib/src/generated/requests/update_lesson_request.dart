@@ -24,6 +24,7 @@ abstract class UpdateLessonRequest
     this.videoUrl,
     this.imageUrls,
     required this.durationMinutes,
+    this.completionXp,
   });
 
   factory UpdateLessonRequest({
@@ -34,6 +35,7 @@ abstract class UpdateLessonRequest
     String? videoUrl,
     String? imageUrls,
     required int durationMinutes,
+    int? completionXp,
   }) = _UpdateLessonRequestImpl;
 
   factory UpdateLessonRequest.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -49,6 +51,7 @@ abstract class UpdateLessonRequest
       videoUrl: jsonSerialization['videoUrl'] as String?,
       imageUrls: jsonSerialization['imageUrls'] as String?,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
+      completionXp: jsonSerialization['completionXp'] as int?,
     );
   }
 
@@ -66,6 +69,8 @@ abstract class UpdateLessonRequest
 
   int durationMinutes;
 
+  int? completionXp;
+
   /// Returns a shallow copy of this [UpdateLessonRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -77,6 +82,7 @@ abstract class UpdateLessonRequest
     String? videoUrl,
     String? imageUrls,
     int? durationMinutes,
+    int? completionXp,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -89,6 +95,7 @@ abstract class UpdateLessonRequest
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       'durationMinutes': durationMinutes,
+      if (completionXp != null) 'completionXp': completionXp,
     };
   }
 
@@ -104,6 +111,7 @@ abstract class UpdateLessonRequest
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       'durationMinutes': durationMinutes,
+      if (completionXp != null) 'completionXp': completionXp,
     };
   }
 
@@ -124,6 +132,7 @@ class _UpdateLessonRequestImpl extends UpdateLessonRequest {
     String? videoUrl,
     String? imageUrls,
     required int durationMinutes,
+    int? completionXp,
   }) : super._(
          id: id,
          title: title,
@@ -132,6 +141,7 @@ class _UpdateLessonRequestImpl extends UpdateLessonRequest {
          videoUrl: videoUrl,
          imageUrls: imageUrls,
          durationMinutes: durationMinutes,
+         completionXp: completionXp,
        );
 
   /// Returns a shallow copy of this [UpdateLessonRequest]
@@ -146,6 +156,7 @@ class _UpdateLessonRequestImpl extends UpdateLessonRequest {
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
     int? durationMinutes,
+    Object? completionXp = _Undefined,
   }) {
     return UpdateLessonRequest(
       id: id ?? this.id,
@@ -157,6 +168,7 @@ class _UpdateLessonRequestImpl extends UpdateLessonRequest {
       videoUrl: videoUrl is String? ? videoUrl : this.videoUrl,
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
       durationMinutes: durationMinutes ?? this.durationMinutes,
+      completionXp: completionXp is int? ? completionXp : this.completionXp,
     );
   }
 }

@@ -17,8 +17,8 @@ class MarkLessonCompleteUseCase {
     required UuidValue authUserId,
     required int lessonId,
     int timeSpentSeconds = 0,
-  }) {
-    return _transactionRunner.run(
+  }) async {
+    await _transactionRunner.run(
       session,
       (transaction) => _lessonService.markComplete(
         session,

@@ -26,6 +26,7 @@ abstract class LessonDto
     this.imageUrls,
     required this.orderIndex,
     required this.durationMinutes,
+    required this.completionXp,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -40,6 +41,7 @@ abstract class LessonDto
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _LessonDtoImpl;
@@ -59,6 +61,7 @@ abstract class LessonDto
       imageUrls: jsonSerialization['imageUrls'] as String?,
       orderIndex: jsonSerialization['orderIndex'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
+      completionXp: jsonSerialization['completionXp'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -86,6 +89,8 @@ abstract class LessonDto
 
   int durationMinutes;
 
+  int completionXp;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -103,6 +108,7 @@ abstract class LessonDto
     String? imageUrls,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
     DateTime? updatedAt,
   });
@@ -119,6 +125,7 @@ abstract class LessonDto
       if (imageUrls != null) 'imageUrls': imageUrls,
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
+      'completionXp': completionXp,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -138,6 +145,7 @@ abstract class LessonDto
       if (imageUrls != null) 'imageUrls': imageUrls,
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
+      'completionXp': completionXp,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
     };
@@ -162,6 +170,7 @@ class _LessonDtoImpl extends LessonDto {
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
@@ -174,6 +183,7 @@ class _LessonDtoImpl extends LessonDto {
          imageUrls: imageUrls,
          orderIndex: orderIndex,
          durationMinutes: durationMinutes,
+         completionXp: completionXp,
          createdAt: createdAt,
          updatedAt: updatedAt,
        );
@@ -192,6 +202,7 @@ class _LessonDtoImpl extends LessonDto {
     Object? imageUrls = _Undefined,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -207,6 +218,7 @@ class _LessonDtoImpl extends LessonDto {
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
       orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
+      completionXp: completionXp ?? this.completionXp,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

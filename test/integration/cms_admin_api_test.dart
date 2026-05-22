@@ -624,10 +624,12 @@ void main() {
             contentText: 'legacy fallback',
             contentDocument: document,
             durationMinutes: 999,
+            completionXp: 20,
           ),
         );
 
         expect(lesson.durationMinutes, 3);
+        expect(lesson.completionXp, 20);
         expect(lesson.contentDocument?.blocks, hasLength(2));
         expect(lesson.contentDocument?.blocks.last.text, longText);
 
@@ -654,6 +656,38 @@ void main() {
         );
         expect(updatedCourse.author, email);
         expect(updatedCourse.durationMinutes, 3);
+
+        final updatedLesson = await endpoints.lessonAdmin.update(
+          authorSession,
+          UpdateLessonRequest(
+            id: lesson.id,
+            title: lesson.title,
+            contentText: lesson.contentText,
+            contentDocument: lesson.contentDocument,
+            videoUrl: lesson.videoUrl,
+            imageUrls: lesson.imageUrls,
+            durationMinutes: lesson.durationMinutes,
+            completionXp: 35,
+          ),
+        );
+        expect(updatedLesson.completionXp, 35);
+
+        await expectLater(
+          endpoints.lessonAdmin.update(
+            authorSession,
+            UpdateLessonRequest(
+              id: lesson.id,
+              title: lesson.title,
+              contentText: lesson.contentText,
+              contentDocument: lesson.contentDocument,
+              videoUrl: lesson.videoUrl,
+              imageUrls: lesson.imageUrls,
+              durationMinutes: lesson.durationMinutes,
+              completionXp: -1,
+            ),
+          ),
+          throwsA(isA<ValidationException>()),
+        );
       },
     );
 

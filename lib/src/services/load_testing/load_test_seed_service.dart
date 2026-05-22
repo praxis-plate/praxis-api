@@ -188,6 +188,7 @@ class LoadTestSeedService {
           orderIndex: lessonIndex - 1,
           durationMinutes:
               10 + ((courseIndex + moduleIndex + lessonIndex) % 4) * 5,
+          completionXp: 0,
           createdAt: now,
           updatedAt: now,
           transaction: transaction,
