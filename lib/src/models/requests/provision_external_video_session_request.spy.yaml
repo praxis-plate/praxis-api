@@ -1,0 +1,8 @@
+class: ProvisionExternalVideoSessionRequest
+fields:
+  provider: ExternalIntegrationProvider
+  baseUrl: String?
+  accessToken: String
+  accountIdentifier: String?
+  lessonId: int
+  sessionTitle: String?

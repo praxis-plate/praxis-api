@@ -1,0 +1,5 @@
+class: CmsTaskOptionInputDto
+fields:
+  id: int?
+  optionText: String
+  isCorrect: bool

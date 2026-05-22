@@ -14,6 +14,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum TaskType implements _i1.SerializableModel {
   multipleChoice,
+  multipleAnswer,
   codeCompletion,
   matching,
   textInput;
@@ -22,6 +23,8 @@ enum TaskType implements _i1.SerializableModel {
     switch (name) {
       case 'multipleChoice':
         return TaskType.multipleChoice;
+      case 'multipleAnswer':
+        return TaskType.multipleAnswer;
       case 'codeCompletion':
         return TaskType.codeCompletion;
       case 'matching':

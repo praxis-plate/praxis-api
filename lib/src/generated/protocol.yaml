@@ -1,17 +1,46 @@
+accessControl:
+  - getMyAccess:
+  - getCmsAccess:
+  - getAdminAccess:
+  - getUserAccess:
+  - assignRole:
+  - revokeRole:
 achievement:
   - getAll:
   - getUserAchievements:
   - unlock:
   - isUnlocked:
+adminGovernance:
+  - listUsers:
+  - assignRole:
+  - revokeRole:
+  - listPublicationQueue:
+  - listPublishedCourses:
+  - approvePublication:
+  - unpublishCourse:
 ai:
   - generateHint:
   - generateExplanation:
+cmsMediaAdmin:
+  - uploadImage:
+courseAdmin:
+  - list:
+  - create:
+  - importStructured:
+  - update:
+  - delete:
+  - publish:
+  - unpublish:
+courseAnalyticsAdmin:
+  - getDashboard:
 course:
   - get:
   - getById:
   - getEnrolled:
   - enroll:
   - unenroll:
+  - getRecommendations:
+  - getAdaptiveLearningPath:
   - getTableOfContents:
 emailIdp:
   - login:
@@ -21,18 +50,40 @@ emailIdp:
   - startPasswordReset:
   - verifyPasswordResetCode:
   - finishPasswordReset:
+externalIntegrationAdmin:
+  - listProviders:
+  - syncCourse:
+  - provisionLessonVideoSession:
 health:
   - ping:
 jwtRefresh:
   - refreshAccessToken:
+lessonAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
 lesson:
   - getByCourseId:
   - getByModuleId:
   - getById:
+  - getProgressByCourseId:
   - markComplete:
   - complete:
+moduleAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
 module:
   - get:
+taskAdmin:
+  - list:
+  - create:
+  - update:
+  - reorder:
+  - upsertOptions:
+  - upsertTestCases:
 task:
   - getById:
   - getByLessonId:

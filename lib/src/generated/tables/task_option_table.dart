@@ -20,6 +20,7 @@ abstract class TaskOption
     required this.optionText,
     required this.isCorrect,
     required this.orderIndex,
+    required this.updatedAt,
   });
 
   factory TaskOption({
@@ -28,6 +29,7 @@ abstract class TaskOption
     required String optionText,
     required bool isCorrect,
     required int orderIndex,
+    required DateTime updatedAt,
   }) = _TaskOptionImpl;
 
   factory TaskOption.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -37,6 +39,9 @@ abstract class TaskOption
       optionText: jsonSerialization['optionText'] as String,
       isCorrect: jsonSerialization['isCorrect'] as bool,
       orderIndex: jsonSerialization['orderIndex'] as int,
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
     );
   }
 
@@ -55,6 +60,8 @@ abstract class TaskOption
 
   int orderIndex;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -67,6 +74,7 @@ abstract class TaskOption
     String? optionText,
     bool? isCorrect,
     int? orderIndex,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -77,6 +85,7 @@ abstract class TaskOption
       'optionText': optionText,
       'isCorrect': isCorrect,
       'orderIndex': orderIndex,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -124,12 +133,14 @@ class _TaskOptionImpl extends TaskOption {
     required String optionText,
     required bool isCorrect,
     required int orderIndex,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          taskId: taskId,
          optionText: optionText,
          isCorrect: isCorrect,
          orderIndex: orderIndex,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [TaskOption]
@@ -142,6 +153,7 @@ class _TaskOptionImpl extends TaskOption {
     String? optionText,
     bool? isCorrect,
     int? orderIndex,
+    DateTime? updatedAt,
   }) {
     return TaskOption(
       id: id is int? ? id : this.id,
@@ -149,6 +161,7 @@ class _TaskOptionImpl extends TaskOption {
       optionText: optionText ?? this.optionText,
       isCorrect: isCorrect ?? this.isCorrect,
       orderIndex: orderIndex ?? this.orderIndex,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -175,6 +188,12 @@ class TaskOptionUpdateTable extends _i1.UpdateTable<TaskOptionTable> {
     table.orderIndex,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class TaskOptionTable extends _i1.Table<int?> {
@@ -196,6 +215,10 @@ class TaskOptionTable extends _i1.Table<int?> {
       'orderIndex',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
 
   late final TaskOptionUpdateTable updateTable;
@@ -208,6 +231,8 @@ class TaskOptionTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt orderIndex;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -215,6 +240,7 @@ class TaskOptionTable extends _i1.Table<int?> {
     optionText,
     isCorrect,
     orderIndex,
+    updatedAt,
   ];
 }
 

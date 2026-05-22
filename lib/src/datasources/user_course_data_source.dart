@@ -4,6 +4,38 @@ import 'package:serverpod/serverpod.dart';
 class UserCourseDataSource {
   const UserCourseDataSource();
 
+  Future<List<UserCourse>> listByCourseId(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) {
+    return UserCourse.db.find(
+      session,
+      where: (t) => t.courseId.equals(courseId),
+      orderBy: (t) => t.enrolledAt,
+      orderDescending: true,
+      transaction: transaction,
+    );
+  }
+
+  Future<List<UserCourse>> listByCourseIds(
+    Session session,
+    List<int> courseIds, {
+    Transaction? transaction,
+  }) {
+    if (courseIds.isEmpty) {
+      return Future.value([]);
+    }
+
+    return UserCourse.db.find(
+      session,
+      where: (t) => t.courseId.inSet(courseIds.toSet()),
+      orderBy: (t) => t.enrolledAt,
+      orderDescending: true,
+      transaction: transaction,
+    );
+  }
+
   Future<List<UserCourse>> listByAuthUserId(
     Session session,
     UuidValue authUserId,

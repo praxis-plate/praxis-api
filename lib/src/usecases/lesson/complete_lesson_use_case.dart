@@ -35,7 +35,7 @@ class CompleteLessonUseCase {
     return _transactionRunner.run(
       session,
       (transaction) async {
-        await _lessonService.markComplete(
+        final completion = await _lessonService.markComplete(
           session,
           authUserId: authUserId,
           lessonId: request.lessonId,
@@ -49,7 +49,11 @@ class CompleteLessonUseCase {
           transaction: transaction,
         );
 
-        final totalXpWithBonus = request.totalXpEarned + request.bonusXp;
+        final lessonCompletionXp = completion.isFirstCompletion
+            ? completion.lesson.completionXp
+            : 0;
+        final totalXpWithBonus =
+            request.totalXpEarned + request.bonusXp + lessonCompletionXp;
         await _userStatisticsService.addExperiencePoints(
           session,
           authUserId: authUserId,
@@ -87,6 +91,7 @@ class CompleteLessonUseCase {
           lessonId: request.lessonId,
           totalXpEarned: request.totalXpEarned,
           bonusXp: request.bonusXp,
+          lessonCompletionXp: lessonCompletionXp,
           totalXpWithBonus: totalXpWithBonus,
           timeSpentSeconds: request.timeSpentSeconds,
           totalTasks: request.totalTasks,

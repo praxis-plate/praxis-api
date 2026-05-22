@@ -1,0 +1,10 @@
+class: CreateLessonRequest
+fields:
+  moduleId: int
+  title: String
+  contentText: String
+  contentDocument: LessonContentDocumentDto?
+  videoUrl: String?
+  imageUrls: String?
+  durationMinutes: int?
+  completionXp: int?

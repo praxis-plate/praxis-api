@@ -1,0 +1,7 @@
+class: LessonProgressDto
+fields:
+  id: int
+  lessonId: int
+  isCompleted: bool
+  completedAt: DateTime?
+  timeSpentSeconds: int

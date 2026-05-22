@@ -1,3 +1,7 @@
+import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/lesson_data_source.dart';
+import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/task_answer_attempt_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
@@ -8,26 +12,59 @@ import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
 class TaskService {
+  final CourseDataSource _courseDataSource;
+  final LessonDataSource _lessonDataSource;
+  final ModuleDataSource _moduleDataSource;
+  final TaskAnswerAttemptDataSource _taskAnswerAttemptDataSource;
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
   final TaskAnswerValidationService _validationService;
 
   TaskService({
+    required CourseDataSource courseDataSource,
+    required LessonDataSource lessonDataSource,
+    required ModuleDataSource moduleDataSource,
+    required TaskAnswerAttemptDataSource taskAnswerAttemptDataSource,
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
     required TaskAnswerValidationService validationService,
-  }) : _taskDataSource = taskDataSource,
+  }) : _courseDataSource = courseDataSource,
+       _lessonDataSource = lessonDataSource,
+       _moduleDataSource = moduleDataSource,
+       _taskAnswerAttemptDataSource = taskAnswerAttemptDataSource,
+       _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
        _validationService = validationService;
 
-  TaskAnswerResult validateAnswer(
+  Future<TaskAnswerResult> validateAnswer(
     TaskDto task,
     String userAnswer,
   ) {
     return _validationService.validateAnswer(task, userAnswer);
+  }
+
+  Future<TaskAnswerResult> answerTask(
+    Session session,
+    int taskId,
+    String userAnswer,
+  ) async {
+    final task = await getTaskById(session, taskId);
+    final result = await _validationService.validateAnswer(task, userAnswer);
+
+    await _taskAnswerAttemptDataSource.insert(
+      session,
+      authUserId: _extractAuthUserId(session),
+      taskId: task.id,
+      userAnswer: _normalizeUserAnswer(userAnswer),
+      isCorrect: result.isCorrect,
+      feedbackType: result.feedbackType.value,
+      submittedAt: DateTime.now(),
+    );
+
+    return result;
   }
 
   Future<TaskDto> getTaskById(
@@ -38,6 +75,7 @@ class TaskService {
     if (task == null) {
       throw NotFoundException(message: 'Task not found');
     }
+    await _ensurePublishedTask(session, task);
 
     final options = await _taskOptionDataSource.listByTaskId(
       session,
@@ -71,7 +109,49 @@ class TaskService {
       return [];
     }
 
-    final tasks = await _taskDataSource.listByLessonIds(session, lessonIds);
+    final lessons = await _lessonDataSource.listByIds(session, lessonIds);
+    if (lessons.isEmpty) {
+      return [];
+    }
+
+    final moduleIds = lessons.map((lesson) => lesson.moduleId).toSet().toList();
+    final modules = await _moduleDataSource.listByIds(session, moduleIds);
+    if (modules.isEmpty) {
+      return [];
+    }
+
+    final courseIds = modules.map((module) => module.courseId).toSet().toList();
+    final courses = await _courseDataSource.listPublishedByIds(
+      session,
+      courseIds,
+    );
+    if (courses.isEmpty) {
+      return [];
+    }
+
+    final publishedCourseIds = courses.map((course) => course.id!).toSet();
+    final moduleByCourseId = <int, Module>{};
+    for (final module in modules) {
+      if (publishedCourseIds.contains(module.courseId)) {
+        moduleByCourseId[module.id!] = module;
+      }
+    }
+
+    final publishedLessonIds = <int>[];
+    for (final lesson in lessons) {
+      if (moduleByCourseId.containsKey(lesson.moduleId)) {
+        publishedLessonIds.add(lesson.id!);
+      }
+    }
+
+    if (publishedLessonIds.isEmpty) {
+      return [];
+    }
+
+    final tasks = await _taskDataSource.listByLessonIds(
+      session,
+      publishedLessonIds,
+    );
     if (tasks.isEmpty) {
       return [];
     }
@@ -115,5 +195,49 @@ class TaskService {
           ),
         )
         .toList();
+  }
+
+  Future<void> _ensurePublishedTask(Session session, Task task) async {
+    final lesson = await _lessonDataSource.findById(session, task.lessonId);
+    if (lesson == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+    final module = await _moduleDataSource.findById(session, lesson.moduleId);
+    if (module == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+    final course = await _courseDataSource.findPublishedById(
+      session,
+      module.courseId,
+    );
+    if (course == null) {
+      throw NotFoundException(message: 'Task not found');
+    }
+  }
+
+  UuidValue? _extractAuthUserId(Session session) {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      return null;
+    }
+
+    try {
+      return UuidValue.fromString(authInfo.userIdentifier);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _normalizeUserAnswer(String userAnswer) {
+    final normalized = userAnswer.trim();
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    if (normalized.length <= 500) {
+      return normalized;
+    }
+
+    return normalized.substring(0, 500);
   }
 }

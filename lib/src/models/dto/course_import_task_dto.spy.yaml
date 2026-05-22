@@ -1,0 +1,14 @@
+class: CourseImportTaskDto
+fields:
+  taskType: TaskType
+  questionText: String
+  correctAnswer: String?
+  codeTemplate: String?
+  programmingLanguage: String?
+  difficultyLevel: int?
+  xpValue: int?
+  fallbackHint: String?
+  fallbackExplanation: String?
+  topic: String?
+  options: List<CmsTaskOptionInputDto>?
+  testCases: List<CmsTaskTestCaseInputDto>?

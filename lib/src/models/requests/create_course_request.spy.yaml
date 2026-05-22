@@ -1,0 +1,12 @@
+class: CreateCourseRequest
+fields:
+  title: String
+  description: String
+  author: String
+  category: String
+  difficultyLevel: String?
+  priceInCoins: int?
+  durationMinutes: int?
+  rating: double?
+  thumbnailUrl: String?
+  coverImage: String?

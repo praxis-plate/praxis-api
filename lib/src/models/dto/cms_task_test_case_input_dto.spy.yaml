@@ -1,0 +1,6 @@
+class: CmsTaskTestCaseInputDto
+fields:
+  id: int?
+  input: String
+  expectedOutput: String
+  isHidden: bool

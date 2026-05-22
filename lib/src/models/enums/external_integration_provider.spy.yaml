@@ -1,0 +1,6 @@
+enum: ExternalIntegrationProvider
+values:
+  - moodle
+  - canvas
+  - zoom
+  - googleMeet

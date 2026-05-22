@@ -1,0 +1,4 @@
+class: ReorderLessonsRequest
+fields:
+  moduleId: int
+  orderedLessonIds: List<int>

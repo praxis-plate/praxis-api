@@ -455,14 +455,7 @@ class TaskSeedData {
           taskType: taskType,
           questionText: 'Question ${i + 1} about $topic',
           correctAnswer: _getCorrectAnswer(taskType, i),
-          options: taskType == TaskType.multipleChoice
-              ? [
-                  _getCorrectAnswer(taskType, i),
-                  'Option B',
-                  'Option C',
-                  'Option D',
-                ]
-              : null,
+          options: _buildOptions(taskType, i),
           codeTemplate: taskType == TaskType.codeCompletion
               ? '// Complete this code\nvar result = ___;'
               : null,
@@ -484,6 +477,11 @@ class TaskSeedData {
   static String _getCorrectAnswer(TaskType taskType, int index) {
     if (taskType == TaskType.multipleChoice) {
       return 'Correct answer ${index + 1}';
+    } else if (taskType == TaskType.multipleAnswer) {
+      return jsonEncode([
+        'Correct answer ${index + 1}',
+        'Correct alternative ${index + 1}',
+      ]);
     } else if (taskType == TaskType.codeCompletion) {
       return 'result';
     } else if (taskType == TaskType.matching) {
@@ -491,5 +489,26 @@ class TaskSeedData {
     } else {
       return 'Answer ${index + 1}';
     }
+  }
+
+  static List<String>? _buildOptions(TaskType taskType, int index) {
+    if (taskType == TaskType.multipleChoice) {
+      return [
+        _getCorrectAnswer(taskType, index),
+        'Option B',
+        'Option C',
+        'Option D',
+      ];
+    }
+    if (taskType == TaskType.multipleAnswer) {
+      return [
+        'Correct answer ${index + 1}',
+        'Correct alternative ${index + 1}',
+        'Wrong option A ${index + 1}',
+        'Wrong option B ${index + 1}',
+      ];
+    }
+
+    return null;
   }
 }

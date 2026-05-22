@@ -1,0 +1,15 @@
+class: CourseAnalyticsSummaryDto
+fields:
+  courseId: int
+  title: String
+  contentStatus: ContentStatus
+  enrollmentsCount: int
+  completedEnrollmentsCount: int
+  completionRate: double
+  averageLessonsCompleted: double
+  averageProgressPercentage: double
+  averageCompletionTimeSeconds: int
+  totalLessons: int
+  totalTasks: int
+  totalAttempts: int
+  incorrectAttempts: int

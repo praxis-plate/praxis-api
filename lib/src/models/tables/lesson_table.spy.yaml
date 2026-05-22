@@ -9,7 +9,9 @@ fields:
   imageUrls: String?
   orderIndex: int
   durationMinutes: int
+  completionXp: int
   createdAt: DateTime
+  updatedAt: DateTime
 indexes:
   lesson_module_id_idx:
     fields: moduleId

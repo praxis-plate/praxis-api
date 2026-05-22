@@ -4,3 +4,6 @@ fields:
   feedbackType: String
   feedbackMessage: String?
   xpEarned: int?
+  passedTestCases: int?
+  totalTestCases: int?
+  testCaseResults: List<TaskAnswerTestCaseResultDto>?

@@ -1,0 +1,9 @@
+class: ExternalIntegrationProviderDto
+fields:
+  provider: ExternalIntegrationProvider
+  kind: ExternalIntegrationKind
+  displayName: String
+  authScheme: ExternalIntegrationAuthScheme
+  requiresBaseUrl: bool
+  supportsCourseSync: bool
+  supportsLessonVideoSession: bool

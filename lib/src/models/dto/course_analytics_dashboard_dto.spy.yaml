@@ -1,0 +1,6 @@
+class: CourseAnalyticsDashboardDto
+fields:
+  summary: CourseAnalyticsSummaryDto
+  lessons: List<CourseAnalyticsLessonDto>
+  tasks: List<CourseAnalyticsTaskDto>
+  commonWrongAnswers: List<CourseAnalyticsWrongAnswerDto>

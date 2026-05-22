@@ -1,0 +1,4 @@
+class: ReorderTasksRequest
+fields:
+  lessonId: int
+  orderedTaskIds: List<int>

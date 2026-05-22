@@ -34,6 +34,18 @@ class LessonEndpoint extends Endpoint {
     );
   }
 
+  Future<List<LessonProgressDto>> getProgressByCourseId(
+    Session session,
+    int courseId,
+  ) {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return session.server.useCases.getCourseLessonProgressUseCase.execute(
+      session,
+      authUserId: authUserId,
+      courseId: courseId,
+    );
+  }
+
   Future<void> markComplete(
     Session session,
     int lessonId, {

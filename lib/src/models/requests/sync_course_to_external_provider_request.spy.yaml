@@ -1,0 +1,7 @@
+class: SyncCourseToExternalProviderRequest
+fields:
+  provider: ExternalIntegrationProvider
+  baseUrl: String
+  accessToken: String
+  accountIdentifier: String?
+  courseId: int

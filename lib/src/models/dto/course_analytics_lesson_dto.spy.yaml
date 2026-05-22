@@ -1,0 +1,12 @@
+class: CourseAnalyticsLessonDto
+fields:
+  lessonId: int
+  moduleId: int
+  moduleTitle: String
+  title: String
+  orderIndex: int
+  startedLearners: int
+  completedLearners: int
+  completionRate: double
+  averageTimeSpentSeconds: int
+  dropOffCount: int

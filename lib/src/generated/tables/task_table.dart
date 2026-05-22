@@ -31,6 +31,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.fallbackExplanation,
     required this.topic,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Task({
@@ -50,6 +51,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _TaskImpl;
 
   factory Task.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -73,6 +75,9 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       topic: jsonSerialization['topic'] as String,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -114,6 +119,8 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -137,6 +144,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? fallbackExplanation,
     String? topic,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -160,6 +168,7 @@ abstract class Task implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
         'fallbackExplanation': fallbackExplanation,
       'topic': topic,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -218,6 +227,7 @@ class _TaskImpl extends Task {
     String? fallbackExplanation,
     required String topic,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          lessonId: lessonId,
@@ -235,6 +245,7 @@ class _TaskImpl extends Task {
          fallbackExplanation: fallbackExplanation,
          topic: topic,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Task]
@@ -258,6 +269,7 @@ class _TaskImpl extends Task {
     Object? fallbackExplanation = _Undefined,
     String? topic,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Task(
       id: id is int? ? id : this.id,
@@ -282,6 +294,7 @@ class _TaskImpl extends Task {
           : this.fallbackExplanation,
       topic: topic ?? this.topic,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -371,6 +384,12 @@ class TaskUpdateTable extends _i1.UpdateTable<TaskTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class TaskTable extends _i1.Table<int?> {
@@ -437,6 +456,10 @@ class TaskTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
 
   late final TaskUpdateTable updateTable;
@@ -471,6 +494,8 @@ class TaskTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -489,6 +514,7 @@ class TaskTable extends _i1.Table<int?> {
     fallbackExplanation,
     topic,
     createdAt,
+    updatedAt,
   ];
 }
 

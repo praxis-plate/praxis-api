@@ -1,0 +1,10 @@
+class: UpdateLessonRequest
+fields:
+  id: int
+  title: String
+  contentText: String
+  contentDocument: LessonContentDocumentDto?
+  videoUrl: String?
+  imageUrls: String?
+  durationMinutes: int
+  completionXp: int?

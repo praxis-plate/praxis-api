@@ -5,11 +5,15 @@ fields:
   description: String
   author: String
   category: String
+  difficultyLevel: String
   priceInCoins: int
   durationMinutes: int
   rating: double
   thumbnailUrl: String?
   coverImage: String?
   createdAt: DateTime
+  updatedAt: DateTime
+  contentStatus: ContentStatus
+  publishedAt: DateTime?
   totalLessons: int
   totalTasks: int

@@ -1,4 +1,7 @@
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
+
+const _lessonContentDocumentCodec = LessonContentDocumentCodec();
 
 extension CourseMapper on Course {
   CourseDto toCourseDto({
@@ -12,12 +15,16 @@ extension CourseMapper on Course {
       description: description,
       author: author,
       category: category,
+      difficultyLevel: difficultyLevel,
       priceInCoins: priceInCoins,
       durationMinutes: durationMinutes,
       rating: rating,
       thumbnailUrl: thumbnailUrl,
       coverImage: coverImage,
       createdAt: createdAt,
+      updatedAt: updatedAt,
+      contentStatus: contentStatus,
+      publishedAt: publishedAt,
       totalLessons: totalLessons,
       totalTasks: totalTasks,
     );
@@ -34,6 +41,7 @@ extension ModuleMapper on Module {
       description: description,
       orderIndex: orderIndex,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
@@ -46,11 +54,16 @@ extension LessonMapper on Lesson {
       moduleId: moduleId,
       title: title,
       contentText: contentText,
+      contentDocument: _lessonContentDocumentCodec.decodeFromStorage(
+        contentText,
+      ),
       videoUrl: videoUrl,
       imageUrls: imageUrls,
       orderIndex: orderIndex,
       durationMinutes: durationMinutes,
+      completionXp: completionXp,
       createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
@@ -105,6 +118,7 @@ extension TaskMapper on Task {
       fallbackExplanation: fallbackExplanation,
       topic: topic,
       createdAt: createdAt,
+      updatedAt: updatedAt,
       options: options,
       testCases: testCases,
     );

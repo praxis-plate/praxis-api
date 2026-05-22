@@ -1,0 +1,5 @@
+class: UploadCmsMediaRequest
+fields:
+  fileName: String
+  mimeType: String
+  dataBase64: String

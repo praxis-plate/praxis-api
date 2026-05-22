@@ -6,3 +6,4 @@ fields:
   description: String
   orderIndex: int
   createdAt: DateTime
+  updatedAt: DateTime

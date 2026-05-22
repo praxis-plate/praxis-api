@@ -1,0 +1,20 @@
+class: TaskAnswerAttempt
+serverOnly: true
+table: task_answer_attempt
+fields:
+  authUserId: UuidValue?
+  taskId: int
+  userAnswer: String?
+  isCorrect: bool
+  feedbackType: String
+  submittedAt: DateTime
+indexes:
+  task_answer_attempt_task_id_idx:
+    fields: taskId
+    unique: false
+  task_answer_attempt_auth_user_id_idx:
+    fields: authUserId
+    unique: false
+  task_answer_attempt_task_id_submitted_at_idx:
+    fields: taskId, submittedAt
+    unique: false

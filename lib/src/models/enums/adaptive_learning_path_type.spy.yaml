@@ -1,0 +1,7 @@
+enum: AdaptiveLearningPathType
+serialized: byName
+values:
+  - standard
+  - remedial
+  - accelerated
+  - completed

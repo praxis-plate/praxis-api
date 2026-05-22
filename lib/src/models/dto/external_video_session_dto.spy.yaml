@@ -1,0 +1,11 @@
+class: ExternalVideoSessionDto
+fields:
+  provider: ExternalIntegrationProvider
+  kind: ExternalIntegrationKind
+  lessonId: int
+  sessionTitle: String
+  lessonVideoUrl: String
+  hostUrl: String?
+  meetingCode: String
+  accountIdentifier: String?
+  provisionedAt: DateTime

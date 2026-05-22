@@ -1,0 +1,5 @@
+class: UpdateModuleRequest
+fields:
+  id: int
+  title: String
+  description: String

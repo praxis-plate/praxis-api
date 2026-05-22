@@ -11,6 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../dto/lesson_content_document_dto.dart' as _i2;
+import 'package:praxis_server/src/generated/protocol.dart' as _i3;
 
 abstract class LessonDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -19,11 +21,14 @@ abstract class LessonDto
     required this.moduleId,
     required this.title,
     required this.contentText,
+    this.contentDocument,
     this.videoUrl,
     this.imageUrls,
     required this.orderIndex,
     required this.durationMinutes,
+    required this.completionXp,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory LessonDto({
@@ -31,11 +36,14 @@ abstract class LessonDto
     required int moduleId,
     required String title,
     required String contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _LessonDtoImpl;
 
   factory LessonDto.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -44,12 +52,21 @@ abstract class LessonDto
       moduleId: jsonSerialization['moduleId'] as int,
       title: jsonSerialization['title'] as String,
       contentText: jsonSerialization['contentText'] as String,
+      contentDocument: jsonSerialization['contentDocument'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.LessonContentDocumentDto>(
+              jsonSerialization['contentDocument'],
+            ),
       videoUrl: jsonSerialization['videoUrl'] as String?,
       imageUrls: jsonSerialization['imageUrls'] as String?,
       orderIndex: jsonSerialization['orderIndex'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
+      completionXp: jsonSerialization['completionXp'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -62,6 +79,8 @@ abstract class LessonDto
 
   String contentText;
 
+  _i2.LessonContentDocumentDto? contentDocument;
+
   String? videoUrl;
 
   String? imageUrls;
@@ -70,7 +89,11 @@ abstract class LessonDto
 
   int durationMinutes;
 
+  int completionXp;
+
   DateTime createdAt;
+
+  DateTime updatedAt;
 
   /// Returns a shallow copy of this [LessonDto]
   /// with some or all fields replaced by the given arguments.
@@ -80,11 +103,14 @@ abstract class LessonDto
     int? moduleId,
     String? title,
     String? contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -94,11 +120,14 @@ abstract class LessonDto
       'moduleId': moduleId,
       'title': title,
       'contentText': contentText,
+      if (contentDocument != null) 'contentDocument': contentDocument?.toJson(),
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
+      'completionXp': completionXp,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -110,11 +139,15 @@ abstract class LessonDto
       'moduleId': moduleId,
       'title': title,
       'contentText': contentText,
+      if (contentDocument != null)
+        'contentDocument': contentDocument?.toJsonForProtocol(),
       if (videoUrl != null) 'videoUrl': videoUrl,
       if (imageUrls != null) 'imageUrls': imageUrls,
       'orderIndex': orderIndex,
       'durationMinutes': durationMinutes,
+      'completionXp': completionXp,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -132,21 +165,27 @@ class _LessonDtoImpl extends LessonDto {
     required int moduleId,
     required String title,
     required String contentText,
+    _i2.LessonContentDocumentDto? contentDocument,
     String? videoUrl,
     String? imageUrls,
     required int orderIndex,
     required int durationMinutes,
+    required int completionXp,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          moduleId: moduleId,
          title: title,
          contentText: contentText,
+         contentDocument: contentDocument,
          videoUrl: videoUrl,
          imageUrls: imageUrls,
          orderIndex: orderIndex,
          durationMinutes: durationMinutes,
+         completionXp: completionXp,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [LessonDto]
@@ -158,22 +197,30 @@ class _LessonDtoImpl extends LessonDto {
     int? moduleId,
     String? title,
     String? contentText,
+    Object? contentDocument = _Undefined,
     Object? videoUrl = _Undefined,
     Object? imageUrls = _Undefined,
     int? orderIndex,
     int? durationMinutes,
+    int? completionXp,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return LessonDto(
       id: id ?? this.id,
       moduleId: moduleId ?? this.moduleId,
       title: title ?? this.title,
       contentText: contentText ?? this.contentText,
+      contentDocument: contentDocument is _i2.LessonContentDocumentDto?
+          ? contentDocument
+          : this.contentDocument?.copyWith(),
       videoUrl: videoUrl is String? ? videoUrl : this.videoUrl,
       imageUrls: imageUrls is String? ? imageUrls : this.imageUrls,
       orderIndex: orderIndex ?? this.orderIndex,
       durationMinutes: durationMinutes ?? this.durationMinutes,
+      completionXp: completionXp ?? this.completionXp,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

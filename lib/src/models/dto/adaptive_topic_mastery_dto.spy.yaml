@@ -1,0 +1,10 @@
+class: AdaptiveTopicMasteryDto
+fields:
+  topic: String
+  masteryScore: double
+  accuracyRatio: double
+  completionRatio: double
+  correctAnswers: int
+  totalAttempts: int
+  completedLessons: int
+  totalTopicLessons: int

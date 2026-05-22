@@ -1,0 +1,12 @@
+class: GovernanceUserDto
+fields:
+  authUserId: UuidValue
+  email: String?
+  createdAt: DateTime
+  blocked: bool
+  roles: List<UserRole>
+  scopes: List<String>
+  canAccessLearnerApi: bool
+  canAccessCms: bool
+  canManageContent: bool
+  canManageUsers: bool

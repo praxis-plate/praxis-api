@@ -7,6 +7,7 @@ fields:
   expectedOutput: String
   isHidden: bool
   orderIndex: int
+  updatedAt: DateTime
 indexes:
   task_test_case_task_id_idx:
     fields: taskId

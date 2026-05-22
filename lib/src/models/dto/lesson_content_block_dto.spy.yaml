@@ -1,0 +1,8 @@
+class: LessonContentBlockDto
+fields:
+  type: LessonContentBlockType
+  text: String?
+  level: int?
+  language: String?
+  url: String?
+  caption: String?

@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/content_status.dart' as _i2;
 
 abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Course._({
@@ -19,12 +20,16 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.description,
     required this.author,
     required this.category,
+    required this.difficultyLevel,
     required this.priceInCoins,
     required this.durationMinutes,
     required this.rating,
     this.thumbnailUrl,
     this.coverImage,
     required this.createdAt,
+    required this.updatedAt,
+    required this.contentStatus,
+    this.publishedAt,
   });
 
   factory Course({
@@ -33,12 +38,16 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
   }) = _CourseImpl;
 
   factory Course.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -48,6 +57,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       description: jsonSerialization['description'] as String,
       author: jsonSerialization['author'] as String,
       category: jsonSerialization['category'] as String,
+      difficultyLevel: jsonSerialization['difficultyLevel'] as String,
       priceInCoins: jsonSerialization['priceInCoins'] as int,
       durationMinutes: jsonSerialization['durationMinutes'] as int,
       rating: (jsonSerialization['rating'] as num).toDouble(),
@@ -56,6 +66,17 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
+      contentStatus: _i2.ContentStatus.fromJson(
+        (jsonSerialization['contentStatus'] as String),
+      ),
+      publishedAt: jsonSerialization['publishedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['publishedAt'],
+            ),
     );
   }
 
@@ -74,6 +95,8 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String category;
 
+  String difficultyLevel;
+
   int priceInCoins;
 
   int durationMinutes;
@@ -85,6 +108,12 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   String? coverImage;
 
   DateTime createdAt;
+
+  DateTime updatedAt;
+
+  _i2.ContentStatus contentStatus;
+
+  DateTime? publishedAt;
 
   @override
   _i1.Table<int?> get table => t;
@@ -98,12 +127,16 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    DateTime? publishedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -114,12 +147,16 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'description': description,
       'author': author,
       'category': category,
+      'difficultyLevel': difficultyLevel,
       'priceInCoins': priceInCoins,
       'durationMinutes': durationMinutes,
       'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+      'contentStatus': contentStatus.toJson(),
+      if (publishedAt != null) 'publishedAt': publishedAt?.toJson(),
     };
   }
 
@@ -167,24 +204,32 @@ class _CourseImpl extends Course {
     required String description,
     required String author,
     required String category,
+    required String difficultyLevel,
     required int priceInCoins,
     required int durationMinutes,
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
     required DateTime createdAt,
+    required DateTime updatedAt,
+    required _i2.ContentStatus contentStatus,
+    DateTime? publishedAt,
   }) : super._(
          id: id,
          title: title,
          description: description,
          author: author,
          category: category,
+         difficultyLevel: difficultyLevel,
          priceInCoins: priceInCoins,
          durationMinutes: durationMinutes,
          rating: rating,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
          createdAt: createdAt,
+         updatedAt: updatedAt,
+         contentStatus: contentStatus,
+         publishedAt: publishedAt,
        );
 
   /// Returns a shallow copy of this [Course]
@@ -197,12 +242,16 @@ class _CourseImpl extends Course {
     String? description,
     String? author,
     String? category,
+    String? difficultyLevel,
     int? priceInCoins,
     int? durationMinutes,
     double? rating,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    _i2.ContentStatus? contentStatus,
+    Object? publishedAt = _Undefined,
   }) {
     return Course(
       id: id is int? ? id : this.id,
@@ -210,12 +259,16 @@ class _CourseImpl extends Course {
       description: description ?? this.description,
       author: author ?? this.author,
       category: category ?? this.category,
+      difficultyLevel: difficultyLevel ?? this.difficultyLevel,
       priceInCoins: priceInCoins ?? this.priceInCoins,
       durationMinutes: durationMinutes ?? this.durationMinutes,
       rating: rating ?? this.rating,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      contentStatus: contentStatus ?? this.contentStatus,
+      publishedAt: publishedAt is DateTime? ? publishedAt : this.publishedAt,
     );
   }
 }
@@ -242,6 +295,12 @@ class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
     table.category,
     value,
   );
+
+  _i1.ColumnValue<String, String> difficultyLevel(String value) =>
+      _i1.ColumnValue(
+        table.difficultyLevel,
+        value,
+      );
 
   _i1.ColumnValue<int, int> priceInCoins(int value) => _i1.ColumnValue(
     table.priceInCoins,
@@ -274,6 +333,25 @@ class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
+
+  _i1.ColumnValue<_i2.ContentStatus, _i2.ContentStatus> contentStatus(
+    _i2.ContentStatus value,
+  ) => _i1.ColumnValue(
+    table.contentStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> publishedAt(DateTime? value) =>
+      _i1.ColumnValue(
+        table.publishedAt,
+        value,
+      );
 }
 
 class CourseTable extends _i1.Table<int?> {
@@ -293,6 +371,10 @@ class CourseTable extends _i1.Table<int?> {
     );
     category = _i1.ColumnString(
       'category',
+      this,
+    );
+    difficultyLevel = _i1.ColumnString(
+      'difficultyLevel',
       this,
     );
     priceInCoins = _i1.ColumnInt(
@@ -319,6 +401,19 @@ class CourseTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
+    contentStatus = _i1.ColumnEnum(
+      'contentStatus',
+      this,
+      _i1.EnumSerialization.byName,
+    );
+    publishedAt = _i1.ColumnDateTime(
+      'publishedAt',
+      this,
+    );
   }
 
   late final CourseUpdateTable updateTable;
@@ -330,6 +425,8 @@ class CourseTable extends _i1.Table<int?> {
   late final _i1.ColumnString author;
 
   late final _i1.ColumnString category;
+
+  late final _i1.ColumnString difficultyLevel;
 
   late final _i1.ColumnInt priceInCoins;
 
@@ -343,6 +440,12 @@ class CourseTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnDateTime updatedAt;
+
+  late final _i1.ColumnEnum<_i2.ContentStatus> contentStatus;
+
+  late final _i1.ColumnDateTime publishedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -350,12 +453,16 @@ class CourseTable extends _i1.Table<int?> {
     description,
     author,
     category,
+    difficultyLevel,
     priceInCoins,
     durationMinutes,
     rating,
     thumbnailUrl,
     coverImage,
     createdAt,
+    updatedAt,
+    contentStatus,
+    publishedAt,
   ];
 }
 

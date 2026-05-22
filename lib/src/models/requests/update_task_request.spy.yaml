@@ -1,0 +1,14 @@
+class: UpdateTaskRequest
+fields:
+  id: int
+  taskType: TaskType
+  questionText: String
+  correctAnswer: String
+  optionsJson: String?
+  codeTemplate: String?
+  programmingLanguage: String?
+  difficultyLevel: int
+  xpValue: int
+  fallbackHint: String?
+  fallbackExplanation: String?
+  topic: String

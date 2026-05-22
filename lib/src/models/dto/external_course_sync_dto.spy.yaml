@@ -1,0 +1,14 @@
+class: ExternalCourseSyncDto
+fields:
+  provider: ExternalIntegrationProvider
+  kind: ExternalIntegrationKind
+  courseId: int
+  externalCourseId: String
+  externalCourseUrl: String
+  accountIdentifier: String?
+  contentStatus: ContentStatus
+  exportedModules: int
+  exportedLessons: int
+  exportedTasks: int
+  syncedAt: DateTime
+  summary: String

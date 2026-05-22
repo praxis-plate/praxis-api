@@ -11,6 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../dto/task_answer_test_case_result_dto.dart' as _i2;
+import 'package:praxis_server/src/generated/protocol.dart' as _i3;
 
 abstract class TaskAnswerResultDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -19,6 +21,9 @@ abstract class TaskAnswerResultDto
     required this.feedbackType,
     this.feedbackMessage,
     this.xpEarned,
+    this.passedTestCases,
+    this.totalTestCases,
+    this.testCaseResults,
   });
 
   factory TaskAnswerResultDto({
@@ -26,6 +31,9 @@ abstract class TaskAnswerResultDto
     required String feedbackType,
     String? feedbackMessage,
     int? xpEarned,
+    int? passedTestCases,
+    int? totalTestCases,
+    List<_i2.TaskAnswerTestCaseResultDto>? testCaseResults,
   }) = _TaskAnswerResultDtoImpl;
 
   factory TaskAnswerResultDto.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -34,6 +42,13 @@ abstract class TaskAnswerResultDto
       feedbackType: jsonSerialization['feedbackType'] as String,
       feedbackMessage: jsonSerialization['feedbackMessage'] as String?,
       xpEarned: jsonSerialization['xpEarned'] as int?,
+      passedTestCases: jsonSerialization['passedTestCases'] as int?,
+      totalTestCases: jsonSerialization['totalTestCases'] as int?,
+      testCaseResults: jsonSerialization['testCaseResults'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<_i2.TaskAnswerTestCaseResultDto>>(
+              jsonSerialization['testCaseResults'],
+            ),
     );
   }
 
@@ -45,6 +60,12 @@ abstract class TaskAnswerResultDto
 
   int? xpEarned;
 
+  int? passedTestCases;
+
+  int? totalTestCases;
+
+  List<_i2.TaskAnswerTestCaseResultDto>? testCaseResults;
+
   /// Returns a shallow copy of this [TaskAnswerResultDto]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -53,6 +74,9 @@ abstract class TaskAnswerResultDto
     String? feedbackType,
     String? feedbackMessage,
     int? xpEarned,
+    int? passedTestCases,
+    int? totalTestCases,
+    List<_i2.TaskAnswerTestCaseResultDto>? testCaseResults,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -62,6 +86,12 @@ abstract class TaskAnswerResultDto
       'feedbackType': feedbackType,
       if (feedbackMessage != null) 'feedbackMessage': feedbackMessage,
       if (xpEarned != null) 'xpEarned': xpEarned,
+      if (passedTestCases != null) 'passedTestCases': passedTestCases,
+      if (totalTestCases != null) 'totalTestCases': totalTestCases,
+      if (testCaseResults != null)
+        'testCaseResults': testCaseResults?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
@@ -73,6 +103,12 @@ abstract class TaskAnswerResultDto
       'feedbackType': feedbackType,
       if (feedbackMessage != null) 'feedbackMessage': feedbackMessage,
       if (xpEarned != null) 'xpEarned': xpEarned,
+      if (passedTestCases != null) 'passedTestCases': passedTestCases,
+      if (totalTestCases != null) 'totalTestCases': totalTestCases,
+      if (testCaseResults != null)
+        'testCaseResults': testCaseResults?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
@@ -90,11 +126,17 @@ class _TaskAnswerResultDtoImpl extends TaskAnswerResultDto {
     required String feedbackType,
     String? feedbackMessage,
     int? xpEarned,
+    int? passedTestCases,
+    int? totalTestCases,
+    List<_i2.TaskAnswerTestCaseResultDto>? testCaseResults,
   }) : super._(
          isCorrect: isCorrect,
          feedbackType: feedbackType,
          feedbackMessage: feedbackMessage,
          xpEarned: xpEarned,
+         passedTestCases: passedTestCases,
+         totalTestCases: totalTestCases,
+         testCaseResults: testCaseResults,
        );
 
   /// Returns a shallow copy of this [TaskAnswerResultDto]
@@ -106,6 +148,9 @@ class _TaskAnswerResultDtoImpl extends TaskAnswerResultDto {
     String? feedbackType,
     Object? feedbackMessage = _Undefined,
     Object? xpEarned = _Undefined,
+    Object? passedTestCases = _Undefined,
+    Object? totalTestCases = _Undefined,
+    Object? testCaseResults = _Undefined,
   }) {
     return TaskAnswerResultDto(
       isCorrect: isCorrect ?? this.isCorrect,
@@ -114,6 +159,15 @@ class _TaskAnswerResultDtoImpl extends TaskAnswerResultDto {
           ? feedbackMessage
           : this.feedbackMessage,
       xpEarned: xpEarned is int? ? xpEarned : this.xpEarned,
+      passedTestCases: passedTestCases is int?
+          ? passedTestCases
+          : this.passedTestCases,
+      totalTestCases: totalTestCases is int?
+          ? totalTestCases
+          : this.totalTestCases,
+      testCaseResults: testCaseResults is List<_i2.TaskAnswerTestCaseResultDto>?
+          ? testCaseResults
+          : this.testCaseResults?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

@@ -21,6 +21,7 @@ abstract class TaskTestCase
     required this.expectedOutput,
     required this.isHidden,
     required this.orderIndex,
+    required this.updatedAt,
   });
 
   factory TaskTestCase({
@@ -30,6 +31,7 @@ abstract class TaskTestCase
     required String expectedOutput,
     required bool isHidden,
     required int orderIndex,
+    required DateTime updatedAt,
   }) = _TaskTestCaseImpl;
 
   factory TaskTestCase.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -40,6 +42,9 @@ abstract class TaskTestCase
       expectedOutput: jsonSerialization['expectedOutput'] as String,
       isHidden: jsonSerialization['isHidden'] as bool,
       orderIndex: jsonSerialization['orderIndex'] as int,
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
     );
   }
 
@@ -60,6 +65,8 @@ abstract class TaskTestCase
 
   int orderIndex;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -73,6 +80,7 @@ abstract class TaskTestCase
     String? expectedOutput,
     bool? isHidden,
     int? orderIndex,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -84,6 +92,7 @@ abstract class TaskTestCase
       'expectedOutput': expectedOutput,
       'isHidden': isHidden,
       'orderIndex': orderIndex,
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -132,6 +141,7 @@ class _TaskTestCaseImpl extends TaskTestCase {
     required String expectedOutput,
     required bool isHidden,
     required int orderIndex,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          taskId: taskId,
@@ -139,6 +149,7 @@ class _TaskTestCaseImpl extends TaskTestCase {
          expectedOutput: expectedOutput,
          isHidden: isHidden,
          orderIndex: orderIndex,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [TaskTestCase]
@@ -152,6 +163,7 @@ class _TaskTestCaseImpl extends TaskTestCase {
     String? expectedOutput,
     bool? isHidden,
     int? orderIndex,
+    DateTime? updatedAt,
   }) {
     return TaskTestCase(
       id: id is int? ? id : this.id,
@@ -160,6 +172,7 @@ class _TaskTestCaseImpl extends TaskTestCase {
       expectedOutput: expectedOutput ?? this.expectedOutput,
       isHidden: isHidden ?? this.isHidden,
       orderIndex: orderIndex ?? this.orderIndex,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -192,6 +205,12 @@ class TaskTestCaseUpdateTable extends _i1.UpdateTable<TaskTestCaseTable> {
     table.orderIndex,
     value,
   );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class TaskTestCaseTable extends _i1.Table<int?> {
@@ -218,6 +237,10 @@ class TaskTestCaseTable extends _i1.Table<int?> {
       'orderIndex',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
 
   late final TaskTestCaseUpdateTable updateTable;
@@ -232,6 +255,8 @@ class TaskTestCaseTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt orderIndex;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -240,6 +265,7 @@ class TaskTestCaseTable extends _i1.Table<int?> {
     expectedOutput,
     isHidden,
     orderIndex,
+    updatedAt,
   ];
 }
 

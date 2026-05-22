@@ -3,7 +3,7 @@ BEGIN;
 --
 -- ACTION CREATE TABLE
 --
-CREATE TABLE "coin_transaction" (
+CREATE TABLE IF NOT EXISTS "coin_transaction" (
     "id" bigserial PRIMARY KEY,
     "authUserId" uuid NOT NULL,
     "transactionKey" text NOT NULL,
@@ -19,13 +19,13 @@ CREATE TABLE "coin_transaction" (
 );
 
 -- Indexes
-CREATE UNIQUE INDEX "coin_transaction_transaction_key_unique" ON "coin_transaction" USING btree ("transactionKey");
-CREATE INDEX "coin_transaction_auth_user_id_created_at_idx" ON "coin_transaction" USING btree ("authUserId", "createdAt");
+CREATE UNIQUE INDEX IF NOT EXISTS "coin_transaction_transaction_key_unique" ON "coin_transaction" USING btree ("transactionKey");
+CREATE INDEX IF NOT EXISTS "coin_transaction_auth_user_id_created_at_idx" ON "coin_transaction" USING btree ("authUserId", "createdAt");
 
 --
 -- ACTION CREATE TABLE
 --
-CREATE TABLE "user_wallet" (
+CREATE TABLE IF NOT EXISTS "user_wallet" (
     "id" bigserial PRIMARY KEY,
     "authUserId" uuid NOT NULL,
     "balance" bigint NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE "user_wallet" (
 );
 
 -- Indexes
-CREATE UNIQUE INDEX "user_wallet_auth_user_id_unique" ON "user_wallet" USING btree ("authUserId");
+CREATE UNIQUE INDEX IF NOT EXISTS "user_wallet_auth_user_id_unique" ON "user_wallet" USING btree ("authUserId");
 
 
 --

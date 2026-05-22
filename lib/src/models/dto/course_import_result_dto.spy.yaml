@@ -1,0 +1,6 @@
+class: CourseImportResultDto
+fields:
+  course: CourseDto
+  modules: List<ModuleDto>
+  lessons: List<LessonDto>
+  tasks: List<TaskDto>

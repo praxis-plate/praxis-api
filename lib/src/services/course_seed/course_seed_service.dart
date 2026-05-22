@@ -58,6 +58,9 @@ class CourseSeedService {
         thumbnailUrl: courseSeed.thumbnailUrl,
         coverImage: courseSeed.coverImage,
         createdAt: now,
+        updatedAt: now,
+        contentStatus: ContentStatus.published,
+        publishedAt: now,
       );
 
       final modules = ModuleSeedData.programmingFundamentals();
@@ -69,6 +72,7 @@ class CourseSeedService {
           description: moduleSeed.description,
           orderIndex: moduleSeed.orderIndex,
           createdAt: now,
+          updatedAt: now,
         );
 
         final lessons = LessonSeedData.getLessonsForModule(moduleSeed.title);
@@ -82,7 +86,9 @@ class CourseSeedService {
             imageUrls: lessonSeed.imageUrls,
             orderIndex: lessonSeed.orderIndex,
             durationMinutes: lessonSeed.durationMinutes,
+            completionXp: 0,
             createdAt: now,
+            updatedAt: now,
           );
 
           await _seedTasksForLesson(
@@ -128,6 +134,7 @@ class CourseSeedService {
         fallbackExplanation: taskSeed.fallbackExplanation,
         topic: taskSeed.topic,
         createdAt: now,
+        updatedAt: now,
       );
 
       await _seedTaskOptions(
@@ -154,8 +161,9 @@ class CourseSeedService {
         session,
         taskId: taskId,
         optionText: optionText,
-        isCorrect: optionText == taskSeed.correctAnswer,
+        isCorrect: _isCorrectOption(taskSeed, optionText),
         orderIndex: i,
+        updatedAt: DateTime.now(),
       );
     }
   }
@@ -204,6 +212,31 @@ class CourseSeedService {
       return jsonEncode({'pairs': pairs});
     } catch (_) {
       return null;
+    }
+  }
+
+  bool _isCorrectOption(TaskSeed taskSeed, String optionText) {
+    if (taskSeed.taskType == TaskType.multipleChoice) {
+      return optionText == taskSeed.correctAnswer;
+    }
+    if (taskSeed.taskType != TaskType.multipleAnswer) {
+      return false;
+    }
+
+    try {
+      final decoded = jsonDecode(taskSeed.correctAnswer);
+      if (decoded is! List) {
+        return false;
+      }
+
+      return decoded
+          .whereType<String>()
+          .map((item) => item.trim())
+          .contains(
+            optionText.trim(),
+          );
+    } catch (_) {
+      return false;
     }
   }
 }

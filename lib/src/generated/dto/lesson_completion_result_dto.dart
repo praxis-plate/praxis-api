@@ -20,6 +20,7 @@ abstract class LessonCompletionResultDto
     required this.lessonId,
     required this.totalXpEarned,
     required this.bonusXp,
+    required this.lessonCompletionXp,
     required this.totalXpWithBonus,
     required this.timeSpentSeconds,
     required this.totalTasks,
@@ -35,6 +36,7 @@ abstract class LessonCompletionResultDto
     required int lessonId,
     required int totalXpEarned,
     required int bonusXp,
+    required int lessonCompletionXp,
     required int totalXpWithBonus,
     required int timeSpentSeconds,
     required int totalTasks,
@@ -53,6 +55,7 @@ abstract class LessonCompletionResultDto
       lessonId: jsonSerialization['lessonId'] as int,
       totalXpEarned: jsonSerialization['totalXpEarned'] as int,
       bonusXp: jsonSerialization['bonusXp'] as int,
+      lessonCompletionXp: jsonSerialization['lessonCompletionXp'] as int,
       totalXpWithBonus: jsonSerialization['totalXpWithBonus'] as int,
       timeSpentSeconds: jsonSerialization['timeSpentSeconds'] as int,
       totalTasks: jsonSerialization['totalTasks'] as int,
@@ -74,6 +77,8 @@ abstract class LessonCompletionResultDto
   int totalXpEarned;
 
   int bonusXp;
+
+  int lessonCompletionXp;
 
   int totalXpWithBonus;
 
@@ -100,6 +105,7 @@ abstract class LessonCompletionResultDto
     int? lessonId,
     int? totalXpEarned,
     int? bonusXp,
+    int? lessonCompletionXp,
     int? totalXpWithBonus,
     int? timeSpentSeconds,
     int? totalTasks,
@@ -117,6 +123,7 @@ abstract class LessonCompletionResultDto
       'lessonId': lessonId,
       'totalXpEarned': totalXpEarned,
       'bonusXp': bonusXp,
+      'lessonCompletionXp': lessonCompletionXp,
       'totalXpWithBonus': totalXpWithBonus,
       'timeSpentSeconds': timeSpentSeconds,
       'totalTasks': totalTasks,
@@ -138,6 +145,7 @@ abstract class LessonCompletionResultDto
       'lessonId': lessonId,
       'totalXpEarned': totalXpEarned,
       'bonusXp': bonusXp,
+      'lessonCompletionXp': lessonCompletionXp,
       'totalXpWithBonus': totalXpWithBonus,
       'timeSpentSeconds': timeSpentSeconds,
       'totalTasks': totalTasks,
@@ -163,6 +171,7 @@ class _LessonCompletionResultDtoImpl extends LessonCompletionResultDto {
     required int lessonId,
     required int totalXpEarned,
     required int bonusXp,
+    required int lessonCompletionXp,
     required int totalXpWithBonus,
     required int timeSpentSeconds,
     required int totalTasks,
@@ -176,6 +185,7 @@ class _LessonCompletionResultDtoImpl extends LessonCompletionResultDto {
          lessonId: lessonId,
          totalXpEarned: totalXpEarned,
          bonusXp: bonusXp,
+         lessonCompletionXp: lessonCompletionXp,
          totalXpWithBonus: totalXpWithBonus,
          timeSpentSeconds: timeSpentSeconds,
          totalTasks: totalTasks,
@@ -195,6 +205,7 @@ class _LessonCompletionResultDtoImpl extends LessonCompletionResultDto {
     int? lessonId,
     int? totalXpEarned,
     int? bonusXp,
+    int? lessonCompletionXp,
     int? totalXpWithBonus,
     int? timeSpentSeconds,
     int? totalTasks,
@@ -209,6 +220,7 @@ class _LessonCompletionResultDtoImpl extends LessonCompletionResultDto {
       lessonId: lessonId ?? this.lessonId,
       totalXpEarned: totalXpEarned ?? this.totalXpEarned,
       bonusXp: bonusXp ?? this.bonusXp,
+      lessonCompletionXp: lessonCompletionXp ?? this.lessonCompletionXp,
       totalXpWithBonus: totalXpWithBonus ?? this.totalXpWithBonus,
       timeSpentSeconds: timeSpentSeconds ?? this.timeSpentSeconds,
       totalTasks: totalTasks ?? this.totalTasks,

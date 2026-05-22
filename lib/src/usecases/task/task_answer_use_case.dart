@@ -13,7 +13,6 @@ class TaskAnswerUseCase {
     int taskId,
     String userAnswer,
   ) async {
-    final task = await _taskService.getTaskById(session, taskId);
-    return _taskService.validateAnswer(task, userAnswer);
+    return _taskService.answerTask(session, taskId, userAnswer);
   }
 }

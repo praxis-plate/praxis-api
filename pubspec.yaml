@@ -10,6 +10,10 @@ dependencies:
   dio: ^5.4.0
   equatable: ^2.0.5
   serverpod: 3.2.0
+  serverpod_client: 3.2.0
+  serverpod_auth_core_client: 3.2.0
+  serverpod_auth_core_server: 3.2.0
+  serverpod_auth_idp_client: 3.2.0
   serverpod_auth_idp_server: 3.2.0
 
 dev_dependencies:

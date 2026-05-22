@@ -20,6 +20,7 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.description,
     required this.orderIndex,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Module({
@@ -29,6 +30,7 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String description,
     required int orderIndex,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _ModuleImpl;
 
   factory Module.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -40,6 +42,9 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       orderIndex: jsonSerialization['orderIndex'] as int,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
+      ),
+      updatedAt: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
       ),
     );
   }
@@ -61,6 +66,8 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   DateTime createdAt;
 
+  DateTime updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -74,6 +81,7 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? description,
     int? orderIndex,
     DateTime? createdAt,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +93,7 @@ abstract class Module implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'description': description,
       'orderIndex': orderIndex,
       'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
     };
   }
 
@@ -133,6 +142,7 @@ class _ModuleImpl extends Module {
     required String description,
     required int orderIndex,
     required DateTime createdAt,
+    required DateTime updatedAt,
   }) : super._(
          id: id,
          courseId: courseId,
@@ -140,6 +150,7 @@ class _ModuleImpl extends Module {
          description: description,
          orderIndex: orderIndex,
          createdAt: createdAt,
+         updatedAt: updatedAt,
        );
 
   /// Returns a shallow copy of this [Module]
@@ -153,6 +164,7 @@ class _ModuleImpl extends Module {
     String? description,
     int? orderIndex,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Module(
       id: id is int? ? id : this.id,
@@ -161,6 +173,7 @@ class _ModuleImpl extends Module {
       description: description ?? this.description,
       orderIndex: orderIndex ?? this.orderIndex,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -193,6 +206,12 @@ class ModuleUpdateTable extends _i1.UpdateTable<ModuleTable> {
         table.createdAt,
         value,
       );
+
+  _i1.ColumnValue<DateTime, DateTime> updatedAt(DateTime value) =>
+      _i1.ColumnValue(
+        table.updatedAt,
+        value,
+      );
 }
 
 class ModuleTable extends _i1.Table<int?> {
@@ -218,6 +237,10 @@ class ModuleTable extends _i1.Table<int?> {
       'createdAt',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
 
   late final ModuleUpdateTable updateTable;
@@ -232,6 +255,8 @@ class ModuleTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createdAt;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -240,6 +265,7 @@ class ModuleTable extends _i1.Table<int?> {
     description,
     orderIndex,
     createdAt,
+    updatedAt,
   ];
 }
 
