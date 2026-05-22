@@ -335,6 +335,47 @@ void main() {
             topic: 'quiz',
           ),
         );
+        final textInputTask = await endpoints.taskAdmin.create(
+          cmsSession,
+          CreateTaskRequest(
+            lessonId: secondLesson.id,
+            taskType: TaskType.textInput,
+            questionText: 'Name an API',
+            correctAnswer: 'REST',
+            topic: 'text-answer',
+          ),
+        );
+        final configuredTextInputTask = await endpoints.taskAdmin.update(
+          cmsSession,
+          UpdateTaskRequest(
+            id: textInputTask.id,
+            taskType: TaskType.textInput,
+            questionText: textInputTask.questionText,
+            correctAnswer: textInputTask.correctAnswer,
+            optionsJson:
+                '{"caseSensitive":true,"exactMatch":true,"acceptableAnswers":["HTTP API"]}',
+            difficultyLevel: textInputTask.difficultyLevel,
+            xpValue: textInputTask.xpValue,
+            topic: textInputTask.topic,
+          ),
+        );
+        expect(configuredTextInputTask.optionsJson, contains('exactMatch'));
+        await expectLater(
+          endpoints.taskAdmin.update(
+            cmsSession,
+            UpdateTaskRequest(
+              id: textInputTask.id,
+              taskType: TaskType.textInput,
+              questionText: textInputTask.questionText,
+              correctAnswer: textInputTask.correctAnswer,
+              optionsJson: '{"caseSensitive":"yes"}',
+              difficultyLevel: textInputTask.difficultyLevel,
+              xpValue: textInputTask.xpValue,
+              topic: textInputTask.topic,
+            ),
+          ),
+          throwsA(isA<ValidationException>()),
+        );
         final multipleAnswerTask = await endpoints.taskAdmin.create(
           cmsSession,
           CreateTaskRequest(
@@ -464,6 +505,7 @@ void main() {
             lessonId: secondLesson.id,
             orderedTaskIds: [
               codeTask.id,
+              textInputTask.id,
               multipleAnswerTask.id,
               multipleChoiceTask.id,
             ],
@@ -471,10 +513,11 @@ void main() {
         );
         expect(reorderedTasks.map((item) => item.id), [
           codeTask.id,
+          textInputTask.id,
           multipleAnswerTask.id,
           multipleChoiceTask.id,
         ]);
-        expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2]);
+        expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2, 3]);
 
         final cmsCourses = await endpoints.courseAdmin.list(
           cmsSession,

@@ -797,7 +797,10 @@ class CmsContentService {
         taskType: request.taskType,
         questionText: request.questionText.trim(),
         correctAnswer: request.correctAnswer.trim(),
-        optionsJson: _normalizeOptionalText(request.optionsJson),
+        optionsJson: _normalizeTaskOptionsJson(
+          request.taskType,
+          request.optionsJson,
+        ),
         codeTemplate: _normalizeOptionalText(request.codeTemplate),
         programmingLanguage: _normalizeOptionalText(
           request.programmingLanguage,
@@ -1734,6 +1737,40 @@ class CmsContentService {
     }
     final normalized = value.trim();
     return normalized.isEmpty ? null : normalized;
+  }
+
+  String? _normalizeTaskOptionsJson(TaskType taskType, String? value) {
+    final normalized = _normalizeOptionalText(value);
+    if (taskType != TaskType.textInput || normalized == null) {
+      return normalized;
+    }
+
+    try {
+      final decoded = jsonDecode(normalized);
+      if (decoded is! Map<String, dynamic>) {
+        throw const FormatException('Text options must be an object');
+      }
+      if (decoded['caseSensitive'] != null &&
+          decoded['caseSensitive'] is! bool) {
+        throw const FormatException('caseSensitive must be a bool');
+      }
+      if (decoded['exactMatch'] != null && decoded['exactMatch'] is! bool) {
+        throw const FormatException('exactMatch must be a bool');
+      }
+      final acceptableAnswers = decoded['acceptableAnswers'];
+      if (acceptableAnswers != null &&
+          (acceptableAnswers is! List ||
+              acceptableAnswers.any((answer) => answer is! String))) {
+        throw const FormatException('acceptableAnswers must be strings');
+      }
+    } catch (_) {
+      throw ValidationException(
+        message: 'Text input validation settings must be valid JSON options',
+        field: 'optionsJson',
+      );
+    }
+
+    return normalized;
   }
 
   String? _normalizeOptionalUrl(String? value, String field) {
