@@ -206,5 +206,5 @@ void main() {
         expect(authSuccess.scopeNames, isNot(contains('admin.access')));
       },
     );
-  }, applyMigrations: false);
+  });
 }

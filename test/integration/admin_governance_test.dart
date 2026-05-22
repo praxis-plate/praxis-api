@@ -156,7 +156,7 @@ void main() {
       );
       expect(draft.contentStatus, ContentStatus.draft);
     });
-  }, applyMigrations: false);
+  });
 }
 
 Future<UuidValue> _createEmailUser(
