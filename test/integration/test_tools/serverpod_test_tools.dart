@@ -65,41 +65,43 @@ import 'package:praxis_server/src/generated/requests/update_lesson_request.dart'
     as _i32;
 import 'package:praxis_server/src/generated/requests/reorder_lessons_request.dart'
     as _i33;
-import 'package:praxis_server/src/generated/dto/lesson_completion_result_dto.dart'
+import 'package:praxis_server/src/generated/dto/lesson_progress_dto.dart'
     as _i34;
-import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
+import 'package:praxis_server/src/generated/dto/lesson_completion_result_dto.dart'
     as _i35;
-import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i36;
+import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
+    as _i36;
+import 'package:praxis_server/src/generated/dto/module_dto.dart' as _i37;
 import 'package:praxis_server/src/generated/requests/create_module_request.dart'
-    as _i37;
-import 'package:praxis_server/src/generated/requests/update_module_request.dart'
     as _i38;
-import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
+import 'package:praxis_server/src/generated/requests/update_module_request.dart'
     as _i39;
-import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i40;
+import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
+    as _i40;
+import 'package:praxis_server/src/generated/dto/task_dto.dart' as _i41;
 import 'package:praxis_server/src/generated/requests/create_task_request.dart'
-    as _i41;
-import 'package:praxis_server/src/generated/requests/update_task_request.dart'
     as _i42;
-import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
+import 'package:praxis_server/src/generated/requests/update_task_request.dart'
     as _i43;
-import 'package:praxis_server/src/generated/dto/task_option_dto.dart' as _i44;
+import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
+    as _i44;
+import 'package:praxis_server/src/generated/dto/task_option_dto.dart' as _i45;
 import 'package:praxis_server/src/generated/requests/upsert_task_options_request.dart'
-    as _i45;
-import 'package:praxis_server/src/generated/dto/task_test_case_dto.dart'
     as _i46;
-import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
+import 'package:praxis_server/src/generated/dto/task_test_case_dto.dart'
     as _i47;
-import 'package:praxis_server/src/generated/dto/task_answer_result_dto.dart'
+import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
     as _i48;
-import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
+import 'package:praxis_server/src/generated/dto/task_answer_result_dto.dart'
     as _i49;
-import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
+import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i50;
-import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
     as _i51;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
     as _i52;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i53;
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -2249,6 +2251,37 @@ class _LessonEndpoint {
     });
   }
 
+  _i3.Future<List<_i34.LessonProgressDto>> getProgressByCourseId(
+    _i1.TestSessionBuilder sessionBuilder,
+    int courseId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'lesson',
+            method: 'getProgressByCourseId',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'lesson',
+          methodName: 'getProgressByCourseId',
+          parameters: _i1.testObjectToJson({'courseId': courseId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i34.LessonProgressDto>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<void> markComplete(
     _i1.TestSessionBuilder sessionBuilder,
     int lessonId, {
@@ -2284,9 +2317,9 @@ class _LessonEndpoint {
     });
   }
 
-  _i3.Future<_i34.LessonCompletionResultDto> complete(
+  _i3.Future<_i35.LessonCompletionResultDto> complete(
     _i1.TestSessionBuilder sessionBuilder,
-    _i35.CompleteLessonSessionRequest request,
+    _i36.CompleteLessonSessionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2307,7 +2340,7 @@ class _LessonEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i34.LessonCompletionResultDto>);
+                as _i3.Future<_i35.LessonCompletionResultDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2326,7 +2359,7 @@ class _ModuleAdminEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i36.ModuleDto>> list(
+  _i3.Future<List<_i37.ModuleDto>> list(
     _i1.TestSessionBuilder sessionBuilder,
     int courseId,
   ) async {
@@ -2349,7 +2382,7 @@ class _ModuleAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i36.ModuleDto>>);
+                as _i3.Future<List<_i37.ModuleDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2357,9 +2390,9 @@ class _ModuleAdminEndpoint {
     });
   }
 
-  _i3.Future<_i36.ModuleDto> create(
+  _i3.Future<_i37.ModuleDto> create(
     _i1.TestSessionBuilder sessionBuilder,
-    _i37.CreateModuleRequest request,
+    _i38.CreateModuleRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2380,7 +2413,7 @@ class _ModuleAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i36.ModuleDto>);
+                as _i3.Future<_i37.ModuleDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2388,9 +2421,9 @@ class _ModuleAdminEndpoint {
     });
   }
 
-  _i3.Future<_i36.ModuleDto> update(
+  _i3.Future<_i37.ModuleDto> update(
     _i1.TestSessionBuilder sessionBuilder,
-    _i38.UpdateModuleRequest request,
+    _i39.UpdateModuleRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2411,7 +2444,7 @@ class _ModuleAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i36.ModuleDto>);
+                as _i3.Future<_i37.ModuleDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2419,9 +2452,9 @@ class _ModuleAdminEndpoint {
     });
   }
 
-  _i3.Future<List<_i36.ModuleDto>> reorder(
+  _i3.Future<List<_i37.ModuleDto>> reorder(
     _i1.TestSessionBuilder sessionBuilder,
-    _i39.ReorderModulesRequest request,
+    _i40.ReorderModulesRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2442,7 +2475,7 @@ class _ModuleAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i36.ModuleDto>>);
+                as _i3.Future<List<_i37.ModuleDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2461,7 +2494,7 @@ class _ModuleEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i36.ModuleDto>> get(
+  _i3.Future<List<_i37.ModuleDto>> get(
     _i1.TestSessionBuilder sessionBuilder,
     int courseId,
   ) async {
@@ -2484,7 +2517,7 @@ class _ModuleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i36.ModuleDto>>);
+                as _i3.Future<List<_i37.ModuleDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2503,7 +2536,7 @@ class _TaskAdminEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<List<_i40.TaskDto>> list(
+  _i3.Future<List<_i41.TaskDto>> list(
     _i1.TestSessionBuilder sessionBuilder,
     int lessonId,
   ) async {
@@ -2526,7 +2559,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i40.TaskDto>>);
+                as _i3.Future<List<_i41.TaskDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2534,9 +2567,9 @@ class _TaskAdminEndpoint {
     });
   }
 
-  _i3.Future<_i40.TaskDto> create(
+  _i3.Future<_i41.TaskDto> create(
     _i1.TestSessionBuilder sessionBuilder,
-    _i41.CreateTaskRequest request,
+    _i42.CreateTaskRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2557,7 +2590,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i40.TaskDto>);
+                as _i3.Future<_i41.TaskDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2565,9 +2598,9 @@ class _TaskAdminEndpoint {
     });
   }
 
-  _i3.Future<_i40.TaskDto> update(
+  _i3.Future<_i41.TaskDto> update(
     _i1.TestSessionBuilder sessionBuilder,
-    _i42.UpdateTaskRequest request,
+    _i43.UpdateTaskRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2588,7 +2621,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i40.TaskDto>);
+                as _i3.Future<_i41.TaskDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2596,9 +2629,9 @@ class _TaskAdminEndpoint {
     });
   }
 
-  _i3.Future<List<_i40.TaskDto>> reorder(
+  _i3.Future<List<_i41.TaskDto>> reorder(
     _i1.TestSessionBuilder sessionBuilder,
-    _i43.ReorderTasksRequest request,
+    _i44.ReorderTasksRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2619,7 +2652,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i40.TaskDto>>);
+                as _i3.Future<List<_i41.TaskDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2627,9 +2660,9 @@ class _TaskAdminEndpoint {
     });
   }
 
-  _i3.Future<List<_i44.TaskOptionDto>> upsertOptions(
+  _i3.Future<List<_i45.TaskOptionDto>> upsertOptions(
     _i1.TestSessionBuilder sessionBuilder,
-    _i45.UpsertTaskOptionsRequest request,
+    _i46.UpsertTaskOptionsRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2650,7 +2683,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i44.TaskOptionDto>>);
+                as _i3.Future<List<_i45.TaskOptionDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2658,9 +2691,9 @@ class _TaskAdminEndpoint {
     });
   }
 
-  _i3.Future<List<_i46.TaskTestCaseDto>> upsertTestCases(
+  _i3.Future<List<_i47.TaskTestCaseDto>> upsertTestCases(
     _i1.TestSessionBuilder sessionBuilder,
-    _i47.UpsertTaskTestCasesRequest request,
+    _i48.UpsertTaskTestCasesRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2681,7 +2714,7 @@ class _TaskAdminEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i46.TaskTestCaseDto>>);
+                as _i3.Future<List<_i47.TaskTestCaseDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2700,7 +2733,7 @@ class _TaskEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i40.TaskDto> getById(
+  _i3.Future<_i41.TaskDto> getById(
     _i1.TestSessionBuilder sessionBuilder,
     int taskId,
   ) async {
@@ -2723,7 +2756,7 @@ class _TaskEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i40.TaskDto>);
+                as _i3.Future<_i41.TaskDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2731,7 +2764,7 @@ class _TaskEndpoint {
     });
   }
 
-  _i3.Future<List<_i40.TaskDto>> getByLessonId(
+  _i3.Future<List<_i41.TaskDto>> getByLessonId(
     _i1.TestSessionBuilder sessionBuilder,
     int lessonId,
   ) async {
@@ -2754,7 +2787,7 @@ class _TaskEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i40.TaskDto>>);
+                as _i3.Future<List<_i41.TaskDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2762,7 +2795,7 @@ class _TaskEndpoint {
     });
   }
 
-  _i3.Future<_i48.TaskAnswerResultDto> answer(
+  _i3.Future<_i49.TaskAnswerResultDto> answer(
     _i1.TestSessionBuilder sessionBuilder,
     int taskId,
     String userAnswer,
@@ -2789,7 +2822,7 @@ class _TaskEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i48.TaskAnswerResultDto>);
+                as _i3.Future<_i49.TaskAnswerResultDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2808,7 +2841,7 @@ class _UserStatisticsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i49.UserStatisticsDto> get(
+  _i3.Future<_i50.UserStatisticsDto> get(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2830,7 +2863,7 @@ class _UserStatisticsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i49.UserStatisticsDto>);
+                as _i3.Future<_i50.UserStatisticsDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2849,7 +2882,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i50.WalletBalanceDto> getBalance(
+  _i3.Future<_i51.WalletBalanceDto> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2871,7 +2904,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i50.WalletBalanceDto>);
+                as _i3.Future<_i51.WalletBalanceDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2879,9 +2912,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i51.CoinTransactionDto> topUp(
+  _i3.Future<_i52.CoinTransactionDto> topUp(
     _i1.TestSessionBuilder sessionBuilder,
-    _i52.CreateCoinTransactionRequest request,
+    _i53.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2902,7 +2935,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i51.CoinTransactionDto>);
+                as _i3.Future<_i52.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2910,9 +2943,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i51.CoinTransactionDto> buy(
+  _i3.Future<_i52.CoinTransactionDto> buy(
     _i1.TestSessionBuilder sessionBuilder,
-    _i52.CreateCoinTransactionRequest request,
+    _i53.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2933,7 +2966,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i51.CoinTransactionDto>);
+                as _i3.Future<_i52.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2941,7 +2974,7 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<List<_i51.CoinTransactionDto>> getHistory(
+  _i3.Future<List<_i52.CoinTransactionDto>> getHistory(
     _i1.TestSessionBuilder sessionBuilder, {
     int? limit,
     int? offset,
@@ -2968,7 +3001,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i51.CoinTransactionDto>>);
+                as _i3.Future<List<_i52.CoinTransactionDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -67,6 +67,7 @@ lesson:
   - getByCourseId:
   - getByModuleId:
   - getById:
+  - getProgressByCourseId:
   - markComplete:
   - complete:
 moduleAdmin:
