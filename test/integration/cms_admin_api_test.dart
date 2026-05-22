@@ -187,6 +187,17 @@ void main() {
           await endpoints.task.getByLessonId(sessionBuilder, lesson.id),
           isNotEmpty,
         );
+        expect(
+          (await endpoints.course.getById(sessionBuilder, course.id)).course.id,
+          course.id,
+        );
+        expect(
+          (await endpoints.course.getTableOfContents(
+            sessionBuilder,
+            course.id,
+          )).courseId,
+          course.id,
+        );
 
         final unpublishedCourse = await endpoints.courseAdmin.unpublish(
           cmsSession,
@@ -202,6 +213,23 @@ void main() {
         expect(
           await endpoints.task.getByLessonId(sessionBuilder, lesson.id),
           isEmpty,
+        );
+        final hiddenCoursesAfterUnpublish = await endpoints.course.get(
+          sessionBuilder,
+          limit: 50,
+          offset: 0,
+        );
+        expect(
+          hiddenCoursesAfterUnpublish.any((item) => item.id == course.id),
+          isFalse,
+        );
+        await expectLater(
+          endpoints.course.getById(sessionBuilder, course.id),
+          throwsA(isA<NotFoundException>()),
+        );
+        await expectLater(
+          endpoints.course.getTableOfContents(sessionBuilder, course.id),
+          throwsA(isA<NotFoundException>()),
         );
       },
     );

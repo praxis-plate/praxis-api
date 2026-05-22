@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data' show BytesBuilder;
 
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/task/entities/task_answer_feedback_type.dart';
@@ -204,8 +205,8 @@ class CodeExecutionService {
         runInShell: false,
       );
 
-      final stdoutFuture = process.stdout.transform(utf8.decoder).join();
-      final stderrFuture = process.stderr.transform(utf8.decoder).join();
+      final stdoutFuture = _readBoundedOutput(process.stdout);
+      final stderrFuture = _readBoundedOutput(process.stderr);
 
       try {
         final exitCode = await process.exitCode.timeout(_executionTimeout);
@@ -336,6 +337,33 @@ class CodeExecutionService {
       return normalized;
     }
     return '${normalized.substring(0, _maxOutputLength)}...';
+  }
+
+  Future<String> _readBoundedOutput(Stream<List<int>> stream) async {
+    final buffer = BytesBuilder(copy: false);
+    var bufferedBytes = 0;
+    var truncated = false;
+
+    await for (final chunk in stream) {
+      if (bufferedBytes >= _maxOutputLength) {
+        truncated = true;
+        continue;
+      }
+
+      final remainingBytes = _maxOutputLength - bufferedBytes;
+      if (chunk.length <= remainingBytes) {
+        buffer.add(chunk);
+        bufferedBytes += chunk.length;
+        continue;
+      }
+
+      buffer.add(chunk.sublist(0, remainingBytes));
+      bufferedBytes += remainingBytes;
+      truncated = true;
+    }
+
+    final output = utf8.decode(buffer.takeBytes(), allowMalformed: true).trim();
+    return truncated ? '$output...' : output;
   }
 
   String _resolveDartExecutable() {

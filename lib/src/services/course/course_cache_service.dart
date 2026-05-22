@@ -81,6 +81,15 @@ class CourseCacheService {
     _courseStructureCache.remove(courseId);
   }
 
+  Future<void> invalidateCourseLists(Session session) async {
+    _courseListCache.clear();
+  }
+
+  Future<void> invalidatePublicCourse(Session session, int courseId) async {
+    await invalidateCourse(session, courseId);
+    await invalidateCourseLists(session);
+  }
+
   void clearAll() {
     _courseListCache.clear();
     _courseDetailCache.clear();

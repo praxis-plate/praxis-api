@@ -152,6 +152,7 @@ class AppServices {
       lessonProgressDataSource: lessonProgressDataSource,
       transactionRunner: transactionRunner,
     );
+    final courseCacheService = CourseCacheService();
     final cmsContentService = CmsContentService(
       courseDataSource: courseDataSource,
       emailAccountDataSource: emailAccountDataSource,
@@ -160,6 +161,7 @@ class AppServices {
       taskDataSource: taskDataSource,
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
+      courseCacheService: courseCacheService,
     );
     final cmsCourseAnalyticsService = CmsCourseAnalyticsService(
       courseDataSource: courseDataSource,
@@ -171,7 +173,6 @@ class AppServices {
       taskAnswerAttemptDataSource: taskAnswerAttemptDataSource,
     );
     final cmsMediaStorageService = CmsMediaStorageService();
-    final courseCacheService = CourseCacheService();
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,

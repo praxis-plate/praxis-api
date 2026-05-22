@@ -8,6 +8,7 @@ import 'package:praxis_server/src/datasources/task_data_source.dart';
 import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
+import 'package:praxis_server/src/services/course/course_cache_service.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:praxis_server/src/shared/utils/auth_utils.dart';
 import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
@@ -29,6 +30,7 @@ class CmsContentService {
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
   final LessonContentDocumentCodec _lessonContentCodec;
+  final CourseCacheService _courseCacheService;
 
   const CmsContentService({
     required CourseDataSource courseDataSource,
@@ -38,6 +40,7 @@ class CmsContentService {
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
+    required CourseCacheService courseCacheService,
     LessonContentDocumentCodec lessonContentCodec =
         const LessonContentDocumentCodec(),
   }) : _courseDataSource = courseDataSource,
@@ -47,7 +50,8 @@ class CmsContentService {
        _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
-       _lessonContentCodec = lessonContentCodec;
+       _lessonContentCodec = lessonContentCodec,
+       _courseCacheService = courseCacheService;
 
   Future<List<CourseDto>> listCourses(
     Session session, {
@@ -341,6 +345,7 @@ class CmsContentService {
       updated.id!,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, updated.id!);
     return updated.toCourseDto(
       totalLessons: counts.totalLessons,
       totalTasks: counts.totalTasks,
@@ -402,6 +407,7 @@ class CmsContentService {
       courseId,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, courseId);
   }
 
   Future<CourseDto> publishCourse(
@@ -414,13 +420,15 @@ class CmsContentService {
       courseId,
       transaction: transaction,
     );
-    return _setCoursePublication(
+    final result = await _setCoursePublication(
       session,
       courseId,
       contentStatus: ContentStatus.published,
       publishedAt: DateTime.now(),
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, courseId);
+    return result;
   }
 
   Future<CourseDto> unpublishCourse(
@@ -428,13 +436,15 @@ class CmsContentService {
     int courseId, {
     Transaction? transaction,
   }) async {
-    return _setCoursePublication(
+    final result = await _setCoursePublication(
       session,
       courseId,
       contentStatus: ContentStatus.draft,
       publishedAt: null,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, courseId);
+    return result;
   }
 
   Future<List<ModuleDto>> listModules(
@@ -479,6 +489,7 @@ class CmsContentService {
       transaction: transaction,
     );
     await _touchCourse(session, course.id!, now, transaction: transaction);
+    await _invalidatePublicCourseCache(session, course.id!);
 
     return module.toModuleDto();
   }
@@ -505,6 +516,7 @@ class CmsContentService {
       transaction: transaction,
     );
     await _touchCourse(session, module.courseId, now, transaction: transaction);
+    await _invalidatePublicCourseCache(session, module.courseId);
 
     return updated.toModuleDto();
   }
@@ -546,6 +558,7 @@ class CmsContentService {
       reordered.add(updated);
     }
     await _touchCourse(session, course.id!, now, transaction: transaction);
+    await _invalidatePublicCourseCache(session, course.id!);
 
     return reordered.map((module) => module.toModuleDto()).toList();
   }
@@ -608,6 +621,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
     return lesson.toLessonDto();
   }
 
@@ -656,6 +670,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
     return updated.toLessonDto();
   }
 
@@ -703,6 +718,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
     return reordered.map((lesson) => lesson.toLessonDto()).toList();
   }
 
@@ -770,6 +786,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
 
     return task.toTaskDto(options: const [], testCases: const []);
   }
@@ -830,6 +847,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
 
     return _buildTaskDto(session, updated, transaction: transaction);
   }
@@ -884,6 +902,7 @@ class CmsContentService {
       now,
       transaction: transaction,
     );
+    await _invalidatePublicCourseCache(session, module.courseId);
     return _buildTaskDtos(session, reordered, transaction: transaction);
   }
 
@@ -1022,6 +1041,11 @@ class CmsContentService {
       session,
       task.id!,
       now,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCacheByTask(
+      session,
+      task.id!,
       transaction: transaction,
     );
 
@@ -1191,6 +1215,11 @@ class CmsContentService {
       session,
       task.id!,
       now,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCacheByTask(
+      session,
+      task.id!,
       transaction: transaction,
     );
 
@@ -1688,6 +1717,32 @@ class CmsContentService {
       timestamp,
       transaction: transaction,
     );
+  }
+
+  Future<void> _invalidatePublicCourseCache(
+    Session session,
+    int courseId,
+  ) async {
+    await _courseCacheService.invalidatePublicCourse(session, courseId);
+  }
+
+  Future<void> _invalidatePublicCourseCacheByTask(
+    Session session,
+    int taskId, {
+    Transaction? transaction,
+  }) async {
+    final task = await _requireTask(session, taskId, transaction: transaction);
+    final lesson = await _requireLesson(
+      session,
+      task.lessonId,
+      transaction: transaction,
+    );
+    final module = await _requireModule(
+      session,
+      lesson.moduleId,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCache(session, module.courseId);
   }
 
   void _validateFullReorder({

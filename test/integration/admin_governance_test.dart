@@ -108,6 +108,32 @@ void main() {
           category: 'Programming',
         ),
       );
+      final module = await endpoints.moduleAdmin.create(
+        authorSession,
+        CreateModuleRequest(
+          courseId: course.id,
+          title: 'Governance Module',
+          description: 'Module for publication review',
+        ),
+      );
+      final lesson = await endpoints.lessonAdmin.create(
+        authorSession,
+        CreateLessonRequest(
+          moduleId: module.id,
+          title: 'Governance Lesson',
+          contentText: 'Lesson content',
+        ),
+      );
+      await endpoints.taskAdmin.create(
+        authorSession,
+        CreateTaskRequest(
+          lessonId: lesson.id,
+          taskType: TaskType.textInput,
+          questionText: 'Question',
+          correctAnswer: 'Answer',
+          topic: 'Governance',
+        ),
+      );
 
       final queue = await endpoints.adminGovernance.listPublicationQueue(
         adminSession,
