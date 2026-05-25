@@ -97,4 +97,31 @@ class UserCourseDataSource {
       transaction: transaction,
     );
   }
+
+  Future<UserCourse?> updateById(
+    Session session,
+    int id, {
+    bool? isCompleted,
+    DateTime? completedAt,
+    Transaction? transaction,
+  }) {
+    return UserCourse.db.updateById(
+      session,
+      id,
+      columnValues: (t) {
+        final values = <ColumnValue>[];
+        if (isCompleted != null) {
+          values.add(t.isCompleted(isCompleted));
+        }
+        if (completedAt != null) {
+          values.add(t.completedAt(completedAt));
+        }
+        if (values.isEmpty) {
+          throw ArgumentError('No fields provided for update');
+        }
+        return values;
+      },
+      transaction: transaction,
+    );
+  }
 }

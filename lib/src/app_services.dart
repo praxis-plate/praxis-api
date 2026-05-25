@@ -150,6 +150,7 @@ class AppServices {
       lessonDataSource: lessonDataSource,
       moduleDataSource: moduleDataSource,
       lessonProgressDataSource: lessonProgressDataSource,
+      userCourseDataSource: userCourseDataSource,
       transactionRunner: transactionRunner,
     );
     final courseCacheService = CourseCacheService();

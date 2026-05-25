@@ -34,13 +34,13 @@ void main() {
     );
 
     test('adds authored lesson XP only on first completion', () async {
-      final lesson = await _createPublishedLesson(
+      final fixture = await _createPublishedLesson(
         endpoints,
         cmsSession,
         completionXp: 25,
       );
       final request = CompleteLessonSessionRequest(
-        lessonId: lesson.id,
+        lessonId: fixture.lesson.id,
         totalXpEarned: 40,
         bonusXp: 5,
         timeSpentSeconds: 90,
@@ -64,10 +64,40 @@ void main() {
       expect(repeatedCompletion.totalXpWithBonus, 45);
       expect(repeatedCompletion.experiencePoints, 115);
     });
+
+    test('marks enrolled course as completed after final lesson', () async {
+      final fixture = await _createPublishedLesson(
+        endpoints,
+        cmsSession,
+        completionXp: 25,
+      );
+      await endpoints.course.enroll(learnerSession, fixture.courseId);
+
+      await endpoints.lesson.complete(
+        learnerSession,
+        CompleteLessonSessionRequest(
+          lessonId: fixture.lesson.id,
+          totalXpEarned: 40,
+          bonusXp: 5,
+          timeSpentSeconds: 90,
+          totalTasks: 1,
+          correctTasks: 1,
+        ),
+      );
+
+      final enrollments = await UserCourse.db.find(
+        learnerSession.build(),
+        where: (t) => t.courseId.equals(fixture.courseId),
+      );
+
+      expect(enrollments, hasLength(1));
+      expect(enrollments.single.isCompleted, isTrue);
+      expect(enrollments.single.completedAt, isNotNull);
+    });
   });
 }
 
-Future<LessonDto> _createPublishedLesson(
+Future<({int courseId, LessonDto lesson})> _createPublishedLesson(
   TestEndpoints endpoints,
   TestSessionBuilder cmsSession, {
   required int completionXp,
@@ -108,5 +138,5 @@ Future<LessonDto> _createPublishedLesson(
     ),
   );
   await endpoints.courseAdmin.publish(cmsSession, course.id);
-  return lesson;
+  return (courseId: course.id, lesson: lesson);
 }
