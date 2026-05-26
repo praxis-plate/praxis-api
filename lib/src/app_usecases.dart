@@ -22,6 +22,7 @@ import 'package:praxis_server/src/usecases/course/get_course_table_of_contents_u
 import 'package:praxis_server/src/usecases/course/get_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_enrolled_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/course/get_personalized_recommendations_use_case.dart';
+import 'package:praxis_server/src/usecases/course/submit_course_review_use_case.dart';
 import 'package:praxis_server/src/usecases/course/unenroll_course_use_case.dart';
 import 'package:praxis_server/src/usecases/external_integration/external_integration_admin_use_cases.dart';
 import 'package:praxis_server/src/usecases/lesson/complete_lesson_use_case.dart';
@@ -90,6 +91,7 @@ class AppUseCases {
   final EnrollCourseUseCase enrollCourseUseCase;
   final UnenrollCourseUseCase unenrollCourseUseCase;
   final GetCourseTableOfContentsUseCase getCourseTableOfContentsUseCase;
+  final SubmitCourseReviewUseCase submitCourseReviewUseCase;
   final GetLessonsByCourseIdUseCase getLessonsByCourseIdUseCase;
   final GetLessonsByModuleIdUseCase getLessonsByModuleIdUseCase;
   final GetLessonByIdUseCase getLessonByIdUseCase;
@@ -151,6 +153,7 @@ class AppUseCases {
     required this.enrollCourseUseCase,
     required this.unenrollCourseUseCase,
     required this.getCourseTableOfContentsUseCase,
+    required this.submitCourseReviewUseCase,
     required this.getLessonsByCourseIdUseCase,
     required this.getLessonsByModuleIdUseCase,
     required this.getLessonByIdUseCase,
@@ -322,6 +325,9 @@ class AppUseCases {
         courseService: services.courseService,
       ),
       getCourseTableOfContentsUseCase: GetCourseTableOfContentsUseCase(
+        courseService: services.courseService,
+      ),
+      submitCourseReviewUseCase: SubmitCourseReviewUseCase(
         courseService: services.courseService,
       ),
       getLessonsByCourseIdUseCase: GetLessonsByCourseIdUseCase(

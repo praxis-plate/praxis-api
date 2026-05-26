@@ -1,0 +1,17 @@
+class: CourseReview
+serverOnly: true
+table: course_review
+fields:
+  authUserId: UuidValue
+  courseId: int
+  rating: int
+  comment: String
+  createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  course_review_course_id_idx:
+    fields: courseId
+    unique: false
+  course_review_auth_user_id_course_id_unique:
+    fields: authUserId, courseId
+    unique: true

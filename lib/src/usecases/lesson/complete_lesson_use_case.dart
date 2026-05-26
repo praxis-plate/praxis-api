@@ -42,6 +42,12 @@ class CompleteLessonUseCase {
           timeSpentSeconds: request.timeSpentSeconds,
           transaction: transaction,
         );
+        await _lessonService.syncCourseCompletion(
+          session,
+          authUserId: authUserId,
+          courseId: completion.courseId,
+          transaction: transaction,
+        );
 
         await _userStatisticsService.updateDailyStreak(
           session,

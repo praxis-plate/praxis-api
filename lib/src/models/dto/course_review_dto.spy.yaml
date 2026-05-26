@@ -1,0 +1,9 @@
+class: CourseReviewDto
+fields:
+  id: int
+  courseId: int
+  authorName: String
+  isCurrentUserReview: bool
+  rating: int
+  comment: String
+  createdAt: DateTime

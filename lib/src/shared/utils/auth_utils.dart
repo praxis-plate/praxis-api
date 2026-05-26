@@ -70,6 +70,16 @@ class AuthUtils {
     return parseAuthUserId(authInfo.userIdentifier);
   }
 
+  /// Gets authenticated user ID from session when present.
+  static UuidValue? getOptionalAuthUserId(Session session) {
+    final authInfo = session.authenticated;
+    if (authInfo == null) {
+      return null;
+    }
+
+    return parseAuthUserId(authInfo.userIdentifier);
+  }
+
   /// Gets authenticated user ID from session with scope check
   static UuidValue getAuthUserIdWithScope(
     Session session,

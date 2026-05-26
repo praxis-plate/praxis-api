@@ -2,6 +2,7 @@ import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
+import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
@@ -9,10 +10,12 @@ import 'package:serverpod/serverpod.dart';
 
 class LessonCompletionMarkResult {
   final Lesson lesson;
+  final int courseId;
   final bool isFirstCompletion;
 
   const LessonCompletionMarkResult({
     required this.lesson,
+    required this.courseId,
     required this.isFirstCompletion,
   });
 }
@@ -22,6 +25,7 @@ class LessonService {
   final LessonDataSource _lessonDataSource;
   final ModuleDataSource _moduleDataSource;
   final LessonProgressDataSource _lessonProgressDataSource;
+  final UserCourseDataSource _userCourseDataSource;
   final TransactionRunner _transactionRunner;
 
   LessonService({
@@ -29,11 +33,13 @@ class LessonService {
     required LessonDataSource lessonDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonProgressDataSource lessonProgressDataSource,
+    required UserCourseDataSource userCourseDataSource,
     required TransactionRunner transactionRunner,
   }) : _courseDataSource = courseDataSource,
        _lessonDataSource = lessonDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonProgressDataSource = lessonProgressDataSource,
+       _userCourseDataSource = userCourseDataSource,
        _transactionRunner = transactionRunner;
 
   Future<List<LessonDto>> getByModuleId(
@@ -192,6 +198,7 @@ class LessonService {
           );
           return LessonCompletionMarkResult(
             lesson: lesson,
+            courseId: course.id!,
             isFirstCompletion: !existing.isCompleted,
           );
         }
@@ -207,10 +214,72 @@ class LessonService {
         );
         return LessonCompletionMarkResult(
           lesson: lesson,
+          courseId: course.id!,
           isFirstCompletion: true,
         );
       },
       transaction: transaction,
     );
+  }
+
+  Future<bool> syncCourseCompletion(
+    Session session, {
+    required UuidValue authUserId,
+    required int courseId,
+    Transaction? transaction,
+  }) async {
+    final enrollment = await _userCourseDataSource.findByAuthUserAndCourse(
+      session,
+      authUserId,
+      courseId,
+      transaction: transaction,
+    );
+    if (enrollment == null) {
+      return false;
+    }
+
+    final modules = await _moduleDataSource.listByCourseId(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    if (modules.isEmpty) {
+      return false;
+    }
+
+    final lessons = await _lessonDataSource.listByModuleIds(
+      session,
+      modules.map((module) => module.id!).toList(),
+      transaction: transaction,
+    );
+    if (lessons.isEmpty) {
+      return false;
+    }
+
+    final lessonIds = lessons.map((lesson) => lesson.id!).toList();
+    final progress = await _lessonProgressDataSource
+        .listByAuthUserIdAndLessonIds(
+          session,
+          authUserId,
+          lessonIds,
+          transaction: transaction,
+        );
+    final completedLessonIds = progress
+        .where((item) => item.isCompleted)
+        .map((item) => item.lessonId)
+        .toSet();
+    final isCompleted = completedLessonIds.length == lessonIds.length;
+
+    if (isCompleted && !enrollment.isCompleted) {
+      await _userCourseDataSource.updateById(
+        session,
+        enrollment.id!,
+        isCompleted: true,
+        completedAt: DateTime.now(),
+        transaction: transaction,
+      );
+    }
+
+    return isCompleted;
   }
 }
