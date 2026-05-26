@@ -94,6 +94,64 @@ void main() {
       expect(enrollments.single.isCompleted, isTrue);
       expect(enrollments.single.completedAt, isNotNull);
     });
+
+    test('allows completed learner to submit course review', () async {
+      final fixture = await _createPublishedLesson(
+        endpoints,
+        cmsSession,
+        completionXp: 25,
+      );
+      await endpoints.course.enroll(learnerSession, fixture.courseId);
+
+      await endpoints.lesson.complete(
+        learnerSession,
+        CompleteLessonSessionRequest(
+          lessonId: fixture.lesson.id,
+          totalXpEarned: 40,
+          bonusXp: 5,
+          timeSpentSeconds: 90,
+          totalTasks: 1,
+          correctTasks: 1,
+        ),
+      );
+
+      final review = await endpoints.course.submitReview(
+        learnerSession,
+        fixture.courseId,
+        CreateCourseReviewRequest(
+          rating: 5,
+          comment: 'Very practical and easy to follow',
+        ),
+      );
+      final detail = await endpoints.course.getById(
+        learnerSession,
+        fixture.courseId,
+      );
+
+      expect(review.courseId, fixture.courseId);
+      expect(review.rating, 5);
+      expect(review.comment, 'Very practical and easy to follow');
+      expect(detail.reviews, hasLength(1));
+      expect(detail.reviews!.single.comment, review.comment);
+      expect(detail.canSubmitReview, isFalse);
+    });
+
+    test('returns published course detail without authentication', () async {
+      final fixture = await _createPublishedLesson(
+        endpoints,
+        cmsSession,
+        completionXp: 25,
+      );
+
+      final detail = await endpoints.course.getById(
+        sessionBuilder,
+        fixture.courseId,
+      );
+
+      expect(detail.course.id, fixture.courseId);
+      expect(detail.canSubmitReview, isFalse);
+      expect(detail.currentUserReview, isNull);
+    });
   });
 }
 

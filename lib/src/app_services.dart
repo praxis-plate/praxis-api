@@ -6,6 +6,7 @@ import 'package:praxis_server/src/datasources/achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
+import 'package:praxis_server/src/datasources/course_review_data_source.dart';
 import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_progress_data_source.dart';
@@ -87,6 +88,7 @@ class AppServices {
     const authUserDataSource = AuthUserDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
+    const courseReviewDataSource = CourseReviewDataSource();
     const emailAccountDataSource = EmailAccountDataSource();
     const lessonDataSource = LessonDataSource();
     const lessonProgressDataSource = LessonProgressDataSource();
@@ -177,6 +179,8 @@ class AppServices {
     final courseService = CourseService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
+      courseReviewDataSource: courseReviewDataSource,
+      emailAccountDataSource: emailAccountDataSource,
       moduleDataSource: moduleDataSource,
       lessonDataSource: lessonDataSource,
       taskDataSource: taskDataSource,

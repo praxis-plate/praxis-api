@@ -1,0 +1,4 @@
+class: CreateCourseReviewRequest
+fields:
+  rating: int
+  comment: String

@@ -4,3 +4,6 @@ fields:
   modules: List<ModuleDto>
   lessons: List<LessonDto>
   tasks: List<TaskDto>
+  reviews: List<CourseReviewDto>?
+  canSubmitReview: bool?
+  currentUserReview: CourseReviewDto?

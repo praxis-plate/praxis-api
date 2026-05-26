@@ -17,9 +17,11 @@ class CourseEndpoint extends Endpoint {
   }
 
   Future<CourseDetailDto> getById(Session session, int courseId) {
+    final authUserId = AuthUtils.getOptionalAuthUserId(session);
     return session.server.useCases.getCourseByIdUseCase.execute(
       session,
       courseId,
+      authUserId: authUserId,
     );
   }
 
@@ -78,6 +80,20 @@ class CourseEndpoint extends Endpoint {
     return session.server.useCases.getCourseTableOfContentsUseCase.execute(
       session,
       courseId,
+    );
+  }
+
+  Future<CourseReviewDto> submitReview(
+    Session session,
+    int courseId,
+    CreateCourseReviewRequest request,
+  ) {
+    final authUserId = AuthUtils.getAuthUserId(session);
+    return session.server.useCases.submitCourseReviewUseCase.execute(
+      session,
+      courseId,
+      authUserId: authUserId,
+      request: request,
     );
   }
 }

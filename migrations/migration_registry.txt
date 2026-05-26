@@ -13,3 +13,4 @@
 20260426162000000-repair-existing-cms-schema
 20260522233000000-add-course-difficulty
 20260522234500000-add-lesson-completion-xp
+20260525221849919-add-course-reviews
