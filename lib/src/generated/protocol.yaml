@@ -63,6 +63,7 @@ lessonAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
 lesson:
   - getByCourseId:

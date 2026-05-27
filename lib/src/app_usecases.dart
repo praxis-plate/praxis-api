@@ -63,6 +63,7 @@ class AppUseCases {
   final ListAdminLessonsUseCase listAdminLessonsUseCase;
   final CreateAdminLessonUseCase createAdminLessonUseCase;
   final UpdateAdminLessonUseCase updateAdminLessonUseCase;
+  final DeleteAdminLessonUseCase deleteAdminLessonUseCase;
   final ReorderAdminLessonsUseCase reorderAdminLessonsUseCase;
   final ListAdminTasksUseCase listAdminTasksUseCase;
   final CreateAdminTaskUseCase createAdminTaskUseCase;
@@ -128,6 +129,7 @@ class AppUseCases {
     required this.listAdminLessonsUseCase,
     required this.createAdminLessonUseCase,
     required this.updateAdminLessonUseCase,
+    required this.deleteAdminLessonUseCase,
     required this.reorderAdminLessonsUseCase,
     required this.listAdminTasksUseCase,
     required this.createAdminTaskUseCase,
@@ -242,6 +244,10 @@ class AppUseCases {
         transactionRunner: services.transactionRunner,
       ),
       updateAdminLessonUseCase: UpdateAdminLessonUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      deleteAdminLessonUseCase: DeleteAdminLessonUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),

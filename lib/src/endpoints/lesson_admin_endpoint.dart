@@ -29,6 +29,14 @@ class LessonAdminEndpoint extends Endpoint {
     );
   }
 
+  Future<void> delete(Session session, int lessonId) {
+    AuthUtils.requireScope(session, AuthScopes.contentManage);
+    return session.server.useCases.deleteAdminLessonUseCase.execute(
+      session,
+      lessonId,
+    );
+  }
+
   Future<List<LessonDto>> reorder(
     Session session,
     ReorderLessonsRequest request,

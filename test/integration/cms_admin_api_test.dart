@@ -547,6 +547,18 @@ void main() {
         ]);
         expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2, 3]);
 
+        await endpoints.lessonAdmin.delete(cmsSession, secondLesson.id);
+        final lessonsAfterDelete = await endpoints.lessonAdmin.list(
+          cmsSession,
+          secondModule.id,
+        );
+        expect(lessonsAfterDelete.map((item) => item.id), [firstLesson.id]);
+        expect(lessonsAfterDelete.single.orderIndex, 0);
+        await expectLater(
+          endpoints.taskAdmin.list(cmsSession, secondLesson.id),
+          throwsA(isA<NotFoundException>()),
+        );
+
         final cmsCourses = await endpoints.courseAdmin.list(
           cmsSession,
           status: ContentStatus.draft,

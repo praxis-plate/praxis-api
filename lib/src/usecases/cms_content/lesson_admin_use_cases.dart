@@ -59,6 +59,28 @@ class UpdateAdminLessonUseCase {
   }
 }
 
+class DeleteAdminLessonUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const DeleteAdminLessonUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<void> execute(Session session, int lessonId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.deleteLesson(
+        session,
+        lessonId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
 class ReorderAdminLessonsUseCase {
   final CmsContentService _cmsContentService;
   final TransactionRunner _transactionRunner;

@@ -674,6 +674,77 @@ class CmsContentService {
     return updated.toLessonDto();
   }
 
+  Future<void> deleteLesson(
+    Session session,
+    int lessonId, {
+    Transaction? transaction,
+  }) async {
+    final lesson = await _requireLesson(
+      session,
+      lessonId,
+      transaction: transaction,
+    );
+    final module = await _requireModule(
+      session,
+      lesson.moduleId,
+      transaction: transaction,
+    );
+    final tasks = await _taskDataSource.listByLessonId(
+      session,
+      lesson.id!,
+      transaction: transaction,
+    );
+    final taskIds = tasks.map((task) => task.id!).toSet();
+    final now = DateTime.now();
+
+    await _taskOptionDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskTestCaseDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskDataSource.deleteByIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _lessonDataSource.deleteByIds(
+      session,
+      {lesson.id!},
+      transaction: transaction,
+    );
+
+    final remainingLessons = await _lessonDataSource.listByModuleId(
+      session,
+      module.id!,
+      transaction: transaction,
+    );
+    for (var index = 0; index < remainingLessons.length; index++) {
+      final remainingLesson = remainingLessons[index];
+      if (remainingLesson.orderIndex == index) {
+        continue;
+      }
+      await _lessonDataSource.updateRow(
+        session,
+        remainingLesson.copyWith(orderIndex: index, updatedAt: now),
+        transaction: transaction,
+      );
+    }
+
+    await _touchAncestorsForModule(
+      session,
+      module.courseId,
+      module.id!,
+      now,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCache(session, module.courseId);
+  }
+
   Future<List<LessonDto>> reorderLessons(
     Session session,
     ReorderLessonsRequest request, {
