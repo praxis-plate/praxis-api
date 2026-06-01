@@ -59,6 +59,28 @@ class UpdateAdminModuleUseCase {
   }
 }
 
+class DeleteAdminModuleUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const DeleteAdminModuleUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<void> execute(Session session, int moduleId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.deleteModule(
+        session,
+        moduleId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
 class ReorderAdminModulesUseCase {
   final CmsContentService _cmsContentService;
   final TransactionRunner _transactionRunner;

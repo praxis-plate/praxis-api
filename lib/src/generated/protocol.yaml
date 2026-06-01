@@ -76,6 +76,7 @@ moduleAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
 module:
   - get:

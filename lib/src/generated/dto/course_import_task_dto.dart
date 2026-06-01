@@ -24,6 +24,7 @@ abstract class CourseImportTaskDto
     this.correctAnswer,
     this.codeTemplate,
     this.programmingLanguage,
+    this.optionsJson,
     this.difficultyLevel,
     this.xpValue,
     this.fallbackHint,
@@ -39,6 +40,7 @@ abstract class CourseImportTaskDto
     String? correctAnswer,
     String? codeTemplate,
     String? programmingLanguage,
+    String? optionsJson,
     int? difficultyLevel,
     int? xpValue,
     String? fallbackHint,
@@ -57,6 +59,7 @@ abstract class CourseImportTaskDto
       correctAnswer: jsonSerialization['correctAnswer'] as String?,
       codeTemplate: jsonSerialization['codeTemplate'] as String?,
       programmingLanguage: jsonSerialization['programmingLanguage'] as String?,
+      optionsJson: jsonSerialization['optionsJson'] as String?,
       difficultyLevel: jsonSerialization['difficultyLevel'] as int?,
       xpValue: jsonSerialization['xpValue'] as int?,
       fallbackHint: jsonSerialization['fallbackHint'] as String?,
@@ -85,6 +88,8 @@ abstract class CourseImportTaskDto
 
   String? programmingLanguage;
 
+  String? optionsJson;
+
   int? difficultyLevel;
 
   int? xpValue;
@@ -108,6 +113,7 @@ abstract class CourseImportTaskDto
     String? correctAnswer,
     String? codeTemplate,
     String? programmingLanguage,
+    String? optionsJson,
     int? difficultyLevel,
     int? xpValue,
     String? fallbackHint,
@@ -126,6 +132,7 @@ abstract class CourseImportTaskDto
       if (codeTemplate != null) 'codeTemplate': codeTemplate,
       if (programmingLanguage != null)
         'programmingLanguage': programmingLanguage,
+      if (optionsJson != null) 'optionsJson': optionsJson,
       if (difficultyLevel != null) 'difficultyLevel': difficultyLevel,
       if (xpValue != null) 'xpValue': xpValue,
       if (fallbackHint != null) 'fallbackHint': fallbackHint,
@@ -149,6 +156,7 @@ abstract class CourseImportTaskDto
       if (codeTemplate != null) 'codeTemplate': codeTemplate,
       if (programmingLanguage != null)
         'programmingLanguage': programmingLanguage,
+      if (optionsJson != null) 'optionsJson': optionsJson,
       if (difficultyLevel != null) 'difficultyLevel': difficultyLevel,
       if (xpValue != null) 'xpValue': xpValue,
       if (fallbackHint != null) 'fallbackHint': fallbackHint,
@@ -179,6 +187,7 @@ class _CourseImportTaskDtoImpl extends CourseImportTaskDto {
     String? correctAnswer,
     String? codeTemplate,
     String? programmingLanguage,
+    String? optionsJson,
     int? difficultyLevel,
     int? xpValue,
     String? fallbackHint,
@@ -192,6 +201,7 @@ class _CourseImportTaskDtoImpl extends CourseImportTaskDto {
          correctAnswer: correctAnswer,
          codeTemplate: codeTemplate,
          programmingLanguage: programmingLanguage,
+         optionsJson: optionsJson,
          difficultyLevel: difficultyLevel,
          xpValue: xpValue,
          fallbackHint: fallbackHint,
@@ -211,6 +221,7 @@ class _CourseImportTaskDtoImpl extends CourseImportTaskDto {
     Object? correctAnswer = _Undefined,
     Object? codeTemplate = _Undefined,
     Object? programmingLanguage = _Undefined,
+    Object? optionsJson = _Undefined,
     Object? difficultyLevel = _Undefined,
     Object? xpValue = _Undefined,
     Object? fallbackHint = _Undefined,
@@ -229,6 +240,7 @@ class _CourseImportTaskDtoImpl extends CourseImportTaskDto {
       programmingLanguage: programmingLanguage is String?
           ? programmingLanguage
           : this.programmingLanguage,
+      optionsJson: optionsJson is String? ? optionsJson : this.optionsJson,
       difficultyLevel: difficultyLevel is int?
           ? difficultyLevel
           : this.difficultyLevel,

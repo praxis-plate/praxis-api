@@ -237,6 +237,25 @@ class CmsContentService {
             ),
             transaction: transaction,
           );
+          if (taskInput.optionsJson != null &&
+              taskInput.optionsJson!.trim().isNotEmpty) {
+            final storedTask = await _requireTask(
+              session,
+              task.id,
+              transaction: transaction,
+            );
+            await _taskDataSource.updateRow(
+              session,
+              storedTask.copyWith(
+                optionsJson: _normalizeTaskOptionsJson(
+                  storedTask.taskType,
+                  taskInput.optionsJson,
+                ),
+                updatedAt: DateTime.now(),
+              ),
+              transaction: transaction,
+            );
+          }
 
           if (taskInput.options != null && taskInput.options!.isNotEmpty) {
             await upsertTaskOptions(
@@ -249,12 +268,10 @@ class CmsContentService {
             );
           }
           if (taskInput.testCases != null && taskInput.testCases!.isNotEmpty) {
-            await upsertTaskTestCases(
+            await _importTaskTestCases(
               session,
-              UpsertTaskTestCasesRequest(
-                taskId: task.id,
-                testCases: taskInput.testCases!,
-              ),
+              taskId: task.id,
+              testCases: taskInput.testCases!,
               transaction: transaction,
             );
           }
@@ -519,6 +536,77 @@ class CmsContentService {
     await _invalidatePublicCourseCache(session, module.courseId);
 
     return updated.toModuleDto();
+  }
+
+  Future<void> deleteModule(
+    Session session,
+    int moduleId, {
+    Transaction? transaction,
+  }) async {
+    final module = await _requireModule(
+      session,
+      moduleId,
+      transaction: transaction,
+    );
+    final lessons = await _lessonDataSource.listByModuleId(
+      session,
+      module.id!,
+      transaction: transaction,
+    );
+    final lessonIds = lessons.map((lesson) => lesson.id!).toSet();
+    final tasks = await _taskDataSource.listByLessonIds(
+      session,
+      lessonIds.toList(),
+      transaction: transaction,
+    );
+    final taskIds = tasks.map((task) => task.id!).toSet();
+    final now = DateTime.now();
+
+    await _taskOptionDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskTestCaseDataSource.deleteByTaskIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _taskDataSource.deleteByIds(
+      session,
+      taskIds,
+      transaction: transaction,
+    );
+    await _lessonDataSource.deleteByIds(
+      session,
+      lessonIds,
+      transaction: transaction,
+    );
+    await _moduleDataSource.deleteByIds(
+      session,
+      {module.id!},
+      transaction: transaction,
+    );
+
+    final remainingModules = await _moduleDataSource.listByCourseId(
+      session,
+      module.courseId,
+      transaction: transaction,
+    );
+    for (var index = 0; index < remainingModules.length; index++) {
+      final remainingModule = remainingModules[index];
+      if (remainingModule.orderIndex == index) {
+        continue;
+      }
+      await _moduleDataSource.updateRow(
+        session,
+        remainingModule.copyWith(orderIndex: index, updatedAt: now),
+        transaction: transaction,
+      );
+    }
+
+    await _touchCourse(session, module.courseId, now, transaction: transaction);
+    await _invalidatePublicCourseCache(session, module.courseId);
   }
 
   Future<List<ModuleDto>> reorderModules(
@@ -1190,10 +1278,9 @@ class CmsContentService {
         field: 'taskId',
       );
     }
-    if (!_supportsExecutableTemplate(codeTemplate)) {
+    if (!_supportsCodeTemplateForTestCases(codeTemplate)) {
       throw ValidationException(
-        message:
-            'codeTemplate must contain {{INPUT}} and {{USER_CODE}} or ___ placeholders',
+        message: 'codeTemplate must contain {{USER_CODE}} or ___ placeholder',
         field: 'taskId',
       );
     }
@@ -1297,11 +1384,54 @@ class CmsContentService {
     return result;
   }
 
-  bool _supportsExecutableTemplate(String codeTemplate) {
-    final hasInputPlaceholder = codeTemplate.contains('{{INPUT}}');
+  Future<void> _importTaskTestCases(
+    Session session, {
+    required int taskId,
+    required List<CmsTaskTestCaseInputDto> testCases,
+    Transaction? transaction,
+  }) async {
+    final task = await _requireTask(session, taskId, transaction: transaction);
+    final now = DateTime.now();
+    final encodedTestCases = <Map<String, dynamic>>[];
+
+    for (var index = 0; index < testCases.length; index++) {
+      final input = testCases[index];
+      final testInput = _requireText(input.input, 'testCases[$index].input');
+      final expectedOutput = _requireText(
+        input.expectedOutput,
+        'testCases[$index].expectedOutput',
+      );
+      encodedTestCases.add({
+        'input': testInput,
+        'expectedOutput': expectedOutput,
+        'isHidden': input.isHidden,
+      });
+      await _taskTestCaseDataSource.insert(
+        session,
+        taskId: taskId,
+        input: testInput,
+        expectedOutput: expectedOutput,
+        isHidden: input.isHidden,
+        orderIndex: index,
+        updatedAt: now,
+        transaction: transaction,
+      );
+    }
+
+    await _taskDataSource.updateRow(
+      session,
+      task.copyWith(
+        testCasesJson: jsonEncode(encodedTestCases),
+        updatedAt: now,
+      ),
+      transaction: transaction,
+    );
+  }
+
+  bool _supportsCodeTemplateForTestCases(String codeTemplate) {
     final hasUserCodePlaceholder =
         codeTemplate.contains('{{USER_CODE}}') || codeTemplate.contains('___');
-    return hasInputPlaceholder && hasUserCodePlaceholder;
+    return hasUserCodePlaceholder;
   }
 
   Future<void> _validateCourseReadyForPublication(

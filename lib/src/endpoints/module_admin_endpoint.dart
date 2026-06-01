@@ -29,6 +29,14 @@ class ModuleAdminEndpoint extends Endpoint {
     );
   }
 
+  Future<void> delete(Session session, int moduleId) {
+    AuthUtils.requireScope(session, AuthScopes.contentManage);
+    return session.server.useCases.deleteAdminModuleUseCase.execute(
+      session,
+      moduleId,
+    );
+  }
+
   Future<List<ModuleDto>> reorder(
     Session session,
     ReorderModulesRequest request,

@@ -2521,6 +2521,37 @@ class _ModuleAdminEndpoint {
     });
   }
 
+  _i3.Future<void> delete(
+    _i1.TestSessionBuilder sessionBuilder,
+    int moduleId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'moduleAdmin',
+            method: 'delete',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'moduleAdmin',
+          methodName: 'delete',
+          parameters: _i1.testObjectToJson({'moduleId': moduleId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<List<_i39.ModuleDto>> reorder(
     _i1.TestSessionBuilder sessionBuilder,
     _i42.ReorderModulesRequest request,

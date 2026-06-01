@@ -5,6 +5,7 @@ fields:
   correctAnswer: String?
   codeTemplate: String?
   programmingLanguage: String?
+  optionsJson: String?
   difficultyLevel: int?
   xpValue: int?
   fallbackHint: String?
