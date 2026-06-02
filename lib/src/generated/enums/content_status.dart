@@ -14,7 +14,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum ContentStatus implements _i1.SerializableModel {
   draft,
-  published;
+  published
+  ;
 
   static ContentStatus fromJson(String name) {
     switch (name) {

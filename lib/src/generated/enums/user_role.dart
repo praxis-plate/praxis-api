@@ -15,7 +15,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 enum UserRole implements _i1.SerializableModel {
   learner,
   author,
-  admin;
+  admin
+  ;
 
   static UserRole fromJson(String name) {
     switch (name) {

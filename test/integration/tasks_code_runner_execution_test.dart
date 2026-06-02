@@ -77,7 +77,7 @@ void main() {
     );
 
     test(
-      'rejects cms test cases when executable template placeholders are missing',
+      'accepts cms test cases for legacy code completion template',
       () async {
         final course = await endpoints.courseAdmin.create(
           cmsSession,
@@ -118,22 +118,88 @@ void main() {
           ),
         );
 
-        await expectLater(
-          endpoints.taskAdmin.upsertTestCases(
-            cmsSession,
-            UpsertTaskTestCasesRequest(
-              taskId: task.id,
-              testCases: [
-                CmsTaskTestCaseInputDto(
-                  input: '1',
-                  expectedOutput: '2',
-                  isHidden: false,
-                ),
-              ],
-            ),
+        final testCases = await endpoints.taskAdmin.upsertTestCases(
+          cmsSession,
+          UpsertTaskTestCasesRequest(
+            taskId: task.id,
+            testCases: [
+              CmsTaskTestCaseInputDto(
+                input: '1',
+                expectedOutput: '2',
+                isHidden: false,
+              ),
+            ],
           ),
-          throwsA(isA<ValidationException>()),
         );
+
+        expect(testCases, hasLength(1));
+      },
+    );
+
+    test(
+      'falls back to snippet validation for legacy code template with test cases',
+      () async {
+        final course = await endpoints.courseAdmin.create(
+          cmsSession,
+          CreateCourseRequest(
+            title: 'Legacy code template course',
+            description: 'Course for legacy code validation',
+            author: 'Author',
+            category: 'Programming',
+          ),
+        );
+        final module = await endpoints.moduleAdmin.create(
+          cmsSession,
+          CreateModuleRequest(
+            courseId: course.id,
+            title: 'Module',
+            description: 'Description',
+          ),
+        );
+        final lesson = await endpoints.lessonAdmin.create(
+          cmsSession,
+          CreateLessonRequest(
+            moduleId: module.id,
+            title: 'Lesson',
+            contentText: 'Lesson content',
+            durationMinutes: 10,
+          ),
+        );
+        final task = await endpoints.taskAdmin.create(
+          cmsSession,
+          CreateTaskRequest(
+            lessonId: lesson.id,
+            taskType: TaskType.codeCompletion,
+            questionText: 'Write code',
+            correctAnswer: 'var age = 25;',
+            codeTemplate: 'var age = ___;',
+            programmingLanguage: 'dart',
+            topic: 'dart',
+          ),
+        );
+        await endpoints.taskAdmin.upsertTestCases(
+          cmsSession,
+          UpsertTaskTestCasesRequest(
+            taskId: task.id,
+            testCases: [
+              CmsTaskTestCaseInputDto(
+                input: 'unused',
+                expectedOutput: 'var age = 25;',
+                isHidden: false,
+              ),
+            ],
+          ),
+        );
+        await endpoints.courseAdmin.publish(cmsSession, course.id);
+
+        final result = await endpoints.task.answer(
+          learnerSession,
+          task.id,
+          '25',
+        );
+
+        expect(result.isCorrect, isTrue);
+        expect(result.feedbackType, 'correct');
       },
     );
   });

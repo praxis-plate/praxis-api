@@ -63,6 +63,7 @@ lessonAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
 lesson:
   - getByCourseId:
@@ -75,6 +76,7 @@ moduleAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
 module:
   - get:
@@ -82,6 +84,7 @@ taskAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
   - upsertOptions:
   - upsertTestCases:

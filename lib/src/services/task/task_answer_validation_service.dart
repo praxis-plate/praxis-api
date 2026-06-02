@@ -25,6 +25,7 @@ class TaskAnswerValidationService {
   bool _usesExecutableValidation(TaskDto task) {
     return task.taskType == TaskType.codeCompletion &&
         task.testCases.isNotEmpty &&
+        (task.codeTemplate?.contains('{{INPUT}}') ?? false) &&
         (task.codeTemplate?.trim().isNotEmpty ?? false);
   }
 }

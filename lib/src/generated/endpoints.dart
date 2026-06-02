@@ -1322,6 +1322,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['request'],
                   ),
         ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'lessonId': _i1.ParameterDescription(
+              name: 'lessonId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['lessonAdmin'] as _i14.LessonAdminEndpoint).delete(
+                    session,
+                    params['lessonId'],
+                  ),
+        ),
         'reorder': _i1.MethodConnector(
           name: 'reorder',
           params: {
@@ -1528,6 +1547,25 @@ class Endpoints extends _i1.EndpointDispatch {
                     params['request'],
                   ),
         ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'moduleId': _i1.ParameterDescription(
+              name: 'moduleId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['moduleAdmin'] as _i16.ModuleAdminEndpoint).delete(
+                    session,
+                    params['moduleId'],
+                  ),
+        ),
         'reorder': _i1.MethodConnector(
           name: 'reorder',
           params: {
@@ -1632,6 +1670,25 @@ class Endpoints extends _i1.EndpointDispatch {
                   (endpoints['taskAdmin'] as _i18.TaskAdminEndpoint).update(
                     session,
                     params['request'],
+                  ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'taskId': _i1.ParameterDescription(
+              name: 'taskId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['taskAdmin'] as _i18.TaskAdminEndpoint).delete(
+                    session,
+                    params['taskId'],
                   ),
         ),
         'reorder': _i1.MethodConnector(

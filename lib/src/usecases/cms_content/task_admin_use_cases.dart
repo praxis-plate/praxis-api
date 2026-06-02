@@ -59,6 +59,28 @@ class UpdateAdminTaskUseCase {
   }
 }
 
+class DeleteAdminTaskUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const DeleteAdminTaskUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<void> execute(Session session, int taskId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.deleteTask(
+        session,
+        taskId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
 class ReorderAdminTasksUseCase {
   final CmsContentService _cmsContentService;
   final TransactionRunner _transactionRunner;

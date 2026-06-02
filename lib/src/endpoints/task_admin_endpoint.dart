@@ -29,6 +29,14 @@ class TaskAdminEndpoint extends Endpoint {
     );
   }
 
+  Future<void> delete(Session session, int taskId) {
+    AuthUtils.requireScope(session, AuthScopes.contentManage);
+    return session.server.useCases.deleteAdminTaskUseCase.execute(
+      session,
+      taskId,
+    );
+  }
+
   Future<List<TaskDto>> reorder(
     Session session,
     ReorderTasksRequest request,

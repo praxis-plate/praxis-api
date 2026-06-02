@@ -59,14 +59,17 @@ class AppUseCases {
   final ListAdminModulesUseCase listAdminModulesUseCase;
   final CreateAdminModuleUseCase createAdminModuleUseCase;
   final UpdateAdminModuleUseCase updateAdminModuleUseCase;
+  final DeleteAdminModuleUseCase deleteAdminModuleUseCase;
   final ReorderAdminModulesUseCase reorderAdminModulesUseCase;
   final ListAdminLessonsUseCase listAdminLessonsUseCase;
   final CreateAdminLessonUseCase createAdminLessonUseCase;
   final UpdateAdminLessonUseCase updateAdminLessonUseCase;
+  final DeleteAdminLessonUseCase deleteAdminLessonUseCase;
   final ReorderAdminLessonsUseCase reorderAdminLessonsUseCase;
   final ListAdminTasksUseCase listAdminTasksUseCase;
   final CreateAdminTaskUseCase createAdminTaskUseCase;
   final UpdateAdminTaskUseCase updateAdminTaskUseCase;
+  final DeleteAdminTaskUseCase deleteAdminTaskUseCase;
   final ReorderAdminTasksUseCase reorderAdminTasksUseCase;
   final UpsertAdminTaskOptionsUseCase upsertAdminTaskOptionsUseCase;
   final UpsertAdminTaskTestCasesUseCase upsertAdminTaskTestCasesUseCase;
@@ -124,14 +127,17 @@ class AppUseCases {
     required this.listAdminModulesUseCase,
     required this.createAdminModuleUseCase,
     required this.updateAdminModuleUseCase,
+    required this.deleteAdminModuleUseCase,
     required this.reorderAdminModulesUseCase,
     required this.listAdminLessonsUseCase,
     required this.createAdminLessonUseCase,
     required this.updateAdminLessonUseCase,
+    required this.deleteAdminLessonUseCase,
     required this.reorderAdminLessonsUseCase,
     required this.listAdminTasksUseCase,
     required this.createAdminTaskUseCase,
     required this.updateAdminTaskUseCase,
+    required this.deleteAdminTaskUseCase,
     required this.reorderAdminTasksUseCase,
     required this.upsertAdminTaskOptionsUseCase,
     required this.upsertAdminTaskTestCasesUseCase,
@@ -230,6 +236,10 @@ class AppUseCases {
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),
+      deleteAdminModuleUseCase: DeleteAdminModuleUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
       reorderAdminModulesUseCase: ReorderAdminModulesUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
@@ -245,6 +255,10 @@ class AppUseCases {
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),
+      deleteAdminLessonUseCase: DeleteAdminLessonUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
       reorderAdminLessonsUseCase: ReorderAdminLessonsUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
@@ -257,6 +271,10 @@ class AppUseCases {
         transactionRunner: services.transactionRunner,
       ),
       updateAdminTaskUseCase: UpdateAdminTaskUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      deleteAdminTaskUseCase: DeleteAdminTaskUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),

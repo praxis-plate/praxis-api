@@ -547,6 +547,30 @@ void main() {
         ]);
         expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2, 3]);
 
+        await endpoints.taskAdmin.delete(cmsSession, textInputTask.id);
+        final tasksAfterDelete = await endpoints.taskAdmin.list(
+          cmsSession,
+          secondLesson.id,
+        );
+        expect(tasksAfterDelete.map((item) => item.id), [
+          codeTask.id,
+          multipleAnswerTask.id,
+          multipleChoiceTask.id,
+        ]);
+        expect(tasksAfterDelete.map((item) => item.orderIndex), [0, 1, 2]);
+
+        await endpoints.lessonAdmin.delete(cmsSession, secondLesson.id);
+        final lessonsAfterDelete = await endpoints.lessonAdmin.list(
+          cmsSession,
+          secondModule.id,
+        );
+        expect(lessonsAfterDelete.map((item) => item.id), [firstLesson.id]);
+        expect(lessonsAfterDelete.single.orderIndex, 0);
+        await expectLater(
+          endpoints.taskAdmin.list(cmsSession, secondLesson.id),
+          throwsA(isA<NotFoundException>()),
+        );
+
         final cmsCourses = await endpoints.courseAdmin.list(
           cmsSession,
           status: ContentStatus.draft,
@@ -784,6 +808,96 @@ void main() {
       expect(result.lessons.single.durationMinutes, 3);
       expect(result.tasks.single.options, hasLength(2));
       expect(result.tasks.single.correctAnswer, 'Correct');
+    });
+
+    test('imports legacy code completion task with test cases', () async {
+      final result = await endpoints.courseAdmin.importStructured(
+        cmsSession,
+        ImportCourseRequest(
+          title: 'Imported legacy code course',
+          description: 'Imported description',
+          category: 'CMS',
+          modules: [
+            CourseImportModuleDto(
+              title: 'Imported module',
+              description: 'Imported module description',
+              lessons: [
+                CourseImportLessonDto(
+                  title: 'Imported lesson',
+                  contentText: 'Imported lesson content',
+                  tasks: [
+                    CourseImportTaskDto(
+                      taskType: TaskType.codeCompletion,
+                      questionText: 'Complete code',
+                      correctAnswer: 'return a + b;',
+                      codeTemplate: 'int add(int a, int b) { ___ }',
+                      programmingLanguage: 'dart',
+                      topic: 'Import',
+                      testCases: [
+                        CmsTaskTestCaseInputDto(
+                          input: '1 2',
+                          expectedOutput: '3',
+                          isHidden: false,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      expect(result.tasks.single.taskType, TaskType.codeCompletion);
+      expect(result.tasks.single.codeTemplate, 'int add(int a, int b) { ___ }');
+      expect(result.tasks.single.testCases, hasLength(1));
+      expect(result.tasks.single.testCases.single.expectedOutput, '3');
+    });
+
+    test('imports task optionsJson for matching and text input tasks', () async {
+      final result = await endpoints.courseAdmin.importStructured(
+        cmsSession,
+        ImportCourseRequest(
+          title: 'Imported options course',
+          description: 'Imported description',
+          category: 'CMS',
+          modules: [
+            CourseImportModuleDto(
+              title: 'Imported module',
+              description: 'Imported module description',
+              lessons: [
+                CourseImportLessonDto(
+                  title: 'Imported lesson',
+                  contentText: 'Imported lesson content',
+                  tasks: [
+                    CourseImportTaskDto(
+                      taskType: TaskType.matching,
+                      questionText: 'Match pairs',
+                      correctAnswer: '{"Left":"Right"}',
+                      optionsJson:
+                          '{"pairs":[{"left":"Left","right":"Right"}]}',
+                      topic: 'Import',
+                    ),
+                    CourseImportTaskDto(
+                      taskType: TaskType.textInput,
+                      questionText: 'Type answer',
+                      correctAnswer: 'Answer',
+                      optionsJson:
+                          '{"caseSensitive":true,"exactMatch":true,"acceptableAnswers":["Answer","Alt"]}',
+                      topic: 'Import',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      expect(result.tasks.first.optionsJson, contains('"pairs"'));
+      expect(result.tasks.last.optionsJson, contains('"caseSensitive":true'));
+      expect(result.tasks.last.optionsJson, contains('"acceptableAnswers"'));
     });
   });
 }

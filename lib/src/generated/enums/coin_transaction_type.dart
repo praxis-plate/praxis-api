@@ -20,7 +20,8 @@ enum CoinTransactionType implements _i1.SerializableModel {
   release,
   refund,
   adjustment,
-  reversal;
+  reversal
+  ;
 
   static CoinTransactionType fromJson(String name) {
     switch (name) {
