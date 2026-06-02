@@ -1011,6 +1011,68 @@ class CmsContentService {
     return _buildTaskDto(session, updated, transaction: transaction);
   }
 
+  Future<void> deleteTask(
+    Session session,
+    int taskId, {
+    Transaction? transaction,
+  }) async {
+    final task = await _requireTask(session, taskId, transaction: transaction);
+    final lesson = await _requireLesson(
+      session,
+      task.lessonId,
+      transaction: transaction,
+    );
+    final module = await _requireModule(
+      session,
+      lesson.moduleId,
+      transaction: transaction,
+    );
+    final now = DateTime.now();
+
+    await _taskOptionDataSource.deleteByTaskIds(
+      session,
+      {task.id!},
+      transaction: transaction,
+    );
+    await _taskTestCaseDataSource.deleteByTaskIds(
+      session,
+      {task.id!},
+      transaction: transaction,
+    );
+    await _taskDataSource.deleteByIds(
+      session,
+      {task.id!},
+      transaction: transaction,
+    );
+
+    final remainingTasks = await _taskDataSource.listByLessonId(
+      session,
+      lesson.id!,
+      transaction: transaction,
+    );
+    for (var index = 0; index < remainingTasks.length; index++) {
+      final remainingTask = remainingTasks[index];
+      if (remainingTask.orderIndex == index) {
+        continue;
+      }
+      await _taskDataSource.updateRow(
+        session,
+        remainingTask.copyWith(orderIndex: index, updatedAt: now),
+        transaction: transaction,
+      );
+    }
+
+    await _touchAncestorsForLesson(
+      session,
+      module.courseId,
+      module.id!,
+      lesson.id!,
+      now,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCache(session, module.courseId);
+  }
+
   Future<List<TaskDto>> reorderTasks(
     Session session,
     ReorderTasksRequest request, {

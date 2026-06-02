@@ -2729,6 +2729,37 @@ class _TaskAdminEndpoint {
     });
   }
 
+  _i3.Future<void> delete(
+    _i1.TestSessionBuilder sessionBuilder,
+    int taskId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'taskAdmin',
+            method: 'delete',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'taskAdmin',
+          methodName: 'delete',
+          parameters: _i1.testObjectToJson({'taskId': taskId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<List<_i43.TaskDto>> reorder(
     _i1.TestSessionBuilder sessionBuilder,
     _i46.ReorderTasksRequest request,

@@ -547,6 +547,18 @@ void main() {
         ]);
         expect(reorderedTasks.map((item) => item.orderIndex), [0, 1, 2, 3]);
 
+        await endpoints.taskAdmin.delete(cmsSession, textInputTask.id);
+        final tasksAfterDelete = await endpoints.taskAdmin.list(
+          cmsSession,
+          secondLesson.id,
+        );
+        expect(tasksAfterDelete.map((item) => item.id), [
+          codeTask.id,
+          multipleAnswerTask.id,
+          multipleChoiceTask.id,
+        ]);
+        expect(tasksAfterDelete.map((item) => item.orderIndex), [0, 1, 2]);
+
         await endpoints.lessonAdmin.delete(cmsSession, secondLesson.id);
         final lessonsAfterDelete = await endpoints.lessonAdmin.list(
           cmsSession,

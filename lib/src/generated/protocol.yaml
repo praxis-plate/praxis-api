@@ -84,6 +84,7 @@ taskAdmin:
   - list:
   - create:
   - update:
+  - delete:
   - reorder:
   - upsertOptions:
   - upsertTestCases:
