@@ -1,7 +1,7 @@
 # Praxis API
 
 [![Dart](https://img.shields.io/badge/Dart-3.10-blue.svg)](https://dart.dev)
-[![Serverpod](https://img.shields.io/badge/Serverpod-2.x-orange.svg)](https://serverpod.dev)
+[![Serverpod](https://img.shields.io/badge/Serverpod-3.2-orange.svg)](https://serverpod.dev)
 
 Backend API server for the **Praxis** educational platform – an interactive learning system for programming courses with AI-powered assistance and progress tracking.
 
@@ -66,8 +66,8 @@ docker compose up --build --detach
 # 2. Install dependencies
 fvm dart pub get
 
-# 3. Configure secrets (see Configuration section below)
-# Edit config/passwords.yaml with your credentials
+# 3. Create config/passwords.yaml from config/passwords.yaml.example
+# Replace the placeholder secrets before using shared environments
 
 # 4. Run database migrations (automatic on first start)
 # Migrations are applied automatically when the server starts
@@ -165,10 +165,11 @@ The server uses Serverpod's configuration system with environment-specific files
 - `config/staging.yaml` – staging environment
 - `config/production.yaml` – production environment
 - `config/passwords.yaml` – **secrets (not in version control)**
+- `config/passwords.yaml.example` – bootstrap template for local development and tests
 
 ### Required Secrets
 
-Edit `config/passwords.yaml` for your environment:
+Create `config/passwords.yaml` from `config/passwords.yaml.example` and then update the secrets for your environment:
 
 ```yaml
 development:
@@ -220,7 +221,7 @@ To manually manage migrations:
 fvm dart run bin/main.dart --apply-migrations
 
 # Create a new migration (after modifying models)
-fvm dart pub global run serverpod_cli create-migration
+fvm dart run serverpod_cli create-migration
 ```
 
 ### Seed Data
@@ -235,13 +236,14 @@ Serverpod uses code generation for protocol classes. After modifying files in `l
 
 ```bash
 # Generate protocol code
-fvm dart pub global run serverpod_cli generate
+fvm dart run serverpod_cli generate
 
 # Or use the full build
 fvm dart run build_runner build
 ```
 
 **Important:** Never manually edit files in `lib/src/generated/` – they are auto-generated.
+The generated client package is written to `../praxis_flutter/packages/praxis_client` as configured in `config/generator.yaml`.
 
 ### Running Tests
 
