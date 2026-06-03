@@ -408,6 +408,26 @@ class Endpoints extends _i1.EndpointDispatch {
                   (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
                       .listUsers(session),
         ),
+        'listUserCourses': _i1.MethodConnector(
+          name: 'listUserCourses',
+          params: {
+            'authUserId': _i1.ParameterDescription(
+              name: 'authUserId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .listUserCourses(
+                        session,
+                        params['authUserId'],
+                      ),
+        ),
         'assignRole': _i1.MethodConnector(
           name: 'assignRole',
           params: {

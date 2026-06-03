@@ -87,6 +87,20 @@ class CourseDataSource {
     );
   }
 
+  Future<List<Course>> listByAuthor(
+    Session session,
+    String author, {
+    Transaction? transaction,
+  }) {
+    return Course.db.find(
+      session,
+      where: (t) => t.author.equals(author),
+      orderBy: (t) => t.updatedAt,
+      orderDescending: true,
+      transaction: transaction,
+    );
+  }
+
   Future<List<Course>> listPublishedByIds(
     Session session,
     List<int> courseIds, {

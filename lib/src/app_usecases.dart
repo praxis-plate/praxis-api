@@ -1,6 +1,7 @@
 import 'package:praxis_server/src/app_services.dart';
 import 'package:praxis_server/src/usecases/access_control/assign_user_role_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/get_access_profile_use_case.dart';
+import 'package:praxis_server/src/usecases/access_control/get_governance_user_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/list_governance_users_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/revoke_user_role_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/set_user_blocked_use_case.dart';
@@ -50,6 +51,7 @@ import 'package:serverpod/serverpod.dart';
 class AppUseCases {
   final GetAccessProfileUseCase getAccessProfileUseCase;
   final ListGovernanceUsersUseCase listGovernanceUsersUseCase;
+  final GetGovernanceUserCoursesUseCase getGovernanceUserCoursesUseCase;
   final AssignUserRoleUseCase assignUserRoleUseCase;
   final RevokeUserRoleUseCase revokeUserRoleUseCase;
   final SetUserBlockedUseCase setUserBlockedUseCase;
@@ -126,6 +128,7 @@ class AppUseCases {
   AppUseCases({
     required this.getAccessProfileUseCase,
     required this.listGovernanceUsersUseCase,
+    required this.getGovernanceUserCoursesUseCase,
     required this.assignUserRoleUseCase,
     required this.revokeUserRoleUseCase,
     required this.setUserBlockedUseCase,
@@ -202,6 +205,9 @@ class AppUseCases {
         accessControlService: services.accessControlService,
       ),
       listGovernanceUsersUseCase: ListGovernanceUsersUseCase(
+        accessControlService: services.accessControlService,
+      ),
+      getGovernanceUserCoursesUseCase: GetGovernanceUserCoursesUseCase(
         accessControlService: services.accessControlService,
       ),
       assignUserRoleUseCase: AssignUserRoleUseCase(

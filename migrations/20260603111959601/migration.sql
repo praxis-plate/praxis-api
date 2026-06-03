@@ -3,7 +3,7 @@ BEGIN;
 --
 -- ACTION ALTER TABLE
 --
-ALTER TABLE "course" ADD COLUMN "screenshotsJson" text;
+ALTER TABLE "course" ADD COLUMN IF NOT EXISTS "screenshotsJson" text;
 
 --
 -- MIGRATION VERSION FOR praxis

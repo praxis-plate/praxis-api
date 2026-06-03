@@ -12,6 +12,7 @@ achievement:
   - isUnlocked:
 adminGovernance:
   - listUsers:
+  - listUserCourses:
   - assignRole:
   - revokeRole:
   - blockUser:

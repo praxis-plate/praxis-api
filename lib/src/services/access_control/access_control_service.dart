@@ -1,5 +1,7 @@
 import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
+import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/email_account_data_source.dart';
+import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/constants/auth_scopes.dart';
 import 'package:praxis_server/src/shared/utils/user_role_scope_resolver.dart';
@@ -8,17 +10,23 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart';
 
 class AccessControlService {
   final AuthUserDataSource _authUserDataSource;
+  final CourseDataSource _courseDataSource;
   final EmailAccountDataSource _emailAccountDataSource;
+  final UserCourseDataSource _userCourseDataSource;
   final Set<String> _bootstrapAuthorEmails;
   final Set<String> _bootstrapAdminEmails;
 
   const AccessControlService({
     required AuthUserDataSource authUserDataSource,
+    required CourseDataSource courseDataSource,
     required EmailAccountDataSource emailAccountDataSource,
+    required UserCourseDataSource userCourseDataSource,
     required Set<String> bootstrapAuthorEmails,
     required Set<String> bootstrapAdminEmails,
   }) : _authUserDataSource = authUserDataSource,
+       _courseDataSource = courseDataSource,
        _emailAccountDataSource = emailAccountDataSource,
+       _userCourseDataSource = userCourseDataSource,
        _bootstrapAuthorEmails = bootstrapAuthorEmails,
        _bootstrapAdminEmails = bootstrapAdminEmails;
 
@@ -117,6 +125,73 @@ class AccessControlService {
     );
 
     return _buildGovernanceUser(session, authUser, transaction: transaction);
+  }
+
+  Future<GovernanceUserCoursesDto> getGovernanceUserCourses(
+    Session session, {
+    required UuidValue authUserId,
+    Transaction? transaction,
+  }) async {
+    final emailAccount = await _emailAccountDataSource.findByAuthUserId(
+      session,
+      authUserId: authUserId,
+      transaction: transaction,
+    );
+
+    final enrollments = await _userCourseDataSource.listByAuthUserId(
+      session,
+      authUserId,
+    );
+    final enrolledCourses = await _courseDataSource.listByIds(
+      session,
+      enrollments.map((enrollment) => enrollment.courseId).toList(),
+      transaction: transaction,
+    );
+    final enrolledCourseById = {
+      for (final course in enrolledCourses)
+        if (course.id != null) course.id!: course,
+    };
+
+    final authoredCourses = emailAccount == null
+        ? const <Course>[]
+        : await _courseDataSource.listByAuthor(
+            session,
+            emailAccount.email,
+            transaction: transaction,
+          );
+
+    return GovernanceUserCoursesDto(
+      authUserId: authUserId,
+      enrolledCourses: [
+        for (final enrollment in enrollments)
+          if (enrolledCourseById[enrollment.courseId] case final course?)
+            GovernanceUserCourseDto(
+              courseId: course.id!,
+              title: course.title,
+              category: course.category,
+              author: course.author,
+              contentStatus: course.contentStatus,
+              updatedAt: course.updatedAt,
+              enrolledAt: enrollment.enrolledAt,
+              completedAt: enrollment.completedAt,
+              isCompleted: enrollment.isCompleted,
+            ),
+      ],
+      authoredCourses: [
+        for (final course in authoredCourses)
+          GovernanceUserCourseDto(
+            courseId: course.id!,
+            title: course.title,
+            category: course.category,
+            author: course.author,
+            contentStatus: course.contentStatus,
+            updatedAt: course.updatedAt,
+            enrolledAt: null,
+            completedAt: null,
+            isCompleted: false,
+          ),
+      ],
+    );
   }
 
   Future<void> initializeRolesForNewAccount(

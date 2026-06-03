@@ -10,6 +10,17 @@ class AdminGovernanceEndpoint extends Endpoint {
     return session.server.useCases.listGovernanceUsersUseCase.execute(session);
   }
 
+  Future<GovernanceUserCoursesDto> listUserCourses(
+    Session session,
+    UuidValue authUserId,
+  ) {
+    AuthUtils.requireScope(session, AuthScopes.usersManage);
+    return session.server.useCases.getGovernanceUserCoursesUseCase.execute(
+      session,
+      authUserId: authUserId,
+    );
+  }
+
   Future<AccessProfileDto> assignRole(
     Session session, {
     required UuidValue authUserId,
