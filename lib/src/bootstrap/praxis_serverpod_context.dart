@@ -53,6 +53,12 @@ PraxisServerpodContext createPraxisServerpod(List<String> args) {
                 email: email,
                 transaction: transaction,
               );
+          await pod.server.services.userProfileService.ensureProfile(
+            session,
+            authUserId: authUserId,
+            email: email,
+            transaction: transaction,
+          );
           await pod.server.services.walletService.initializeBalance(
             session,
             authUserId: authUserId,

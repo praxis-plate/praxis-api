@@ -14,8 +14,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum ExternalIntegrationAuthScheme implements _i1.SerializableModel {
   apiToken,
-  oauth2
-  ;
+  oauth2;
 
   static ExternalIntegrationAuthScheme fromJson(String name) {
     switch (name) {

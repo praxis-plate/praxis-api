@@ -35,6 +35,10 @@ import 'package:praxis_server/src/usecases/module/get_modules_by_course_id_use_c
 import 'package:praxis_server/src/usecases/task/get_task_by_id_use_case.dart';
 import 'package:praxis_server/src/usecases/task/get_tasks_by_lesson_id_use_case.dart';
 import 'package:praxis_server/src/usecases/task/task_answer_use_case.dart';
+import 'package:praxis_server/src/usecases/user_profile/get_current_user_profile_use_case.dart';
+import 'package:praxis_server/src/usecases/user_profile/remove_current_user_avatar_use_case.dart';
+import 'package:praxis_server/src/usecases/user_profile/update_current_user_profile_use_case.dart';
+import 'package:praxis_server/src/usecases/user_profile/upload_current_user_avatar_use_case.dart';
 import 'package:praxis_server/src/usecases/user_statistics/get_user_statistics_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/buy_with_wallet_use_case.dart';
 import 'package:praxis_server/src/usecases/wallet/get_wallet_balance_use_case.dart';
@@ -105,6 +109,10 @@ class AppUseCases {
   final GetTaskByIdUseCase getTaskByIdUseCase;
   final GetTasksByLessonIdUseCase getTasksByLessonIdUseCase;
   final TaskAnswerUseCase taskAnswerUseCase;
+  final GetCurrentUserProfileUseCase getCurrentUserProfileUseCase;
+  final UpdateCurrentUserProfileUseCase updateCurrentUserProfileUseCase;
+  final UploadCurrentUserAvatarUseCase uploadCurrentUserAvatarUseCase;
+  final RemoveCurrentUserAvatarUseCase removeCurrentUserAvatarUseCase;
   final GetUserStatisticsUseCase getUserStatisticsUseCase;
   final GetWalletBalanceUseCase getWalletBalanceUseCase;
   final TopUpWalletUseCase topUpWalletUseCase;
@@ -170,6 +178,10 @@ class AppUseCases {
     required this.getTaskByIdUseCase,
     required this.getTasksByLessonIdUseCase,
     required this.taskAnswerUseCase,
+    required this.getCurrentUserProfileUseCase,
+    required this.updateCurrentUserProfileUseCase,
+    required this.uploadCurrentUserAvatarUseCase,
+    required this.removeCurrentUserAvatarUseCase,
     required this.getUserStatisticsUseCase,
     required this.getWalletBalanceUseCase,
     required this.topUpWalletUseCase,
@@ -382,6 +394,21 @@ class AppUseCases {
       ),
       taskAnswerUseCase: TaskAnswerUseCase(
         taskService: services.taskService,
+      ),
+      getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase(
+        userProfileService: services.userProfileService,
+      ),
+      updateCurrentUserProfileUseCase: UpdateCurrentUserProfileUseCase(
+        userProfileService: services.userProfileService,
+        transactionRunner: services.transactionRunner,
+      ),
+      uploadCurrentUserAvatarUseCase: UploadCurrentUserAvatarUseCase(
+        userProfileService: services.userProfileService,
+        transactionRunner: services.transactionRunner,
+      ),
+      removeCurrentUserAvatarUseCase: RemoveCurrentUserAvatarUseCase(
+        userProfileService: services.userProfileService,
+        transactionRunner: services.transactionRunner,
       ),
       getUserStatisticsUseCase: GetUserStatisticsUseCase(
         userStatisticsService: services.userStatisticsService,

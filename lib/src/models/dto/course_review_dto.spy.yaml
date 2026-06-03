@@ -3,6 +3,7 @@ fields:
   id: int
   courseId: int
   authorName: String
+  authorAvatarUrl: String?
   isCurrentUserReview: bool
   rating: int
   comment: String

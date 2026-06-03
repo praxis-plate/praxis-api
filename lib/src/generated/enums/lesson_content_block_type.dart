@@ -17,8 +17,7 @@ enum LessonContentBlockType implements _i1.SerializableModel {
   paragraph,
   quote,
   code,
-  image
-  ;
+  image;
 
   static LessonContentBlockType fromJson(String name) {
     switch (name) {

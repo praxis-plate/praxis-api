@@ -14,8 +14,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum ExternalIntegrationKind implements _i1.SerializableModel {
   lms,
-  videoConferencing
-  ;
+  videoConferencing;
 
   static ExternalIntegrationKind fromJson(String name) {
     switch (name) {

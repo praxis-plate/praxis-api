@@ -1,0 +1,3 @@
+class: UpdateUserProfileRequest
+fields:
+  fullName: String?
