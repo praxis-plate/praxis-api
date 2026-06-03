@@ -119,6 +119,10 @@ class CmsContentService {
       'thumbnailUrl',
     );
     final coverImage = _normalizeOptionalUrl(request.coverImage, 'coverImage');
+    final screenshotsJson = _normalizeOptionalUrlList(
+      request.screenshots,
+      'screenshots',
+    );
 
     final course = await _courseDataSource.insert(
       session,
@@ -134,6 +138,7 @@ class CmsContentService {
       rating: request.rating ?? 0,
       thumbnailUrl: thumbnailUrl,
       coverImage: coverImage,
+      screenshotsJson: screenshotsJson,
       createdAt: now,
       updatedAt: now,
       contentStatus: ContentStatus.draft,
@@ -166,6 +171,7 @@ class CmsContentService {
         priceInCoins: request.priceInCoins,
         thumbnailUrl: request.thumbnailUrl,
         coverImage: request.coverImage,
+        screenshots: request.screenshots,
       ),
       transaction: transaction,
     );
@@ -352,6 +358,10 @@ class CmsContentService {
           'thumbnailUrl',
         ),
         coverImage: _normalizeOptionalUrl(request.coverImage, 'coverImage'),
+        screenshotsJson: _normalizeOptionalUrlList(
+          request.screenshots,
+          'screenshots',
+        ),
         updatedAt: DateTime.now(),
       ),
       transaction: transaction,
@@ -2121,6 +2131,22 @@ class CmsContentService {
       );
     }
     return normalized;
+  }
+
+  String? _normalizeOptionalUrlList(List<String>? values, String field) {
+    if (values == null) {
+      return null;
+    }
+
+    final normalizedUrls = <String>[];
+    for (final value in values) {
+      final normalized = _normalizeOptionalUrl(value, field);
+      if (normalized != null) {
+        normalizedUrls.add(normalized);
+      }
+    }
+
+    return jsonEncode(normalizedUrls);
   }
 
   String? _normalizeImageUrls(String? value) {

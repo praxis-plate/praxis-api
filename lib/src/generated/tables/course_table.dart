@@ -26,6 +26,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.rating,
     this.thumbnailUrl,
     this.coverImage,
+    this.screenshotsJson,
     required this.createdAt,
     required this.updatedAt,
     required this.contentStatus,
@@ -44,6 +45,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
+    String? screenshotsJson,
     required DateTime createdAt,
     required DateTime updatedAt,
     required _i2.ContentStatus contentStatus,
@@ -63,6 +65,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       rating: (jsonSerialization['rating'] as num).toDouble(),
       thumbnailUrl: jsonSerialization['thumbnailUrl'] as String?,
       coverImage: jsonSerialization['coverImage'] as String?,
+      screenshotsJson: jsonSerialization['screenshotsJson'] as String?,
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -107,6 +110,8 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String? coverImage;
 
+  String? screenshotsJson;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -133,6 +138,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
+    String? screenshotsJson,
     DateTime? createdAt,
     DateTime? updatedAt,
     _i2.ContentStatus? contentStatus,
@@ -153,6 +159,7 @@ abstract class Course implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshotsJson != null) 'screenshotsJson': screenshotsJson,
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       'contentStatus': contentStatus.toJson(),
@@ -210,6 +217,7 @@ class _CourseImpl extends Course {
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
+    String? screenshotsJson,
     required DateTime createdAt,
     required DateTime updatedAt,
     required _i2.ContentStatus contentStatus,
@@ -226,6 +234,7 @@ class _CourseImpl extends Course {
          rating: rating,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
+         screenshotsJson: screenshotsJson,
          createdAt: createdAt,
          updatedAt: updatedAt,
          contentStatus: contentStatus,
@@ -248,6 +257,7 @@ class _CourseImpl extends Course {
     double? rating,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
+    Object? screenshotsJson = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
     _i2.ContentStatus? contentStatus,
@@ -265,6 +275,9 @@ class _CourseImpl extends Course {
       rating: rating ?? this.rating,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
+      screenshotsJson: screenshotsJson is String?
+          ? screenshotsJson
+          : this.screenshotsJson,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       contentStatus: contentStatus ?? this.contentStatus,
@@ -327,6 +340,12 @@ class CourseUpdateTable extends _i1.UpdateTable<CourseTable> {
     table.coverImage,
     value,
   );
+
+  _i1.ColumnValue<String, String> screenshotsJson(String? value) =>
+      _i1.ColumnValue(
+        table.screenshotsJson,
+        value,
+      );
 
   _i1.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _i1.ColumnValue(
@@ -397,6 +416,10 @@ class CourseTable extends _i1.Table<int?> {
       'coverImage',
       this,
     );
+    screenshotsJson = _i1.ColumnString(
+      'screenshotsJson',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -438,6 +461,8 @@ class CourseTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString coverImage;
 
+  late final _i1.ColumnString screenshotsJson;
+
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -459,6 +484,7 @@ class CourseTable extends _i1.Table<int?> {
     rating,
     thumbnailUrl,
     coverImage,
+    screenshotsJson,
     createdAt,
     updatedAt,
     contentStatus,

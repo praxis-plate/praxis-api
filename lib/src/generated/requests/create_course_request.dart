@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:praxis_server/src/generated/protocol.dart' as _i2;
 
 abstract class CreateCourseRequest
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -25,6 +26,7 @@ abstract class CreateCourseRequest
     this.rating,
     this.thumbnailUrl,
     this.coverImage,
+    this.screenshots,
   });
 
   factory CreateCourseRequest({
@@ -38,6 +40,7 @@ abstract class CreateCourseRequest
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
   }) = _CreateCourseRequestImpl;
 
   factory CreateCourseRequest.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -52,6 +55,11 @@ abstract class CreateCourseRequest
       rating: (jsonSerialization['rating'] as num?)?.toDouble(),
       thumbnailUrl: jsonSerialization['thumbnailUrl'] as String?,
       coverImage: jsonSerialization['coverImage'] as String?,
+      screenshots: jsonSerialization['screenshots'] == null
+          ? null
+          : _i2.Protocol().deserialize<List<String>>(
+              jsonSerialization['screenshots'],
+            ),
     );
   }
 
@@ -75,6 +83,8 @@ abstract class CreateCourseRequest
 
   String? coverImage;
 
+  List<String>? screenshots;
+
   /// Returns a shallow copy of this [CreateCourseRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -89,6 +99,7 @@ abstract class CreateCourseRequest
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -104,6 +115,7 @@ abstract class CreateCourseRequest
       if (rating != null) 'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
     };
   }
 
@@ -121,6 +133,7 @@ abstract class CreateCourseRequest
       if (rating != null) 'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
     };
   }
 
@@ -144,6 +157,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
   }) : super._(
          title: title,
          description: description,
@@ -155,6 +169,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
          rating: rating,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
+         screenshots: screenshots,
        );
 
   /// Returns a shallow copy of this [CreateCourseRequest]
@@ -172,6 +187,7 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
     Object? rating = _Undefined,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
+    Object? screenshots = _Undefined,
   }) {
     return CreateCourseRequest(
       title: title ?? this.title,
@@ -188,6 +204,9 @@ class _CreateCourseRequestImpl extends CreateCourseRequest {
       rating: rating is double? ? rating : this.rating,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
+      screenshots: screenshots is List<String>?
+          ? screenshots
+          : this.screenshots?.map((e0) => e0).toList(),
     );
   }
 }

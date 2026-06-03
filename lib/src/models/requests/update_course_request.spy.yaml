@@ -11,3 +11,4 @@ fields:
   rating: double
   thumbnailUrl: String?
   coverImage: String?
+  screenshots: List<String>?
