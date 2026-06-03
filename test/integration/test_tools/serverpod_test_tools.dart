@@ -97,14 +97,19 @@ import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_requ
     as _i50;
 import 'package:praxis_server/src/generated/dto/task_answer_result_dto.dart'
     as _i51;
-import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
-    as _i52;
-import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
+import 'package:praxis_server/src/generated/dto/user_profile_dto.dart' as _i52;
+import 'package:praxis_server/src/generated/requests/update_user_profile_request.dart'
     as _i53;
-import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+import 'package:praxis_server/src/generated/requests/upload_user_avatar_request.dart'
     as _i54;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/dto/user_statistics_dto.dart'
     as _i55;
+import 'package:praxis_server/src/generated/dto/wallet_balance_dto.dart'
+    as _i56;
+import 'package:praxis_server/src/generated/dto/coin_transaction_dto.dart'
+    as _i57;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i58;
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -248,6 +253,8 @@ class TestEndpoints {
 
   late final _TaskEndpoint task;
 
+  late final _UserProfileEndpoint userProfile;
+
   late final _UserStatisticsEndpoint userStatistics;
 
   late final _WalletEndpoint wallet;
@@ -329,6 +336,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     task = _TaskEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    userProfile = _UserProfileEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2962,6 +2973,139 @@ class _TaskEndpoint {
   }
 }
 
+class _UserProfileEndpoint {
+  _UserProfileEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i52.UserProfileDto> getMyProfile(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'getMyProfile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'getMyProfile',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i52.UserProfileDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i52.UserProfileDto> update(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i53.UpdateUserProfileRequest request,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'update',
+          parameters: _i1.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i52.UserProfileDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i52.UserProfileDto> uploadAvatar(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i54.UploadUserAvatarRequest request,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'uploadAvatar',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'uploadAvatar',
+          parameters: _i1.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i52.UserProfileDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i52.UserProfileDto> removeAvatar(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'userProfile',
+            method: 'removeAvatar',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'userProfile',
+          methodName: 'removeAvatar',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i52.UserProfileDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _UserStatisticsEndpoint {
   _UserStatisticsEndpoint(
     this._endpointDispatch,
@@ -2972,7 +3116,7 @@ class _UserStatisticsEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i52.UserStatisticsDto> get(
+  _i3.Future<_i55.UserStatisticsDto> get(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2994,7 +3138,7 @@ class _UserStatisticsEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i52.UserStatisticsDto>);
+                as _i3.Future<_i55.UserStatisticsDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3013,7 +3157,7 @@ class _WalletEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i53.WalletBalanceDto> getBalance(
+  _i3.Future<_i56.WalletBalanceDto> getBalance(
     _i1.TestSessionBuilder sessionBuilder,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3035,7 +3179,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i53.WalletBalanceDto>);
+                as _i3.Future<_i56.WalletBalanceDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3043,9 +3187,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i54.CoinTransactionDto> topUp(
+  _i3.Future<_i57.CoinTransactionDto> topUp(
     _i1.TestSessionBuilder sessionBuilder,
-    _i55.CreateCoinTransactionRequest request,
+    _i58.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3066,7 +3210,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i54.CoinTransactionDto>);
+                as _i3.Future<_i57.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3074,9 +3218,9 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<_i54.CoinTransactionDto> buy(
+  _i3.Future<_i57.CoinTransactionDto> buy(
     _i1.TestSessionBuilder sessionBuilder,
-    _i55.CreateCoinTransactionRequest request,
+    _i58.CreateCoinTransactionRequest request,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3097,7 +3241,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<_i54.CoinTransactionDto>);
+                as _i3.Future<_i57.CoinTransactionDto>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3105,7 +3249,7 @@ class _WalletEndpoint {
     });
   }
 
-  _i3.Future<List<_i54.CoinTransactionDto>> getHistory(
+  _i3.Future<List<_i57.CoinTransactionDto>> getHistory(
     _i1.TestSessionBuilder sessionBuilder, {
     int? limit,
     int? offset,
@@ -3132,7 +3276,7 @@ class _WalletEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _i3.Future<List<_i54.CoinTransactionDto>>);
+                as _i3.Future<List<_i57.CoinTransactionDto>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -11,6 +11,7 @@ fields:
   rating: double
   thumbnailUrl: String?
   coverImage: String?
+  screenshots: List<String>?
   createdAt: DateTime
   updatedAt: DateTime
   contentStatus: ContentStatus

@@ -1,7 +1,6 @@
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/course_review_data_source.dart';
-import 'package:praxis_server/src/datasources/email_account_data_source.dart';
 import 'package:praxis_server/src/datasources/lesson_data_source.dart';
 import 'package:praxis_server/src/datasources/module_data_source.dart';
 import 'package:praxis_server/src/datasources/task_data_source.dart';
@@ -11,6 +10,7 @@ import 'package:praxis_server/src/datasources/user_course_data_source.dart';
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/services/course/course_cache_service.dart';
 import 'package:praxis_server/src/services/course/entities/course_content_counts.dart';
+import 'package:praxis_server/src/services/user_profile/user_profile.dart';
 import 'package:praxis_server/src/shared/mappers/learning_content_mapper.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -18,37 +18,37 @@ class CourseService {
   final CoinTransactionsDataSource _coinTransactionsDataSource;
   final CourseDataSource _courseDataSource;
   final CourseReviewDataSource _courseReviewDataSource;
-  final EmailAccountDataSource _emailAccountDataSource;
   final ModuleDataSource _moduleDataSource;
   final LessonDataSource _lessonDataSource;
   final TaskDataSource _taskDataSource;
   final TaskOptionDataSource _taskOptionDataSource;
   final TaskTestCaseDataSource _taskTestCaseDataSource;
   final UserCourseDataSource _userCourseDataSource;
+  final UserProfileService _userProfileService;
   final CourseCacheService _cacheService;
 
   CourseService({
     required CoinTransactionsDataSource coinTransactionsDataSource,
     required CourseDataSource courseDataSource,
     required CourseReviewDataSource courseReviewDataSource,
-    required EmailAccountDataSource emailAccountDataSource,
     required ModuleDataSource moduleDataSource,
     required LessonDataSource lessonDataSource,
     required TaskDataSource taskDataSource,
     required TaskOptionDataSource taskOptionDataSource,
     required TaskTestCaseDataSource taskTestCaseDataSource,
     required UserCourseDataSource userCourseDataSource,
+    required UserProfileService userProfileService,
     required CourseCacheService cacheService,
   }) : _coinTransactionsDataSource = coinTransactionsDataSource,
        _courseDataSource = courseDataSource,
        _courseReviewDataSource = courseReviewDataSource,
-       _emailAccountDataSource = emailAccountDataSource,
        _moduleDataSource = moduleDataSource,
        _lessonDataSource = lessonDataSource,
        _taskDataSource = taskDataSource,
        _taskOptionDataSource = taskOptionDataSource,
        _taskTestCaseDataSource = taskTestCaseDataSource,
        _userCourseDataSource = userCourseDataSource,
+       _userProfileService = userProfileService,
        _cacheService = cacheService;
 
   Future<List<CourseDto>> getCourses(
@@ -320,13 +320,21 @@ class CourseService {
               updatedAt: now,
             ),
           );
-    final authorName = await _resolveAuthorName(session, authUserId);
+    final authorName = await _userProfileService.resolveDisplayName(
+      session,
+      authUserId: authUserId,
+    );
+    final authorAvatarUrl = await _userProfileService.resolveAvatarUrl(
+      session,
+      authUserId: authUserId,
+    );
     await _refreshCourseRating(session, courseId);
 
     return CourseReviewDto(
       id: review.id!,
       courseId: review.courseId,
       authorName: authorName,
+      authorAvatarUrl: authorAvatarUrl,
       isCurrentUserReview: true,
       rating: review.rating,
       comment: review.comment,
@@ -590,14 +598,18 @@ class CourseService {
     }
 
     final authorIds = reviews.map((item) => item.authUserId).toSet();
-    final emailAccounts = await _emailAccountDataSource.listByAuthUserIds(
-      session,
-      authUserIds: authorIds,
-    );
-    final namesByAuthorId = <UuidValue, String>{
-      for (final account in emailAccounts)
-        account.authUserId: _displayNameFromEmail(account.email),
-    };
+    final namesByAuthorId = <UuidValue, String>{};
+    final avatarsByAuthorId = <UuidValue, String?>{};
+    for (final authorId in authorIds) {
+      namesByAuthorId[authorId] = await _userProfileService.resolveDisplayName(
+        session,
+        authUserId: authorId,
+      );
+      avatarsByAuthorId[authorId] = await _userProfileService.resolveAvatarUrl(
+        session,
+        authUserId: authorId,
+      );
+    }
 
     return reviews
         .map(
@@ -605,6 +617,7 @@ class CourseService {
             id: review.id!,
             courseId: review.courseId,
             authorName: namesByAuthorId[review.authUserId] ?? 'Learner',
+            authorAvatarUrl: avatarsByAuthorId[review.authUserId],
             isCurrentUserReview: authUserId == review.authUserId,
             rating: review.rating,
             comment: review.comment,
@@ -635,32 +648,19 @@ class CourseService {
     return CourseReviewDto(
       id: review.id!,
       courseId: review.courseId,
-      authorName: await _resolveAuthorName(session, authUserId),
+      authorName: await _userProfileService.resolveDisplayName(
+        session,
+        authUserId: authUserId,
+      ),
+      authorAvatarUrl: await _userProfileService.resolveAvatarUrl(
+        session,
+        authUserId: authUserId,
+      ),
       isCurrentUserReview: true,
       rating: review.rating,
       comment: review.comment,
       createdAt: review.createdAt,
     );
-  }
-
-  Future<String> _resolveAuthorName(
-    Session session,
-    UuidValue authUserId,
-  ) async {
-    final emailAccount = await _emailAccountDataSource.findByAuthUserId(
-      session,
-      authUserId: authUserId,
-    );
-    if (emailAccount == null) {
-      return 'Learner';
-    }
-
-    return _displayNameFromEmail(emailAccount.email);
-  }
-
-  String _displayNameFromEmail(String email) {
-    final localPart = email.split('@').first.trim();
-    return localPart.isEmpty ? 'Learner' : localPart;
   }
 
   Future<void> _refreshCourseRating(Session session, int courseId) async {

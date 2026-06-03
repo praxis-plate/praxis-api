@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:praxis_server/src/datasources/achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/auth_user_data_source.dart';
+import 'package:praxis_server/src/datasources/auth_user_profile_data_source.dart';
 import 'package:praxis_server/src/datasources/coin_transactions_data_source.dart';
 import 'package:praxis_server/src/datasources/course_data_source.dart';
 import 'package:praxis_server/src/datasources/course_review_data_source.dart';
@@ -17,6 +18,7 @@ import 'package:praxis_server/src/datasources/task_option_data_source.dart';
 import 'package:praxis_server/src/datasources/task_test_case_data_source.dart';
 import 'package:praxis_server/src/datasources/user_achievement_data_source.dart';
 import 'package:praxis_server/src/datasources/user_course_data_source.dart';
+import 'package:praxis_server/src/datasources/user_profile_metadata_data_source.dart';
 import 'package:praxis_server/src/datasources/user_statistics_data_source.dart';
 import 'package:praxis_server/src/datasources/wallet_data_source.dart';
 import 'package:praxis_server/src/services/access_control/access_control_service.dart';
@@ -35,6 +37,7 @@ import 'package:praxis_server/src/services/recommendation/course_recommendation_
 import 'package:praxis_server/src/services/task/code_execution_service.dart';
 import 'package:praxis_server/src/services/task/task_answer_validation_service.dart';
 import 'package:praxis_server/src/services/task/task_service.dart';
+import 'package:praxis_server/src/services/user_profile/user_profile.dart';
 import 'package:praxis_server/src/services/user_statistics/user_statistics_service.dart';
 import 'package:praxis_server/src/services/wallet/wallet_service.dart';
 import 'package:praxis_server/src/shared/utils/transaction_runner.dart';
@@ -55,6 +58,7 @@ class AppServices {
   final LessonService lessonService;
   final ModuleService moduleService;
   final TaskService taskService;
+  final UserProfileService userProfileService;
   final UserStatisticsService userStatisticsService;
   final WalletService walletService;
 
@@ -73,6 +77,7 @@ class AppServices {
     required this.lessonService,
     required this.moduleService,
     required this.taskService,
+    required this.userProfileService,
     required this.userStatisticsService,
     required this.walletService,
   });
@@ -86,6 +91,7 @@ class AppServices {
     final proxyPort = proxyPortRaw == null ? null : int.tryParse(proxyPortRaw);
     const achievementDataSource = AchievementDataSource();
     const authUserDataSource = AuthUserDataSource();
+    const authUserProfileDataSource = AuthUserProfileDataSource();
     const coinTransactionsDataSource = CoinTransactionsDataSource();
     const courseDataSource = CourseDataSource();
     const courseReviewDataSource = CourseReviewDataSource();
@@ -103,6 +109,7 @@ class AppServices {
     );
     const userAchievementDataSource = UserAchievementDataSource();
     const userCourseDataSource = UserCourseDataSource();
+    const userProfileMetadataDataSource = UserProfileMetadataDataSource();
     const userStatisticsDataSource = UserStatisticsDataSource();
     const walletDataSource = WalletDataSource();
 
@@ -120,6 +127,12 @@ class AppServices {
       dataSource: userStatisticsDataSource,
     );
     final transactionRunner = const TransactionRunner();
+    final userProfileService = UserProfileService(
+      authUserDataSource: authUserDataSource,
+      authUserProfileDataSource: authUserProfileDataSource,
+      emailAccountDataSource: emailAccountDataSource,
+      metadataDataSource: userProfileMetadataDataSource,
+    );
     final walletService = WalletService(
       coinTransactionsDataSource: coinTransactionsDataSource,
       walletDataSource: walletDataSource,
@@ -180,13 +193,13 @@ class AppServices {
       coinTransactionsDataSource: coinTransactionsDataSource,
       courseDataSource: courseDataSource,
       courseReviewDataSource: courseReviewDataSource,
-      emailAccountDataSource: emailAccountDataSource,
       moduleDataSource: moduleDataSource,
       lessonDataSource: lessonDataSource,
       taskDataSource: taskDataSource,
       taskOptionDataSource: taskOptionDataSource,
       taskTestCaseDataSource: taskTestCaseDataSource,
       userCourseDataSource: userCourseDataSource,
+      userProfileService: userProfileService,
       cacheService: courseCacheService,
     );
     final courseRecommendationService = CourseRecommendationService(
@@ -230,6 +243,7 @@ class AppServices {
       lessonService: lessonService,
       moduleService: moduleService,
       taskService: taskService,
+      userProfileService: userProfileService,
       userStatisticsService: userStatisticsService,
       walletService: walletService,
     );

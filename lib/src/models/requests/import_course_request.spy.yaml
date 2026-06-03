@@ -6,4 +6,5 @@ fields:
   priceInCoins: int?
   thumbnailUrl: String?
   coverImage: String?
+  screenshots: List<String>?
   modules: List<CourseImportModuleDto>

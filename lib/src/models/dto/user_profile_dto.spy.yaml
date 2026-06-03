@@ -1,0 +1,10 @@
+class: UserProfileDto
+fields:
+  authUserId: String
+  email: String
+  fullName: String?
+  displayName: String
+  avatarUrl: String?
+  createdAt: DateTime
+  canChangeFullName: bool
+  nextFullNameChangeAt: DateTime?

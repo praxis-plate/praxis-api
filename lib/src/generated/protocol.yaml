@@ -92,6 +92,11 @@ task:
   - getById:
   - getByLessonId:
   - answer:
+userProfile:
+  - getMyProfile:
+  - update:
+  - uploadAvatar:
+  - removeAvatar:
 userStatistics:
   - get:
 wallet:

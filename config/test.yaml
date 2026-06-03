@@ -44,6 +44,8 @@ redis:
   #user: # defaults to empty
   #requireSsl: true # defaults to false
 
+maxRequestSize: 8388608 # The maximum size of requests allowed in bytes
+
 sessionLogs:
   persistentEnabled: true
   consoleEnabled: true

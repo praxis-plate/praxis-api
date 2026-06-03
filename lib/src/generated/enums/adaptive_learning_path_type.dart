@@ -16,8 +16,7 @@ enum AdaptiveLearningPathType implements _i1.SerializableModel {
   standard,
   remedial,
   accelerated,
-  completed
-  ;
+  completed;
 
   static AdaptiveLearningPathType fromJson(String name) {
     switch (name) {

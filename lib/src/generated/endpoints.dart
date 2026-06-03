@@ -29,58 +29,63 @@ import '../endpoints/module_admin_endpoint.dart' as _i16;
 import '../endpoints/module_endpoint.dart' as _i17;
 import '../endpoints/task_admin_endpoint.dart' as _i18;
 import '../endpoints/task_endpoint.dart' as _i19;
-import '../endpoints/user_statistics_endpoint.dart' as _i20;
-import '../endpoints/wallet_endpoint.dart' as _i21;
-import 'package:praxis_server/src/generated/enums/user_role.dart' as _i22;
+import '../endpoints/user_profile_endpoint.dart' as _i20;
+import '../endpoints/user_statistics_endpoint.dart' as _i21;
+import '../endpoints/wallet_endpoint.dart' as _i22;
+import 'package:praxis_server/src/generated/enums/user_role.dart' as _i23;
 import 'package:praxis_server/src/generated/requests/generate_hint_request.dart'
-    as _i23;
-import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart'
     as _i24;
-import 'package:praxis_server/src/generated/requests/upload_cms_media_request.dart'
+import 'package:praxis_server/src/generated/requests/generate_explanation_request.dart'
     as _i25;
-import 'package:praxis_server/src/generated/enums/content_status.dart' as _i26;
+import 'package:praxis_server/src/generated/requests/upload_cms_media_request.dart'
+    as _i26;
+import 'package:praxis_server/src/generated/enums/content_status.dart' as _i27;
 import 'package:praxis_server/src/generated/requests/create_course_request.dart'
-    as _i27;
-import 'package:praxis_server/src/generated/requests/import_course_request.dart'
     as _i28;
-import 'package:praxis_server/src/generated/requests/update_course_request.dart'
+import 'package:praxis_server/src/generated/requests/import_course_request.dart'
     as _i29;
-import 'package:praxis_server/src/generated/requests/create_course_review_request.dart'
+import 'package:praxis_server/src/generated/requests/update_course_request.dart'
     as _i30;
-import 'package:praxis_server/src/generated/requests/sync_course_to_external_provider_request.dart'
+import 'package:praxis_server/src/generated/requests/create_course_review_request.dart'
     as _i31;
-import 'package:praxis_server/src/generated/requests/provision_external_video_session_request.dart'
+import 'package:praxis_server/src/generated/requests/sync_course_to_external_provider_request.dart'
     as _i32;
-import 'package:praxis_server/src/generated/requests/create_lesson_request.dart'
+import 'package:praxis_server/src/generated/requests/provision_external_video_session_request.dart'
     as _i33;
-import 'package:praxis_server/src/generated/requests/update_lesson_request.dart'
+import 'package:praxis_server/src/generated/requests/create_lesson_request.dart'
     as _i34;
-import 'package:praxis_server/src/generated/requests/reorder_lessons_request.dart'
+import 'package:praxis_server/src/generated/requests/update_lesson_request.dart'
     as _i35;
-import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_lessons_request.dart'
     as _i36;
-import 'package:praxis_server/src/generated/requests/create_module_request.dart'
+import 'package:praxis_server/src/generated/requests/complete_lesson_session_request.dart'
     as _i37;
-import 'package:praxis_server/src/generated/requests/update_module_request.dart'
+import 'package:praxis_server/src/generated/requests/create_module_request.dart'
     as _i38;
-import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
+import 'package:praxis_server/src/generated/requests/update_module_request.dart'
     as _i39;
-import 'package:praxis_server/src/generated/requests/create_task_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_modules_request.dart'
     as _i40;
-import 'package:praxis_server/src/generated/requests/update_task_request.dart'
+import 'package:praxis_server/src/generated/requests/create_task_request.dart'
     as _i41;
-import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
+import 'package:praxis_server/src/generated/requests/update_task_request.dart'
     as _i42;
-import 'package:praxis_server/src/generated/requests/upsert_task_options_request.dart'
+import 'package:praxis_server/src/generated/requests/reorder_tasks_request.dart'
     as _i43;
-import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
+import 'package:praxis_server/src/generated/requests/upsert_task_options_request.dart'
     as _i44;
-import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+import 'package:praxis_server/src/generated/requests/upsert_task_test_cases_request.dart'
     as _i45;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:praxis_server/src/generated/requests/update_user_profile_request.dart'
     as _i46;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+import 'package:praxis_server/src/generated/requests/upload_user_avatar_request.dart'
     as _i47;
+import 'package:praxis_server/src/generated/requests/create_coin_transaction_request.dart'
+    as _i48;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i49;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i50;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -194,13 +199,19 @@ class Endpoints extends _i1.EndpointDispatch {
           'task',
           null,
         ),
-      'userStatistics': _i20.UserStatisticsEndpoint()
+      'userProfile': _i20.UserProfileEndpoint()
+        ..initialize(
+          server,
+          'userProfile',
+          null,
+        ),
+      'userStatistics': _i21.UserStatisticsEndpoint()
         ..initialize(
           server,
           'userStatistics',
           null,
         ),
-      'wallet': _i21.WalletEndpoint()
+      'wallet': _i22.WalletEndpoint()
         ..initialize(
           server,
           'wallet',
@@ -274,7 +285,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i22.UserRole>(),
+              type: _i1.getType<_i23.UserRole>(),
               nullable: false,
             ),
           },
@@ -300,7 +311,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i22.UserRole>(),
+              type: _i1.getType<_i23.UserRole>(),
               nullable: false,
             ),
           },
@@ -407,7 +418,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i22.UserRole>(),
+              type: _i1.getType<_i23.UserRole>(),
               nullable: false,
             ),
           },
@@ -433,7 +444,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'role': _i1.ParameterDescription(
               name: 'role',
-              type: _i1.getType<_i22.UserRole>(),
+              type: _i1.getType<_i23.UserRole>(),
               nullable: false,
             ),
           },
@@ -564,7 +575,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i23.GenerateHintRequest>(),
+              type: _i1.getType<_i24.GenerateHintRequest>(),
               nullable: false,
             ),
           },
@@ -582,7 +593,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i24.GenerateExplanationRequest>(),
+              type: _i1.getType<_i25.GenerateExplanationRequest>(),
               nullable: false,
             ),
           },
@@ -607,7 +618,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i25.UploadCmsMediaRequest>(),
+              type: _i1.getType<_i26.UploadCmsMediaRequest>(),
               nullable: false,
             ),
           },
@@ -633,7 +644,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'status': _i1.ParameterDescription(
               name: 'status',
-              type: _i1.getType<_i26.ContentStatus?>(),
+              type: _i1.getType<_i27.ContentStatus?>(),
               nullable: true,
             ),
             'query': _i1.ParameterDescription(
@@ -670,7 +681,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i27.CreateCourseRequest>(),
+              type: _i1.getType<_i28.CreateCourseRequest>(),
               nullable: false,
             ),
           },
@@ -689,7 +700,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i28.ImportCourseRequest>(),
+              type: _i1.getType<_i29.ImportCourseRequest>(),
               nullable: false,
             ),
           },
@@ -708,7 +719,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i29.UpdateCourseRequest>(),
+              type: _i1.getType<_i30.UpdateCourseRequest>(),
               nullable: false,
             ),
           },
@@ -974,7 +985,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i30.CreateCourseReviewRequest>(),
+              type: _i1.getType<_i31.CreateCourseReviewRequest>(),
               nullable: false,
             ),
           },
@@ -1181,7 +1192,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i31.SyncCourseToExternalProviderRequest>(),
+              type: _i1.getType<_i32.SyncCourseToExternalProviderRequest>(),
               nullable: false,
             ),
           },
@@ -1202,7 +1213,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i32.ProvisionExternalVideoSessionRequest>(),
+              type: _i1.getType<_i33.ProvisionExternalVideoSessionRequest>(),
               nullable: false,
             ),
           },
@@ -1289,7 +1300,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i33.CreateLessonRequest>(),
+              type: _i1.getType<_i34.CreateLessonRequest>(),
               nullable: false,
             ),
           },
@@ -1308,7 +1319,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i34.UpdateLessonRequest>(),
+              type: _i1.getType<_i35.UpdateLessonRequest>(),
               nullable: false,
             ),
           },
@@ -1346,7 +1357,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i35.ReorderLessonsRequest>(),
+              type: _i1.getType<_i36.ReorderLessonsRequest>(),
               nullable: false,
             ),
           },
@@ -1471,7 +1482,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i36.CompleteLessonSessionRequest>(),
+              type: _i1.getType<_i37.CompleteLessonSessionRequest>(),
               nullable: false,
             ),
           },
@@ -1514,7 +1525,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i37.CreateModuleRequest>(),
+              type: _i1.getType<_i38.CreateModuleRequest>(),
               nullable: false,
             ),
           },
@@ -1533,7 +1544,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i38.UpdateModuleRequest>(),
+              type: _i1.getType<_i39.UpdateModuleRequest>(),
               nullable: false,
             ),
           },
@@ -1571,7 +1582,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i39.ReorderModulesRequest>(),
+              type: _i1.getType<_i40.ReorderModulesRequest>(),
               nullable: false,
             ),
           },
@@ -1639,7 +1650,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i40.CreateTaskRequest>(),
+              type: _i1.getType<_i41.CreateTaskRequest>(),
               nullable: false,
             ),
           },
@@ -1658,7 +1669,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i41.UpdateTaskRequest>(),
+              type: _i1.getType<_i42.UpdateTaskRequest>(),
               nullable: false,
             ),
           },
@@ -1696,7 +1707,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i42.ReorderTasksRequest>(),
+              type: _i1.getType<_i43.ReorderTasksRequest>(),
               nullable: false,
             ),
           },
@@ -1715,7 +1726,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i43.UpsertTaskOptionsRequest>(),
+              type: _i1.getType<_i44.UpsertTaskOptionsRequest>(),
               nullable: false,
             ),
           },
@@ -1734,7 +1745,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i44.UpsertTaskTestCasesRequest>(),
+              type: _i1.getType<_i45.UpsertTaskTestCasesRequest>(),
               nullable: false,
             ),
           },
@@ -1816,6 +1827,70 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['userProfile'] = _i1.EndpointConnector(
+      name: 'userProfile',
+      endpoint: endpoints['userProfile']!,
+      methodConnectors: {
+        'getMyProfile': _i1.MethodConnector(
+          name: 'getMyProfile',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i20.UserProfileEndpoint)
+                  .getMyProfile(session),
+        ),
+        'update': _i1.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _i1.ParameterDescription(
+              name: 'request',
+              type: _i1.getType<_i46.UpdateUserProfileRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['userProfile'] as _i20.UserProfileEndpoint).update(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'uploadAvatar': _i1.MethodConnector(
+          name: 'uploadAvatar',
+          params: {
+            'request': _i1.ParameterDescription(
+              name: 'request',
+              type: _i1.getType<_i47.UploadUserAvatarRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i20.UserProfileEndpoint)
+                  .uploadAvatar(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'removeAvatar': _i1.MethodConnector(
+          name: 'removeAvatar',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['userProfile'] as _i20.UserProfileEndpoint)
+                  .removeAvatar(session),
+        ),
+      },
+    );
     connectors['userStatistics'] = _i1.EndpointConnector(
       name: 'userStatistics',
       endpoint: endpoints['userStatistics']!,
@@ -1828,7 +1903,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['userStatistics'] as _i20.UserStatisticsEndpoint)
+                  (endpoints['userStatistics'] as _i21.UserStatisticsEndpoint)
                       .get(session),
         ),
       },
@@ -1844,7 +1919,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i21.WalletEndpoint)
+              ) async => (endpoints['wallet'] as _i22.WalletEndpoint)
                   .getBalance(session),
         ),
         'topUp': _i1.MethodConnector(
@@ -1852,7 +1927,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i45.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i48.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -1860,7 +1935,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i21.WalletEndpoint).topUp(
+              ) async => (endpoints['wallet'] as _i22.WalletEndpoint).topUp(
                 session,
                 params['request'],
               ),
@@ -1870,7 +1945,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i45.CreateCoinTransactionRequest>(),
+              type: _i1.getType<_i48.CreateCoinTransactionRequest>(),
               nullable: false,
             ),
           },
@@ -1878,7 +1953,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['wallet'] as _i21.WalletEndpoint).buy(
+              ) async => (endpoints['wallet'] as _i22.WalletEndpoint).buy(
                 session,
                 params['request'],
               ),
@@ -1902,7 +1977,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['wallet'] as _i21.WalletEndpoint).getHistory(
+                  (endpoints['wallet'] as _i22.WalletEndpoint).getHistory(
                     session,
                     limit: params['limit'],
                     offset: params['offset'],
@@ -1910,9 +1985,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth_core'] = _i46.Endpoints()
+    modules['serverpod_auth_core'] = _i49.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_idp'] = _i47.Endpoints()
+    modules['serverpod_auth_idp'] = _i50.Endpoints()
       ..initializeEndpoints(server);
   }
 }

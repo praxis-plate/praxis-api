@@ -1,0 +1,10 @@
+class: UserProfileMetadata
+serverOnly: true
+table: user_profile_metadata
+fields:
+  authUserId: UuidValue
+  lastFullNameChangedAt: DateTime?
+indexes:
+  user_profile_metadata_auth_user_id_unique:
+    fields: authUserId
+    unique: true

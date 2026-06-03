@@ -23,6 +23,7 @@ abstract class ImportCourseRequest
     this.priceInCoins,
     this.thumbnailUrl,
     this.coverImage,
+    this.screenshots,
     required this.modules,
   });
 
@@ -33,6 +34,7 @@ abstract class ImportCourseRequest
     int? priceInCoins,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     required List<_i2.CourseImportModuleDto> modules,
   }) = _ImportCourseRequestImpl;
 
@@ -44,6 +46,11 @@ abstract class ImportCourseRequest
       priceInCoins: jsonSerialization['priceInCoins'] as int?,
       thumbnailUrl: jsonSerialization['thumbnailUrl'] as String?,
       coverImage: jsonSerialization['coverImage'] as String?,
+      screenshots: jsonSerialization['screenshots'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['screenshots'],
+            ),
       modules: _i3.Protocol().deserialize<List<_i2.CourseImportModuleDto>>(
         jsonSerialization['modules'],
       ),
@@ -62,6 +69,8 @@ abstract class ImportCourseRequest
 
   String? coverImage;
 
+  List<String>? screenshots;
+
   List<_i2.CourseImportModuleDto> modules;
 
   /// Returns a shallow copy of this [ImportCourseRequest]
@@ -74,6 +83,7 @@ abstract class ImportCourseRequest
     int? priceInCoins,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     List<_i2.CourseImportModuleDto>? modules,
   });
   @override
@@ -86,6 +96,7 @@ abstract class ImportCourseRequest
       if (priceInCoins != null) 'priceInCoins': priceInCoins,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
       'modules': modules.toJson(valueToJson: (v) => v.toJson()),
     };
   }
@@ -100,6 +111,7 @@ abstract class ImportCourseRequest
       if (priceInCoins != null) 'priceInCoins': priceInCoins,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
       'modules': modules.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
@@ -120,6 +132,7 @@ class _ImportCourseRequestImpl extends ImportCourseRequest {
     int? priceInCoins,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     required List<_i2.CourseImportModuleDto> modules,
   }) : super._(
          title: title,
@@ -128,6 +141,7 @@ class _ImportCourseRequestImpl extends ImportCourseRequest {
          priceInCoins: priceInCoins,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
+         screenshots: screenshots,
          modules: modules,
        );
 
@@ -142,6 +156,7 @@ class _ImportCourseRequestImpl extends ImportCourseRequest {
     Object? priceInCoins = _Undefined,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
+    Object? screenshots = _Undefined,
     List<_i2.CourseImportModuleDto>? modules,
   }) {
     return ImportCourseRequest(
@@ -151,6 +166,9 @@ class _ImportCourseRequestImpl extends ImportCourseRequest {
       priceInCoins: priceInCoins is int? ? priceInCoins : this.priceInCoins,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
+      screenshots: screenshots is List<String>?
+          ? screenshots
+          : this.screenshots?.map((e0) => e0).toList(),
       modules: modules ?? this.modules.map((e0) => e0.copyWith()).toList(),
     );
   }

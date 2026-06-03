@@ -18,6 +18,7 @@ abstract class CourseReviewDto
     required this.id,
     required this.courseId,
     required this.authorName,
+    this.authorAvatarUrl,
     required this.isCurrentUserReview,
     required this.rating,
     required this.comment,
@@ -28,6 +29,7 @@ abstract class CourseReviewDto
     required int id,
     required int courseId,
     required String authorName,
+    String? authorAvatarUrl,
     required bool isCurrentUserReview,
     required int rating,
     required String comment,
@@ -39,6 +41,7 @@ abstract class CourseReviewDto
       id: jsonSerialization['id'] as int,
       courseId: jsonSerialization['courseId'] as int,
       authorName: jsonSerialization['authorName'] as String,
+      authorAvatarUrl: jsonSerialization['authorAvatarUrl'] as String?,
       isCurrentUserReview: jsonSerialization['isCurrentUserReview'] as bool,
       rating: jsonSerialization['rating'] as int,
       comment: jsonSerialization['comment'] as String,
@@ -53,6 +56,8 @@ abstract class CourseReviewDto
   int courseId;
 
   String authorName;
+
+  String? authorAvatarUrl;
 
   bool isCurrentUserReview;
 
@@ -69,6 +74,7 @@ abstract class CourseReviewDto
     int? id,
     int? courseId,
     String? authorName,
+    String? authorAvatarUrl,
     bool? isCurrentUserReview,
     int? rating,
     String? comment,
@@ -81,6 +87,7 @@ abstract class CourseReviewDto
       'id': id,
       'courseId': courseId,
       'authorName': authorName,
+      if (authorAvatarUrl != null) 'authorAvatarUrl': authorAvatarUrl,
       'isCurrentUserReview': isCurrentUserReview,
       'rating': rating,
       'comment': comment,
@@ -95,6 +102,7 @@ abstract class CourseReviewDto
       'id': id,
       'courseId': courseId,
       'authorName': authorName,
+      if (authorAvatarUrl != null) 'authorAvatarUrl': authorAvatarUrl,
       'isCurrentUserReview': isCurrentUserReview,
       'rating': rating,
       'comment': comment,
@@ -108,11 +116,14 @@ abstract class CourseReviewDto
   }
 }
 
+class _Undefined {}
+
 class _CourseReviewDtoImpl extends CourseReviewDto {
   _CourseReviewDtoImpl({
     required int id,
     required int courseId,
     required String authorName,
+    String? authorAvatarUrl,
     required bool isCurrentUserReview,
     required int rating,
     required String comment,
@@ -121,6 +132,7 @@ class _CourseReviewDtoImpl extends CourseReviewDto {
          id: id,
          courseId: courseId,
          authorName: authorName,
+         authorAvatarUrl: authorAvatarUrl,
          isCurrentUserReview: isCurrentUserReview,
          rating: rating,
          comment: comment,
@@ -135,6 +147,7 @@ class _CourseReviewDtoImpl extends CourseReviewDto {
     int? id,
     int? courseId,
     String? authorName,
+    Object? authorAvatarUrl = _Undefined,
     bool? isCurrentUserReview,
     int? rating,
     String? comment,
@@ -144,6 +157,9 @@ class _CourseReviewDtoImpl extends CourseReviewDto {
       id: id ?? this.id,
       courseId: courseId ?? this.courseId,
       authorName: authorName ?? this.authorName,
+      authorAvatarUrl: authorAvatarUrl is String?
+          ? authorAvatarUrl
+          : this.authorAvatarUrl,
       isCurrentUserReview: isCurrentUserReview ?? this.isCurrentUserReview,
       rating: rating ?? this.rating,
       comment: comment ?? this.comment,

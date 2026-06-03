@@ -16,8 +16,7 @@ enum ExternalIntegrationProvider implements _i1.SerializableModel {
   moodle,
   canvas,
   zoom,
-  googleMeet
-  ;
+  googleMeet;
 
   static ExternalIntegrationProvider fromJson(String name) {
     switch (name) {

@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../enums/content_status.dart' as _i2;
+import 'package:praxis_server/src/generated/protocol.dart' as _i3;
 
 abstract class CourseDto
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -27,6 +28,7 @@ abstract class CourseDto
     required this.rating,
     this.thumbnailUrl,
     this.coverImage,
+    this.screenshots,
     required this.createdAt,
     required this.updatedAt,
     required this.contentStatus,
@@ -47,6 +49,7 @@ abstract class CourseDto
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     required DateTime createdAt,
     required DateTime updatedAt,
     required _i2.ContentStatus contentStatus,
@@ -68,6 +71,11 @@ abstract class CourseDto
       rating: (jsonSerialization['rating'] as num).toDouble(),
       thumbnailUrl: jsonSerialization['thumbnailUrl'] as String?,
       coverImage: jsonSerialization['coverImage'] as String?,
+      screenshots: jsonSerialization['screenshots'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<String>>(
+              jsonSerialization['screenshots'],
+            ),
       createdAt: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -109,6 +117,8 @@ abstract class CourseDto
 
   String? coverImage;
 
+  List<String>? screenshots;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -136,6 +146,7 @@ abstract class CourseDto
     double? rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     DateTime? createdAt,
     DateTime? updatedAt,
     _i2.ContentStatus? contentStatus,
@@ -158,6 +169,7 @@ abstract class CourseDto
       'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       'contentStatus': contentStatus.toJson(),
@@ -182,6 +194,7 @@ abstract class CourseDto
       'rating': rating,
       if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl,
       if (coverImage != null) 'coverImage': coverImage,
+      if (screenshots != null) 'screenshots': screenshots?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       'contentStatus': contentStatus.toJson(),
@@ -212,6 +225,7 @@ class _CourseDtoImpl extends CourseDto {
     required double rating,
     String? thumbnailUrl,
     String? coverImage,
+    List<String>? screenshots,
     required DateTime createdAt,
     required DateTime updatedAt,
     required _i2.ContentStatus contentStatus,
@@ -230,6 +244,7 @@ class _CourseDtoImpl extends CourseDto {
          rating: rating,
          thumbnailUrl: thumbnailUrl,
          coverImage: coverImage,
+         screenshots: screenshots,
          createdAt: createdAt,
          updatedAt: updatedAt,
          contentStatus: contentStatus,
@@ -254,6 +269,7 @@ class _CourseDtoImpl extends CourseDto {
     double? rating,
     Object? thumbnailUrl = _Undefined,
     Object? coverImage = _Undefined,
+    Object? screenshots = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
     _i2.ContentStatus? contentStatus,
@@ -273,6 +289,9 @@ class _CourseDtoImpl extends CourseDto {
       rating: rating ?? this.rating,
       thumbnailUrl: thumbnailUrl is String? ? thumbnailUrl : this.thumbnailUrl,
       coverImage: coverImage is String? ? coverImage : this.coverImage,
+      screenshots: screenshots is List<String>?
+          ? screenshots
+          : this.screenshots?.map((e0) => e0).toList(),
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       contentStatus: contentStatus ?? this.contentStatus,

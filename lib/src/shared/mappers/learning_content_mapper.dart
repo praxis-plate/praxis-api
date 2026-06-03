@@ -1,5 +1,6 @@
 import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/utils/lesson_content_document_codec.dart';
+import 'dart:convert';
 
 const _lessonContentDocumentCodec = LessonContentDocumentCodec();
 
@@ -21,6 +22,11 @@ extension CourseMapper on Course {
       rating: rating,
       thumbnailUrl: thumbnailUrl,
       coverImage: coverImage,
+      screenshots: _decodeCourseScreenshots(
+        screenshotsJson,
+        coverImage: coverImage,
+        thumbnailUrl: thumbnailUrl,
+      ),
       createdAt: createdAt,
       updatedAt: updatedAt,
       contentStatus: contentStatus,
@@ -28,6 +34,45 @@ extension CourseMapper on Course {
       totalLessons: totalLessons,
       totalTasks: totalTasks,
     );
+  }
+}
+
+List<String>? _decodeCourseScreenshots(
+  String? screenshotsJson, {
+  required String? coverImage,
+  required String? thumbnailUrl,
+}) {
+  if (screenshotsJson == null || screenshotsJson.trim().isEmpty) {
+    return null;
+  }
+
+  try {
+    final decoded = jsonDecode(screenshotsJson);
+    if (decoded is! List) {
+      return null;
+    }
+
+    final blockedUrls = {
+      if (coverImage case final cover? when cover.trim().isNotEmpty)
+        cover.trim(),
+      if (thumbnailUrl case final thumbnail? when thumbnail.trim().isNotEmpty)
+        thumbnail.trim(),
+    };
+
+    final screenshots = <String>[];
+    for (final item in decoded.whereType<String>()) {
+      final normalized = item.trim();
+      if (normalized.isEmpty || blockedUrls.contains(normalized)) {
+        continue;
+      }
+      if (!screenshots.contains(normalized)) {
+        screenshots.add(normalized);
+      }
+    }
+
+    return screenshots;
+  } catch (_) {
+    return null;
   }
 }
 
