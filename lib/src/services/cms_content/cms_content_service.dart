@@ -336,6 +336,7 @@ class CmsContentService {
       request.id,
       transaction: transaction,
     );
+    _requireCourseEditable(course);
     final updated = await _courseDataSource.updateRow(
       session,
       course.copyWith(
@@ -384,7 +385,12 @@ class CmsContentService {
     int courseId, {
     Transaction? transaction,
   }) async {
-    await _requireCourse(session, courseId, transaction: transaction);
+    final course = await _requireCourse(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    _requireCourseEditable(course);
     final modules = await _moduleDataSource.listByCourseId(
       session,
       courseId,
@@ -442,6 +448,12 @@ class CmsContentService {
     int courseId, {
     Transaction? transaction,
   }) async {
+    final course = await _requireCourse(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    _requireCourseEditable(course);
     await _validateCourseReadyForPublication(
       session,
       courseId,
@@ -459,6 +471,44 @@ class CmsContentService {
   }
 
   Future<CourseDto> unpublishCourse(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    final course = await _requireCourse(
+      session,
+      courseId,
+      transaction: transaction,
+    );
+    _requireCourseEditable(course);
+    final result = await _setCoursePublication(
+      session,
+      courseId,
+      contentStatus: ContentStatus.draft,
+      publishedAt: null,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCache(session, courseId);
+    return result;
+  }
+
+  Future<CourseDto> freezeCourse(
+    Session session,
+    int courseId, {
+    Transaction? transaction,
+  }) async {
+    final result = await _setCoursePublication(
+      session,
+      courseId,
+      contentStatus: ContentStatus.frozen,
+      publishedAt: null,
+      transaction: transaction,
+    );
+    await _invalidatePublicCourseCache(session, courseId);
+    return result;
+  }
+
+  Future<CourseDto> unfreezeCourse(
     Session session,
     int courseId, {
     Transaction? transaction,
@@ -498,6 +548,7 @@ class CmsContentService {
       request.courseId,
       transaction: transaction,
     );
+    _requireCourseEditable(course);
     final now = DateTime.now();
     final modules = await _moduleDataSource.listByCourseId(
       session,
@@ -531,6 +582,11 @@ class CmsContentService {
       request.id,
       transaction: transaction,
     );
+    await _requireCourseEditableByModule(
+      session,
+      module.id!,
+      transaction: transaction,
+    );
     final now = DateTime.now();
 
     final updated = await _moduleDataSource.updateRow(
@@ -556,6 +612,11 @@ class CmsContentService {
     final module = await _requireModule(
       session,
       moduleId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByModule(
+      session,
+      module.id!,
       transaction: transaction,
     );
     final lessons = await _lessonDataSource.listByModuleId(
@@ -592,11 +653,9 @@ class CmsContentService {
       lessonIds,
       transaction: transaction,
     );
-    await _moduleDataSource.deleteByIds(
-      session,
-      {module.id!},
-      transaction: transaction,
-    );
+    await _moduleDataSource.deleteByIds(session, {
+      module.id!,
+    }, transaction: transaction);
 
     final remainingModules = await _moduleDataSource.listByCourseId(
       session,
@@ -629,6 +688,7 @@ class CmsContentService {
       request.courseId,
       transaction: transaction,
     );
+    _requireCourseEditable(course);
     final modules = await _moduleDataSource.listByCourseId(
       session,
       course.id!,
@@ -647,10 +707,7 @@ class CmsContentService {
       final module = modulesById[request.orderedModuleIds[index]]!;
       final updated = await _moduleDataSource.updateRow(
         session,
-        module.copyWith(
-          orderIndex: index,
-          updatedAt: now,
-        ),
+        module.copyWith(orderIndex: index, updatedAt: now),
         transaction: transaction,
       );
       reordered.add(updated);
@@ -684,6 +741,11 @@ class CmsContentService {
     final module = await _requireModule(
       session,
       request.moduleId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByModule(
+      session,
+      module.id!,
       transaction: transaction,
     );
     final now = DateTime.now();
@@ -731,6 +793,11 @@ class CmsContentService {
     final lesson = await _requireLesson(
       session,
       request.id,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByLesson(
+      session,
+      lesson.id!,
       transaction: transaction,
     );
     _validateLessonCompletionXp(request.completionXp ?? lesson.completionXp);
@@ -782,6 +849,11 @@ class CmsContentService {
       lessonId,
       transaction: transaction,
     );
+    await _requireCourseEditableByLesson(
+      session,
+      lesson.id!,
+      transaction: transaction,
+    );
     final module = await _requireModule(
       session,
       lesson.moduleId,
@@ -810,11 +882,9 @@ class CmsContentService {
       taskIds,
       transaction: transaction,
     );
-    await _lessonDataSource.deleteByIds(
-      session,
-      {lesson.id!},
-      transaction: transaction,
-    );
+    await _lessonDataSource.deleteByIds(session, {
+      lesson.id!,
+    }, transaction: transaction);
 
     final remainingLessons = await _lessonDataSource.listByModuleId(
       session,
@@ -853,6 +923,11 @@ class CmsContentService {
       request.moduleId,
       transaction: transaction,
     );
+    await _requireCourseEditableByModule(
+      session,
+      module.id!,
+      transaction: transaction,
+    );
     final lessons = await _lessonDataSource.listByModuleId(
       session,
       module.id!,
@@ -871,10 +946,7 @@ class CmsContentService {
       final lesson = lessonsById[request.orderedLessonIds[index]]!;
       final updated = await _lessonDataSource.updateRow(
         session,
-        lesson.copyWith(
-          orderIndex: index,
-          updatedAt: now,
-        ),
+        lesson.copyWith(orderIndex: index, updatedAt: now),
         transaction: transaction,
       );
       reordered.add(updated);
@@ -897,11 +969,7 @@ class CmsContentService {
     Transaction? transaction,
   }) async {
     await _requireLesson(session, lessonId, transaction: transaction);
-    return _buildTaskDtosForLesson(
-      session,
-      lessonId,
-      transaction: transaction,
-    );
+    return _buildTaskDtosForLesson(session, lessonId, transaction: transaction);
   }
 
   Future<TaskDto> createTask(
@@ -912,6 +980,11 @@ class CmsContentService {
     final lesson = await _requireLesson(
       session,
       request.lessonId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByLesson(
+      session,
+      lesson.id!,
       transaction: transaction,
     );
     final module = await _requireModule(
@@ -968,6 +1041,11 @@ class CmsContentService {
     final task = await _requireTask(
       session,
       request.id,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByTask(
+      session,
+      task.id!,
       transaction: transaction,
     );
     final lesson = await _requireLesson(
@@ -1027,6 +1105,11 @@ class CmsContentService {
     Transaction? transaction,
   }) async {
     final task = await _requireTask(session, taskId, transaction: transaction);
+    await _requireCourseEditableByTask(
+      session,
+      task.id!,
+      transaction: transaction,
+    );
     final lesson = await _requireLesson(
       session,
       task.lessonId,
@@ -1039,21 +1122,15 @@ class CmsContentService {
     );
     final now = DateTime.now();
 
-    await _taskOptionDataSource.deleteByTaskIds(
-      session,
-      {task.id!},
-      transaction: transaction,
-    );
-    await _taskTestCaseDataSource.deleteByTaskIds(
-      session,
-      {task.id!},
-      transaction: transaction,
-    );
-    await _taskDataSource.deleteByIds(
-      session,
-      {task.id!},
-      transaction: transaction,
-    );
+    await _taskOptionDataSource.deleteByTaskIds(session, {
+      task.id!,
+    }, transaction: transaction);
+    await _taskTestCaseDataSource.deleteByTaskIds(session, {
+      task.id!,
+    }, transaction: transaction);
+    await _taskDataSource.deleteByIds(session, {
+      task.id!,
+    }, transaction: transaction);
 
     final remainingTasks = await _taskDataSource.listByLessonId(
       session,
@@ -1093,6 +1170,11 @@ class CmsContentService {
       request.lessonId,
       transaction: transaction,
     );
+    await _requireCourseEditableByLesson(
+      session,
+      lesson.id!,
+      transaction: transaction,
+    );
     final module = await _requireModule(
       session,
       lesson.moduleId,
@@ -1116,10 +1198,7 @@ class CmsContentService {
       final task = tasksById[request.orderedTaskIds[index]]!;
       final updated = await _taskDataSource.updateRow(
         session,
-        task.copyWith(
-          orderIndex: index,
-          updatedAt: now,
-        ),
+        task.copyWith(orderIndex: index, updatedAt: now),
         transaction: transaction,
       );
       reordered.add(updated);
@@ -1145,6 +1224,11 @@ class CmsContentService {
     final task = await _requireTask(
       session,
       request.taskId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByTask(
+      session,
+      task.id!,
       transaction: transaction,
     );
     if (!_supportsTaskOptions(task.taskType)) {
@@ -1302,10 +1386,8 @@ class CmsContentService {
     return jsonEncode(
       correctOptions
           .map(
-            (option) => _requireText(
-              option.optionText,
-              'options.correctAnswer',
-            ),
+            (option) =>
+                _requireText(option.optionText, 'options.correctAnswer'),
           )
           .toList(),
     );
@@ -1319,6 +1401,11 @@ class CmsContentService {
     final task = await _requireTask(
       session,
       request.taskId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByTask(
+      session,
+      task.id!,
       transaction: transaction,
     );
     if (task.taskType != TaskType.codeCompletion) {
@@ -1847,6 +1934,68 @@ class CmsContentService {
     return course;
   }
 
+  void _requireCourseEditable(Course course) {
+    if (course.contentStatus == ContentStatus.frozen) {
+      throw ValidationException(
+        message: 'Frozen courses cannot be edited',
+        field: 'courseId',
+      );
+    }
+  }
+
+  Future<void> _requireCourseEditableByModule(
+    Session session,
+    int moduleId, {
+    Transaction? transaction,
+  }) async {
+    final module = await _requireModule(
+      session,
+      moduleId,
+      transaction: transaction,
+    );
+    final course = await _requireCourse(
+      session,
+      module.courseId,
+      transaction: transaction,
+    );
+    _requireCourseEditable(course);
+  }
+
+  Future<void> _requireCourseEditableByLesson(
+    Session session,
+    int lessonId, {
+    Transaction? transaction,
+  }) async {
+    final lesson = await _requireLesson(
+      session,
+      lessonId,
+      transaction: transaction,
+    );
+    final module = await _requireModule(
+      session,
+      lesson.moduleId,
+      transaction: transaction,
+    );
+    await _requireCourseEditableByModule(
+      session,
+      module.id!,
+      transaction: transaction,
+    );
+  }
+
+  Future<void> _requireCourseEditableByTask(
+    Session session,
+    int taskId, {
+    Transaction? transaction,
+  }) async {
+    final task = await _requireTask(session, taskId, transaction: transaction);
+    await _requireCourseEditableByLesson(
+      session,
+      task.lessonId,
+      transaction: transaction,
+    );
+  }
+
   Future<Module> _requireModule(
     Session session,
     int moduleId, {
@@ -2053,10 +2202,7 @@ class CmsContentService {
   String _requireText(String value, String field) {
     final normalized = value.trim();
     if (normalized.isEmpty) {
-      throw ValidationException(
-        message: 'Field is required',
-        field: field,
-      );
+      throw ValidationException(message: 'Field is required', field: field);
     }
     return normalized;
   }
@@ -2171,9 +2317,7 @@ class CmsContentService {
           field: 'imageUrls',
         );
       }
-      normalizedUrls.add(
-        _normalizeOptionalUrl(item, 'imageUrls')!,
-      );
+      normalizedUrls.add(_normalizeOptionalUrl(item, 'imageUrls')!);
     }
 
     return jsonEncode(normalizedUrls);

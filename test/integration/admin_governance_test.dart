@@ -98,41 +98,88 @@ void main() {
       expect(learnerProfile.canManageContent, isFalse);
     });
 
+    test('blocks and unblocks users through admin contract', () async {
+      const email = 'governance-blocked@codium.app';
+      final authUserId = await _createEmailUser(
+        sessionBuilder,
+        emailIdpConfig,
+        email: email,
+      );
+
+      final blockedProfile = await endpoints.adminGovernance.blockUser(
+        adminSession,
+        authUserId,
+      );
+      expect(blockedProfile.authUserId, authUserId);
+      expect(blockedProfile.blocked, isTrue);
+
+      final blockedUser = (await endpoints.adminGovernance.listUsers(
+        adminSession,
+      )).firstWhere((item) => item.authUserId == authUserId);
+      expect(blockedUser.blocked, isTrue);
+
+      final unblockedProfile = await endpoints.adminGovernance.unblockUser(
+        adminSession,
+        authUserId,
+      );
+      expect(unblockedProfile.blocked, isFalse);
+    });
+
+    test('lists enrolled and authored courses for a managed user', () async {
+      const email = 'governance-courses@codium.app';
+      final authUserId = await _createEmailUser(
+        sessionBuilder,
+        emailIdpConfig,
+        email: email,
+      );
+      final managedUserSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          authUserId.toString(),
+          {
+            Scope('learner.access'),
+            Scope('cms.access'),
+            Scope('content.manage'),
+          },
+        ),
+      );
+
+      final authoredCourse = await _createPublishableCourse(
+        endpoints,
+        managedUserSession,
+        title: 'Managed user authored course',
+      );
+      final enrolledCourse = await _createPublishableCourse(
+        endpoints,
+        authorSession,
+        title: 'Managed user enrolled course',
+      );
+      await endpoints.courseAdmin.publish(authorSession, enrolledCourse.id);
+      await endpoints.course.enroll(managedUserSession, enrolledCourse.id);
+
+      final result = await endpoints.adminGovernance.listUserCourses(
+        adminSession,
+        authUserId,
+      );
+
+      expect(
+        result.authoredCourses.any(
+          (course) => course.courseId == authoredCourse.id,
+        ),
+        isTrue,
+      );
+      expect(
+        result.enrolledCourses.any(
+          (course) => course.courseId == enrolledCourse.id,
+        ),
+        isTrue,
+      );
+    });
+
     test('reviews publication queue and moderates published courses', () async {
-      final course = await endpoints.courseAdmin.create(
+      final course = await _createPublishableCourse(
+        endpoints,
         authorSession,
-        CreateCourseRequest(
-          title: 'Governance Review Course',
-          description: 'Course for publication review',
-          author: 'Author',
-          category: 'Programming',
-        ),
-      );
-      final module = await endpoints.moduleAdmin.create(
-        authorSession,
-        CreateModuleRequest(
-          courseId: course.id,
-          title: 'Governance Module',
-          description: 'Module for publication review',
-        ),
-      );
-      final lesson = await endpoints.lessonAdmin.create(
-        authorSession,
-        CreateLessonRequest(
-          moduleId: module.id,
-          title: 'Governance Lesson',
-          contentText: 'Lesson content',
-        ),
-      );
-      await endpoints.taskAdmin.create(
-        authorSession,
-        CreateTaskRequest(
-          lessonId: lesson.id,
-          taskType: TaskType.textInput,
-          questionText: 'Question',
-          correctAnswer: 'Answer',
-          topic: 'Governance',
-        ),
+        title: 'Governance Review Course',
       );
 
       final queue = await endpoints.adminGovernance.listPublicationQueue(
@@ -156,7 +203,79 @@ void main() {
       );
       expect(draft.contentStatus, ContentStatus.draft);
     });
+
+    test('freezes and unfreezes courses through admin contract', () async {
+      final course = await _createPublishableCourse(
+        endpoints,
+        authorSession,
+        title: 'Governance Frozen Course',
+      );
+
+      await endpoints.courseAdmin.publish(authorSession, course.id);
+
+      final frozen = await endpoints.adminGovernance.freezeCourse(
+        adminSession,
+        course.id,
+      );
+      expect(frozen.contentStatus, ContentStatus.frozen);
+      expect(frozen.publishedAt, isNull);
+
+      final frozenCourses = await endpoints.adminGovernance.listFrozenCourses(
+        adminSession,
+      );
+      expect(frozenCourses.any((item) => item.id == course.id), isTrue);
+
+      final unfrozen = await endpoints.adminGovernance.unfreezeCourse(
+        adminSession,
+        course.id,
+      );
+      expect(unfrozen.contentStatus, ContentStatus.draft);
+    });
   });
+}
+
+Future<CourseDto> _createPublishableCourse(
+  TestEndpoints endpoints,
+  TestSessionBuilder session, {
+  required String title,
+}) async {
+  final course = await endpoints.courseAdmin.create(
+    session,
+    CreateCourseRequest(
+      title: title,
+      description: 'Course for governance tests',
+      author: 'Author',
+      category: 'Programming',
+    ),
+  );
+  final module = await endpoints.moduleAdmin.create(
+    session,
+    CreateModuleRequest(
+      courseId: course.id,
+      title: '$title module',
+      description: 'Module for governance tests',
+    ),
+  );
+  final lesson = await endpoints.lessonAdmin.create(
+    session,
+    CreateLessonRequest(
+      moduleId: module.id,
+      title: '$title lesson',
+      contentText: 'Lesson content',
+    ),
+  );
+  await endpoints.taskAdmin.create(
+    session,
+    CreateTaskRequest(
+      lessonId: lesson.id,
+      taskType: TaskType.textInput,
+      questionText: 'Question',
+      correctAnswer: 'Answer',
+      topic: 'Governance',
+    ),
+  );
+
+  return course;
 }
 
 Future<UuidValue> _createEmailUser(

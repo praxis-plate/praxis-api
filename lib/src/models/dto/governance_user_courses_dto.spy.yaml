@@ -1,0 +1,5 @@
+class: GovernanceUserCoursesDto
+fields:
+  authUserId: UuidValue
+  enrolledCourses: List<GovernanceUserCourseDto>
+  authoredCourses: List<GovernanceUserCourseDto>

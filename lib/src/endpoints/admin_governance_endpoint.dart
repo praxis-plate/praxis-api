@@ -10,6 +10,17 @@ class AdminGovernanceEndpoint extends Endpoint {
     return session.server.useCases.listGovernanceUsersUseCase.execute(session);
   }
 
+  Future<GovernanceUserCoursesDto> listUserCourses(
+    Session session,
+    UuidValue authUserId,
+  ) {
+    AuthUtils.requireScope(session, AuthScopes.usersManage);
+    return session.server.useCases.getGovernanceUserCoursesUseCase.execute(
+      session,
+      authUserId: authUserId,
+    );
+  }
+
   Future<AccessProfileDto> assignRole(
     Session session, {
     required UuidValue authUserId,
@@ -33,6 +44,24 @@ class AdminGovernanceEndpoint extends Endpoint {
       session,
       authUserId: authUserId,
       role: role,
+    );
+  }
+
+  Future<GovernanceUserDto> blockUser(Session session, UuidValue authUserId) {
+    AuthUtils.requireScope(session, AuthScopes.usersManage);
+    return session.server.useCases.setUserBlockedUseCase.execute(
+      session,
+      authUserId: authUserId,
+      blocked: true,
+    );
+  }
+
+  Future<GovernanceUserDto> unblockUser(Session session, UuidValue authUserId) {
+    AuthUtils.requireScope(session, AuthScopes.usersManage);
+    return session.server.useCases.setUserBlockedUseCase.execute(
+      session,
+      authUserId: authUserId,
+      blocked: false,
     );
   }
 
@@ -68,6 +97,22 @@ class AdminGovernanceEndpoint extends Endpoint {
     );
   }
 
+  Future<List<CourseDto>> listFrozenCourses(
+    Session session, {
+    String? query,
+    int? limit,
+    int? offset,
+  }) {
+    AuthUtils.requireScope(session, AuthScopes.adminAccess);
+    return session.server.useCases.listAdminCoursesUseCase.execute(
+      session,
+      status: ContentStatus.frozen,
+      query: query,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
   Future<CourseDto> approvePublication(Session session, int courseId) {
     AuthUtils.requireScope(session, AuthScopes.adminAccess);
     return session.server.useCases.publishAdminCourseUseCase.execute(
@@ -79,6 +124,22 @@ class AdminGovernanceEndpoint extends Endpoint {
   Future<CourseDto> unpublishCourse(Session session, int courseId) {
     AuthUtils.requireScope(session, AuthScopes.adminAccess);
     return session.server.useCases.unpublishAdminCourseUseCase.execute(
+      session,
+      courseId,
+    );
+  }
+
+  Future<CourseDto> freezeCourse(Session session, int courseId) {
+    AuthUtils.requireScope(session, AuthScopes.adminAccess);
+    return session.server.useCases.freezeAdminCourseUseCase.execute(
+      session,
+      courseId,
+    );
+  }
+
+  Future<CourseDto> unfreezeCourse(Session session, int courseId) {
+    AuthUtils.requireScope(session, AuthScopes.adminAccess);
+    return session.server.useCases.unfreezeAdminCourseUseCase.execute(
       session,
       courseId,
     );

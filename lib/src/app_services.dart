@@ -144,7 +144,9 @@ class AppServices {
     );
     final accessControlService = AccessControlService(
       authUserDataSource: authUserDataSource,
+      courseDataSource: courseDataSource,
       emailAccountDataSource: emailAccountDataSource,
+      userCourseDataSource: userCourseDataSource,
       bootstrapAuthorEmails: _parseBootstrapEmails(
         pod.getPassword('bootstrapAuthorEmails'),
       ),

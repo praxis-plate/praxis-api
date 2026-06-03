@@ -14,7 +14,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum ContentStatus implements _i1.SerializableModel {
   draft,
-  published;
+  published,
+  frozen;
 
   static ContentStatus fromJson(String name) {
     switch (name) {
@@ -22,6 +23,8 @@ enum ContentStatus implements _i1.SerializableModel {
         return ContentStatus.draft;
       case 'published':
         return ContentStatus.published;
+      case 'frozen':
+        return ContentStatus.frozen;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "ContentStatus"',

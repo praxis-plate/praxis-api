@@ -12,12 +12,18 @@ achievement:
   - isUnlocked:
 adminGovernance:
   - listUsers:
+  - listUserCourses:
   - assignRole:
   - revokeRole:
+  - blockUser:
+  - unblockUser:
   - listPublicationQueue:
   - listPublishedCourses:
+  - listFrozenCourses:
   - approvePublication:
   - unpublishCourse:
+  - freezeCourse:
+  - unfreezeCourse:
 ai:
   - generateHint:
   - generateExplanation:

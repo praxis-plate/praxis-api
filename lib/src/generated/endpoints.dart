@@ -408,6 +408,26 @@ class Endpoints extends _i1.EndpointDispatch {
                   (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
                       .listUsers(session),
         ),
+        'listUserCourses': _i1.MethodConnector(
+          name: 'listUserCourses',
+          params: {
+            'authUserId': _i1.ParameterDescription(
+              name: 'authUserId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .listUserCourses(
+                        session,
+                        params['authUserId'],
+                      ),
+        ),
         'assignRole': _i1.MethodConnector(
           name: 'assignRole',
           params: {
@@ -458,6 +478,46 @@ class Endpoints extends _i1.EndpointDispatch {
                         session,
                         authUserId: params['authUserId'],
                         role: params['role'],
+                      ),
+        ),
+        'blockUser': _i1.MethodConnector(
+          name: 'blockUser',
+          params: {
+            'authUserId': _i1.ParameterDescription(
+              name: 'authUserId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .blockUser(
+                        session,
+                        params['authUserId'],
+                      ),
+        ),
+        'unblockUser': _i1.MethodConnector(
+          name: 'unblockUser',
+          params: {
+            'authUserId': _i1.ParameterDescription(
+              name: 'authUserId',
+              type: _i1.getType<_i1.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .unblockUser(
+                        session,
+                        params['authUserId'],
                       ),
         ),
         'listPublicationQueue': _i1.MethodConnector(
@@ -524,6 +584,38 @@ class Endpoints extends _i1.EndpointDispatch {
                         offset: params['offset'],
                       ),
         ),
+        'listFrozenCourses': _i1.MethodConnector(
+          name: 'listFrozenCourses',
+          params: {
+            'query': _i1.ParameterDescription(
+              name: 'query',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .listFrozenCourses(
+                        session,
+                        query: params['query'],
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
+        ),
         'approvePublication': _i1.MethodConnector(
           name: 'approvePublication',
           params: {
@@ -560,6 +652,46 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async =>
                   (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
                       .unpublishCourse(
+                        session,
+                        params['courseId'],
+                      ),
+        ),
+        'freezeCourse': _i1.MethodConnector(
+          name: 'freezeCourse',
+          params: {
+            'courseId': _i1.ParameterDescription(
+              name: 'courseId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .freezeCourse(
+                        session,
+                        params['courseId'],
+                      ),
+        ),
+        'unfreezeCourse': _i1.MethodConnector(
+          name: 'unfreezeCourse',
+          params: {
+            'courseId': _i1.ParameterDescription(
+              name: 'courseId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['adminGovernance'] as _i4.AdminGovernanceEndpoint)
+                      .unfreezeCourse(
                         session,
                         params['courseId'],
                       ),

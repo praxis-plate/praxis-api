@@ -1,8 +1,10 @@
 import 'package:praxis_server/src/app_services.dart';
 import 'package:praxis_server/src/usecases/access_control/assign_user_role_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/get_access_profile_use_case.dart';
+import 'package:praxis_server/src/usecases/access_control/get_governance_user_courses_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/list_governance_users_use_case.dart';
 import 'package:praxis_server/src/usecases/access_control/revoke_user_role_use_case.dart';
+import 'package:praxis_server/src/usecases/access_control/set_user_blocked_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/get_all_achievements_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/get_user_achievements_use_case.dart';
 import 'package:praxis_server/src/usecases/achievement/is_achievement_unlocked_use_case.dart';
@@ -49,8 +51,10 @@ import 'package:serverpod/serverpod.dart';
 class AppUseCases {
   final GetAccessProfileUseCase getAccessProfileUseCase;
   final ListGovernanceUsersUseCase listGovernanceUsersUseCase;
+  final GetGovernanceUserCoursesUseCase getGovernanceUserCoursesUseCase;
   final AssignUserRoleUseCase assignUserRoleUseCase;
   final RevokeUserRoleUseCase revokeUserRoleUseCase;
+  final SetUserBlockedUseCase setUserBlockedUseCase;
   final ListAdminCoursesUseCase listAdminCoursesUseCase;
   final GetAdminCourseAnalyticsDashboardUseCase
   getAdminCourseAnalyticsDashboardUseCase;
@@ -60,6 +64,8 @@ class AppUseCases {
   final DeleteAdminCourseUseCase deleteAdminCourseUseCase;
   final PublishAdminCourseUseCase publishAdminCourseUseCase;
   final UnpublishAdminCourseUseCase unpublishAdminCourseUseCase;
+  final FreezeAdminCourseUseCase freezeAdminCourseUseCase;
+  final UnfreezeAdminCourseUseCase unfreezeAdminCourseUseCase;
   final ListAdminModulesUseCase listAdminModulesUseCase;
   final CreateAdminModuleUseCase createAdminModuleUseCase;
   final UpdateAdminModuleUseCase updateAdminModuleUseCase;
@@ -122,8 +128,10 @@ class AppUseCases {
   AppUseCases({
     required this.getAccessProfileUseCase,
     required this.listGovernanceUsersUseCase,
+    required this.getGovernanceUserCoursesUseCase,
     required this.assignUserRoleUseCase,
     required this.revokeUserRoleUseCase,
+    required this.setUserBlockedUseCase,
     required this.listAdminCoursesUseCase,
     required this.getAdminCourseAnalyticsDashboardUseCase,
     required this.createAdminCourseUseCase,
@@ -132,6 +140,8 @@ class AppUseCases {
     required this.deleteAdminCourseUseCase,
     required this.publishAdminCourseUseCase,
     required this.unpublishAdminCourseUseCase,
+    required this.freezeAdminCourseUseCase,
+    required this.unfreezeAdminCourseUseCase,
     required this.listAdminModulesUseCase,
     required this.createAdminModuleUseCase,
     required this.updateAdminModuleUseCase,
@@ -189,10 +199,7 @@ class AppUseCases {
     required this.getWalletHistoryUseCase,
   });
 
-  factory AppUseCases.build(
-    Serverpod pod,
-    AppServices services,
-  ) {
+  factory AppUseCases.build(Serverpod pod, AppServices services) {
     return AppUseCases(
       getAccessProfileUseCase: GetAccessProfileUseCase(
         accessControlService: services.accessControlService,
@@ -200,10 +207,16 @@ class AppUseCases {
       listGovernanceUsersUseCase: ListGovernanceUsersUseCase(
         accessControlService: services.accessControlService,
       ),
+      getGovernanceUserCoursesUseCase: GetGovernanceUserCoursesUseCase(
+        accessControlService: services.accessControlService,
+      ),
       assignUserRoleUseCase: AssignUserRoleUseCase(
         accessControlService: services.accessControlService,
       ),
       revokeUserRoleUseCase: RevokeUserRoleUseCase(
+        accessControlService: services.accessControlService,
+      ),
+      setUserBlockedUseCase: SetUserBlockedUseCase(
         accessControlService: services.accessControlService,
       ),
       listAdminCoursesUseCase: ListAdminCoursesUseCase(
@@ -234,6 +247,14 @@ class AppUseCases {
         transactionRunner: services.transactionRunner,
       ),
       unpublishAdminCourseUseCase: UnpublishAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      freezeAdminCourseUseCase: FreezeAdminCourseUseCase(
+        cmsContentService: services.cmsContentService,
+        transactionRunner: services.transactionRunner,
+      ),
+      unfreezeAdminCourseUseCase: UnfreezeAdminCourseUseCase(
         cmsContentService: services.cmsContentService,
         transactionRunner: services.transactionRunner,
       ),
@@ -386,15 +407,11 @@ class AppUseCases {
       getModulesByCourseIdUseCase: GetModulesByCourseIdUseCase(
         moduleService: services.moduleService,
       ),
-      getTaskByIdUseCase: GetTaskByIdUseCase(
-        taskService: services.taskService,
-      ),
+      getTaskByIdUseCase: GetTaskByIdUseCase(taskService: services.taskService),
       getTasksByLessonIdUseCase: GetTasksByLessonIdUseCase(
         taskService: services.taskService,
       ),
-      taskAnswerUseCase: TaskAnswerUseCase(
-        taskService: services.taskService,
-      ),
+      taskAnswerUseCase: TaskAnswerUseCase(taskService: services.taskService),
       getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase(
         userProfileService: services.userProfileService,
       ),

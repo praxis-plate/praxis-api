@@ -235,6 +235,121 @@ void main() {
     );
 
     test(
+      'frozen course stays hidden for learner API and blocks cms mutations',
+      () async {
+        final course = await endpoints.courseAdmin.create(
+          cmsSession,
+          CreateCourseRequest(
+            title: 'Frozen CMS Course',
+            description: 'Hidden while frozen',
+            author: 'Author',
+            category: 'Programming',
+          ),
+        );
+        final module = await endpoints.moduleAdmin.create(
+          cmsSession,
+          CreateModuleRequest(
+            courseId: course.id,
+            title: 'Frozen Module',
+            description: 'Module description',
+          ),
+        );
+        final lesson = await endpoints.lessonAdmin.create(
+          cmsSession,
+          CreateLessonRequest(
+            moduleId: module.id,
+            title: 'Frozen Lesson',
+            contentText: 'Lesson content',
+            durationMinutes: 10,
+          ),
+        );
+        await endpoints.taskAdmin.create(
+          cmsSession,
+          CreateTaskRequest(
+            lessonId: lesson.id,
+            taskType: TaskType.textInput,
+            questionText: 'Question',
+            correctAnswer: 'Answer',
+            topic: 'Basics',
+          ),
+        );
+
+        await endpoints.courseAdmin.publish(cmsSession, course.id);
+
+        final frozenCourse = await endpoints.adminGovernance.freezeCourse(
+          sessionBuilder.copyWith(
+            authentication: AuthenticationOverride.authenticationInfo(
+              const Uuid().v7obj().toString(),
+              {
+                Scope('learner.access'),
+                Scope('cms.access'),
+                Scope('content.manage'),
+                Scope('admin.access'),
+                Scope('users.manage'),
+              },
+            ),
+          ),
+          course.id,
+        );
+        expect(frozenCourse.contentStatus, ContentStatus.frozen);
+        expect(frozenCourse.publishedAt, isNull);
+
+        final learnerCourses = await endpoints.course.get(
+          sessionBuilder,
+          limit: 50,
+          offset: 0,
+        );
+        expect(learnerCourses.any((item) => item.id == course.id), isFalse);
+        await expectLater(
+          endpoints.course.getById(sessionBuilder, course.id),
+          throwsA(isA<NotFoundException>()),
+        );
+        await expectLater(
+          endpoints.course.getTableOfContents(sessionBuilder, course.id),
+          throwsA(isA<NotFoundException>()),
+        );
+        expect(await endpoints.module.get(sessionBuilder, course.id), isEmpty);
+        expect(
+          await endpoints.lesson.getByCourseId(sessionBuilder, course.id),
+          isEmpty,
+        );
+        expect(
+          await endpoints.task.getByLessonId(sessionBuilder, lesson.id),
+          isEmpty,
+        );
+
+        await expectLater(
+          endpoints.courseAdmin.update(
+            cmsSession,
+            UpdateCourseRequest(
+              id: course.id,
+              title: 'Blocked update',
+              description: 'Blocked update',
+              author: 'Author',
+              category: 'Programming',
+              difficultyLevel: 'beginner',
+              priceInCoins: 0,
+              durationMinutes: 0,
+              rating: 0,
+            ),
+          ),
+          throwsA(isA<ValidationException>()),
+        );
+        await expectLater(
+          endpoints.moduleAdmin.create(
+            cmsSession,
+            CreateModuleRequest(
+              courseId: course.id,
+              title: 'Blocked Module',
+              description: 'Should fail',
+            ),
+          ),
+          throwsA(isA<ValidationException>()),
+        );
+      },
+    );
+
+    test(
       'supports course updates, reorder, and upsert flows for cms content',
       () async {
         final createdCourse = await endpoints.courseAdmin.create(

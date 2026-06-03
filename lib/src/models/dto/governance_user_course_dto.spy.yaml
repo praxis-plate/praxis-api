@@ -1,0 +1,11 @@
+class: GovernanceUserCourseDto
+fields:
+  courseId: int
+  title: String
+  category: String
+  author: String
+  contentStatus: ContentStatus
+  updatedAt: DateTime
+  enrolledAt: DateTime?
+  completedAt: DateTime?
+  isCompleted: bool
