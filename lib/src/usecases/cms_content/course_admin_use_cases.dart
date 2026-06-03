@@ -6,9 +6,8 @@ import 'package:serverpod/serverpod.dart';
 class ListAdminCoursesUseCase {
   final CmsContentService _cmsContentService;
 
-  const ListAdminCoursesUseCase({
-    required CmsContentService cmsContentService,
-  }) : _cmsContentService = cmsContentService;
+  const ListAdminCoursesUseCase({required CmsContentService cmsContentService})
+    : _cmsContentService = cmsContentService;
 
   Future<List<CourseDto>> execute(
     Session session, {
@@ -37,10 +36,7 @@ class CreateAdminCourseUseCase {
   }) : _cmsContentService = cmsContentService,
        _transactionRunner = transactionRunner;
 
-  Future<CourseDto> execute(
-    Session session,
-    CreateCourseRequest request,
-  ) {
+  Future<CourseDto> execute(Session session, CreateCourseRequest request) {
     return _transactionRunner.run(
       session,
       (transaction) => _cmsContentService.createCourse(
@@ -87,10 +83,7 @@ class UpdateAdminCourseUseCase {
   }) : _cmsContentService = cmsContentService,
        _transactionRunner = transactionRunner;
 
-  Future<CourseDto> execute(
-    Session session,
-    UpdateCourseRequest request,
-  ) {
+  Future<CourseDto> execute(Session session, UpdateCourseRequest request) {
     return _transactionRunner.run(
       session,
       (transaction) => _cmsContentService.updateCourse(
@@ -160,6 +153,50 @@ class UnpublishAdminCourseUseCase {
     return _transactionRunner.run(
       session,
       (transaction) => _cmsContentService.unpublishCourse(
+        session,
+        courseId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
+class FreezeAdminCourseUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const FreezeAdminCourseUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<CourseDto> execute(Session session, int courseId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.freezeCourse(
+        session,
+        courseId,
+        transaction: transaction,
+      ),
+    );
+  }
+}
+
+class UnfreezeAdminCourseUseCase {
+  final CmsContentService _cmsContentService;
+  final TransactionRunner _transactionRunner;
+
+  const UnfreezeAdminCourseUseCase({
+    required CmsContentService cmsContentService,
+    required TransactionRunner transactionRunner,
+  }) : _cmsContentService = cmsContentService,
+       _transactionRunner = transactionRunner;
+
+  Future<CourseDto> execute(Session session, int courseId) {
+    return _transactionRunner.run(
+      session,
+      (transaction) => _cmsContentService.unfreezeCourse(
         session,
         courseId,
         transaction: transaction,

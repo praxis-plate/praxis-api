@@ -14,10 +14,15 @@ adminGovernance:
   - listUsers:
   - assignRole:
   - revokeRole:
+  - blockUser:
+  - unblockUser:
   - listPublicationQueue:
   - listPublishedCourses:
+  - listFrozenCourses:
   - approvePublication:
   - unpublishCourse:
+  - freezeCourse:
+  - unfreezeCourse:
 ai:
   - generateHint:
   - generateExplanation:

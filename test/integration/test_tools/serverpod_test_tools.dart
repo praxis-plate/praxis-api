@@ -799,6 +799,68 @@ class _AdminGovernanceEndpoint {
     });
   }
 
+  _i3.Future<_i7.GovernanceUserDto> blockUser(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue authUserId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminGovernance',
+            method: 'blockUser',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminGovernance',
+          methodName: 'blockUser',
+          parameters: _i1.testObjectToJson({'authUserId': authUserId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i7.GovernanceUserDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i7.GovernanceUserDto> unblockUser(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i2.UuidValue authUserId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminGovernance',
+            method: 'unblockUser',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminGovernance',
+          methodName: 'unblockUser',
+          parameters: _i1.testObjectToJson({'authUserId': authUserId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i7.GovernanceUserDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<List<_i8.CourseDto>> listPublicationQueue(
     _i1.TestSessionBuilder sessionBuilder, {
     String? query,
@@ -873,6 +935,43 @@ class _AdminGovernanceEndpoint {
     });
   }
 
+  _i3.Future<List<_i8.CourseDto>> listFrozenCourses(
+    _i1.TestSessionBuilder sessionBuilder, {
+    String? query,
+    int? limit,
+    int? offset,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminGovernance',
+            method: 'listFrozenCourses',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminGovernance',
+          methodName: 'listFrozenCourses',
+          parameters: _i1.testObjectToJson({
+            'query': query,
+            'limit': limit,
+            'offset': offset,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<List<_i8.CourseDto>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i8.CourseDto> approvePublication(
     _i1.TestSessionBuilder sessionBuilder,
     int courseId,
@@ -919,6 +1018,68 @@ class _AdminGovernanceEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'adminGovernance',
           methodName: 'unpublishCourse',
+          parameters: _i1.testObjectToJson({'courseId': courseId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i8.CourseDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i8.CourseDto> freezeCourse(
+    _i1.TestSessionBuilder sessionBuilder,
+    int courseId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminGovernance',
+            method: 'freezeCourse',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminGovernance',
+          methodName: 'freezeCourse',
+          parameters: _i1.testObjectToJson({'courseId': courseId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i8.CourseDto>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i8.CourseDto> unfreezeCourse(
+    _i1.TestSessionBuilder sessionBuilder,
+    int courseId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'adminGovernance',
+            method: 'unfreezeCourse',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'adminGovernance',
+          methodName: 'unfreezeCourse',
           parameters: _i1.testObjectToJson({'courseId': courseId}),
           serializationManager: _serializationManager,
         );

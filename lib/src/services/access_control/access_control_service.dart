@@ -4,6 +4,7 @@ import 'package:praxis_server/src/generated/protocol.dart';
 import 'package:praxis_server/src/shared/constants/auth_scopes.dart';
 import 'package:praxis_server/src/shared/utils/user_role_scope_resolver.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart';
 
 class AccessControlService {
   final AuthUserDataSource _authUserDataSource;
@@ -53,21 +54,14 @@ class AccessControlService {
       emailsByAuthUserId.putIfAbsent(account.authUserId, () => account.email);
     }
 
-    final users = authUsers.map((authUser) {
-      final profile = _toAccessProfile(authUser.id, authUser.scopeNames);
-      return GovernanceUserDto(
-        authUserId: profile.authUserId,
-        email: emailsByAuthUserId[authUser.id],
-        createdAt: authUser.createdAt,
-        blocked: authUser.blocked,
-        roles: profile.roles,
-        scopes: profile.scopes,
-        canAccessLearnerApi: profile.canAccessLearnerApi,
-        canAccessCms: profile.canAccessCms,
-        canManageContent: profile.canManageContent,
-        canManageUsers: profile.canManageUsers,
-      );
-    }).toList();
+    final users = authUsers
+        .map(
+          (authUser) => _toGovernanceUserDto(
+            authUser: authUser,
+            email: emailsByAuthUserId[authUser.id],
+          ),
+        )
+        .toList();
 
     users.sort((a, b) {
       final left = a.email ?? a.authUserId.toString();
@@ -103,6 +97,26 @@ class AccessControlService {
       transaction: transaction,
       transform: (roles) => roles..remove(role),
     );
+  }
+
+  Future<GovernanceUserDto> setBlocked(
+    Session session, {
+    required UuidValue authUserId,
+    required bool blocked,
+    Transaction? transaction,
+  }) async {
+    final authUser = await _authUserDataSource.updateBlocked(
+      session,
+      authUserId: authUserId,
+      blocked: blocked,
+      transaction: transaction,
+    );
+    await session.messages.authenticationRevoked(
+      authUserId.toString(),
+      RevokedAuthenticationUser(),
+    );
+
+    return _buildGovernanceUser(session, authUser, transaction: transaction);
   }
 
   Future<void> initializeRolesForNewAccount(
@@ -202,6 +216,40 @@ class AccessControlService {
       canAccessCms: sortedScopes.contains(AuthScopes.cmsAccess),
       canManageContent: sortedScopes.contains(AuthScopes.contentManage),
       canManageUsers: sortedScopes.contains(AuthScopes.usersManage),
+    );
+  }
+
+  Future<GovernanceUserDto> _buildGovernanceUser(
+    Session session,
+    AuthUserModel authUser, {
+    Transaction? transaction,
+  }) async {
+    final emailAccount = await _emailAccountDataSource.findByAuthUserId(
+      session,
+      authUserId: authUser.id,
+      transaction: transaction,
+    );
+
+    return _toGovernanceUserDto(authUser: authUser, email: emailAccount?.email);
+  }
+
+  GovernanceUserDto _toGovernanceUserDto({
+    required AuthUserModel authUser,
+    required String? email,
+  }) {
+    final profile = _toAccessProfile(authUser.id, authUser.scopeNames);
+
+    return GovernanceUserDto(
+      authUserId: profile.authUserId,
+      email: email,
+      createdAt: authUser.createdAt,
+      blocked: authUser.blocked,
+      roles: profile.roles,
+      scopes: profile.scopes,
+      canAccessLearnerApi: profile.canAccessLearnerApi,
+      canAccessCms: profile.canAccessCms,
+      canManageContent: profile.canManageContent,
+      canManageUsers: profile.canManageUsers,
     );
   }
 }

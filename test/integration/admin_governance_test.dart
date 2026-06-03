@@ -98,6 +98,33 @@ void main() {
       expect(learnerProfile.canManageContent, isFalse);
     });
 
+    test('blocks and unblocks users through admin contract', () async {
+      const email = 'governance-blocked@codium.app';
+      final authUserId = await _createEmailUser(
+        sessionBuilder,
+        emailIdpConfig,
+        email: email,
+      );
+
+      final blockedProfile = await endpoints.adminGovernance.blockUser(
+        adminSession,
+        authUserId,
+      );
+      expect(blockedProfile.authUserId, authUserId);
+      expect(blockedProfile.blocked, isTrue);
+
+      final blockedUser = (await endpoints.adminGovernance.listUsers(
+        adminSession,
+      )).firstWhere((item) => item.authUserId == authUserId);
+      expect(blockedUser.blocked, isTrue);
+
+      final unblockedProfile = await endpoints.adminGovernance.unblockUser(
+        adminSession,
+        authUserId,
+      );
+      expect(unblockedProfile.blocked, isFalse);
+    });
+
     test('reviews publication queue and moderates published courses', () async {
       final course = await endpoints.courseAdmin.create(
         authorSession,
@@ -155,6 +182,64 @@ void main() {
         course.id,
       );
       expect(draft.contentStatus, ContentStatus.draft);
+    });
+
+    test('freezes and unfreezes courses through admin contract', () async {
+      final course = await endpoints.courseAdmin.create(
+        authorSession,
+        CreateCourseRequest(
+          title: 'Governance Frozen Course',
+          description: 'Course for freeze review',
+          author: 'Author',
+          category: 'Programming',
+        ),
+      );
+      final module = await endpoints.moduleAdmin.create(
+        authorSession,
+        CreateModuleRequest(
+          courseId: course.id,
+          title: 'Frozen Module',
+          description: 'Module for frozen course',
+        ),
+      );
+      final lesson = await endpoints.lessonAdmin.create(
+        authorSession,
+        CreateLessonRequest(
+          moduleId: module.id,
+          title: 'Frozen Lesson',
+          contentText: 'Lesson content',
+        ),
+      );
+      await endpoints.taskAdmin.create(
+        authorSession,
+        CreateTaskRequest(
+          lessonId: lesson.id,
+          taskType: TaskType.textInput,
+          questionText: 'Question',
+          correctAnswer: 'Answer',
+          topic: 'Governance',
+        ),
+      );
+
+      await endpoints.courseAdmin.publish(authorSession, course.id);
+
+      final frozen = await endpoints.adminGovernance.freezeCourse(
+        adminSession,
+        course.id,
+      );
+      expect(frozen.contentStatus, ContentStatus.frozen);
+      expect(frozen.publishedAt, isNull);
+
+      final frozenCourses = await endpoints.adminGovernance.listFrozenCourses(
+        adminSession,
+      );
+      expect(frozenCourses.any((item) => item.id == course.id), isTrue);
+
+      final unfrozen = await endpoints.adminGovernance.unfreezeCourse(
+        adminSession,
+        course.id,
+      );
+      expect(unfrozen.contentStatus, ContentStatus.draft);
     });
   });
 }

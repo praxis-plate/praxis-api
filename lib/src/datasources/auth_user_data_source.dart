@@ -36,4 +36,18 @@ class AuthUserDataSource {
       transaction: transaction,
     );
   }
+
+  Future<AuthUserModel> updateBlocked(
+    Session session, {
+    required UuidValue authUserId,
+    required bool blocked,
+    Transaction? transaction,
+  }) {
+    return const AuthUsers().update(
+      session,
+      authUserId: authUserId,
+      blocked: blocked,
+      transaction: transaction,
+    );
+  }
 }
