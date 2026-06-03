@@ -421,21 +421,6 @@ class AppUseCases {
         userProfileService: services.userProfileService,
         transactionRunner: services.transactionRunner,
       ),
-      getCurrentUserProfileUseCase: GetCurrentUserProfileUseCase(
-        userProfileService: services.userProfileService,
-      ),
-      updateCurrentUserProfileUseCase: UpdateCurrentUserProfileUseCase(
-        userProfileService: services.userProfileService,
-        transactionRunner: services.transactionRunner,
-      ),
-      uploadCurrentUserAvatarUseCase: UploadCurrentUserAvatarUseCase(
-        userProfileService: services.userProfileService,
-        transactionRunner: services.transactionRunner,
-      ),
-      removeCurrentUserAvatarUseCase: RemoveCurrentUserAvatarUseCase(
-        userProfileService: services.userProfileService,
-        transactionRunner: services.transactionRunner,
-      ),
       getUserStatisticsUseCase: GetUserStatisticsUseCase(
         userStatisticsService: services.userStatisticsService,
       ),
